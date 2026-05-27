@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jessica · 悉尼陪读妈妈</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d0c0a;
+    --bg-card: #16140f;
+    --bg-elev: #1c1914;
+    --ink: #e8e2d4;
+    --ink-soft: #8a8275;
+    --ink-mute: #5a5448;
+    --accent: #f59e0b;
+    --accent-bright: #fbbf24;
+    --line: #2a2620;
+    --line-soft: #1f1c17;
+  }
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Noto Serif SC", "Songti SC", serif;
+    font-feature-settings: "palt";
+  }
+  .sans { font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; letter-spacing: 0.005em; }
+  .accent { color: var(--accent); }
+  .bg-card { background: var(--bg-card); }
+  .bg-elev { background: var(--bg-elev); }
+  .border-line { border-color: var(--line); }
+  .ink-soft { color: var(--ink-soft); }
+  .ink-mute { color: var(--ink-mute); }
+
+  /* Hero gradient & grid */
+  .hero {
+    position: relative;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245, 158, 11, 0.08), transparent 60%),
+      linear-gradient(180deg, #0d0c0a 0%, #0a0907 100%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(to right, rgba(232,226,212,0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(232,226,212,0.025) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 80%);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+  }
+  .card:hover {
+    border-color: rgba(245, 158, 11, 0.35);
+    transform: translateY(-2px);
+  }
+  .card-glow {
+    background: var(--bg-card);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 12px;
+    position: relative;
+  }
+  .card-glow::before {
+    content: "";
+    position: absolute; inset: -1px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(245,158,11,0.15), transparent 40%);
+    z-index: -1;
+  }
+
+  /* Pill */
+  .pill {
+    display: inline-block;
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .pill-ghost {
+    display: inline-block;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--line), transparent);
+  }
+
+  /* Nav */
+  .nav-bg {
+    background: rgba(13, 12, 10, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .nav-link { transition: color 0.15s; color: var(--ink-soft); }
+  .nav-link:hover { color: var(--ink); }
+
+  /* Buttons */
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--accent-bright); }
+  .btn-ghost {
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-weight: 500;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Numbers */
+  .stat-num {
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.03em;
+  }
+
+  /* Work cover */
+  .cover-cream {
+    background: #F5F0E6;
+    border: 1px solid #2D2D2D;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="sans sticky top-0 z-50 nav-bg border-b border-line">
+  <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#" class="font-semibold text-base tracking-tight">Jessica<span class="accent">.</span></a>
+    <div class="flex gap-7 text-sm">
+      <a href="#about" class="nav-link">关于</a>
+      <a href="#directions" class="nav-link">方向</a>
+      <a href="#works" class="nav-link">作品</a>
+      <a href="#workflows" class="nav-link">Skills</a>
+      <a href="#contact" class="nav-link">联系</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="relative max-w-5xl mx-auto px-6 py-28 md:py-40">
+    <div class="pill mb-6 sans">Sydney · Chatswood</div>
+    <h1 class="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-8">
+      AI 时代的<br/>
+      悉尼<span class="accent">陪读妈妈</span>
+    </h1>
+    <p class="text-lg md:text-xl ink-soft leading-relaxed max-w-2xl font-normal">
+      Jessica · 2026 年 2 月带着两个孩子落地悉尼。<br/>
+      用 Claude Code + Obsidian，把澳洲教育和新移民资源，系统化、产品化，分享给中文世界。
+    </p>
+    <div class="mt-12 flex gap-3 sans text-sm">
+      <a href="#works" class="btn-primary">看作品 →</a>
+      <a href="#contact" class="btn-ghost">联系我</a>
+    </div>
+  </div>
+</section>
+
+<!-- 数字震撼条 -->
+<section class="border-y border-line bg-elev">
+  <div class="max-w-5xl mx-auto px-6 py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div>
+      <div class="stat-num text-4xl md:text-5xl accent">500+</div>
+      <div class="sans text-xs ink-soft mt-2 uppercase tracking-wider">澳洲数学课件笔记</div>
+    </div>
+    <div>
+      <div class="stat-num text-4xl md:text-5xl accent">2</div>
+      <div class="sans text-xs ink-soft mt-2 uppercase tracking-wider">自研 Claude Skills</div>
+    </div>
+    <div>
+      <div class="stat-num text-4xl md:text-5xl accent">3</div>
+      <div class="sans text-xs ink-soft mt-2 uppercase tracking-wider">核心方向</div>
+    </div>
+    <div>
+      <div class="stat-num text-4xl md:text-5xl accent">2</div>
+      <div class="sans text-xs ink-soft mt-2 uppercase tracking-wider">真实试用客户（自家娃）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="max-w-5xl mx-auto px-6 py-28">
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">About</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-12 tracking-tight">为什么是我？</h2>
+  <div class="grid md:grid-cols-2 gap-12">
+    <div class="space-y-5 leading-relaxed text-lg">
+      <p>英语专业本科 + 9 年外贸销售背景，服务过 Only、Jack Jones、Bass Pro、Cabela's 等海外品牌。</p>
+      <p>2026 年 2 月，带着两个孩子（小学 + 中学）落地悉尼，开始亲历澳洲教育系统。</p>
+      <p class="ink-soft">不是在教你怎么移民 —— 我是<span class="accent">正带着两个孩子亲历澳洲教育、并用 Claude Code 把这条路一步步记录下来</span>的妈妈。</p>
+    </div>
+    <div class="card-glow p-7 sans text-sm space-y-3">
+      <div class="text-xs ink-soft uppercase tracking-[0.2em]">2026 · 05 · Turning Point</div>
+      <p class="leading-relaxed text-base" style="font-family: 'Noto Serif SC', serif;">第一次跑通完整链路：</p>
+      <p class="leading-relaxed accent font-medium text-base" style="font-family: 'Noto Serif SC', serif;">真实场景 → 独家资源 → AI 工具加持 → 真实可用的产出</p>
+      <p class="leading-relaxed ink-soft" style="font-family: 'Noto Serif SC', serif;">下载了学校 MathsOnline Year 8–12 全套原始课件，在 Obsidian + Claude Code 协作下，制作出可直接打印的中英双语辅导笔记。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 三层方向 -->
+<section id="directions" class="max-w-5xl mx-auto px-6 py-28">
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Three Directions</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-12 tracking-tight">我在做什么</h2>
+  <div class="grid md:grid-cols-3 gap-5">
+    <div class="card p-7">
+      <div class="text-xs sans ink-mute uppercase tracking-wider mb-4">01</div>
+      <h3 class="text-xl font-semibold mb-3 tracking-tight">澳洲 K-12 学科辅导</h3>
+      <p class="text-sm ink-soft leading-relaxed mb-5">中国家长看不懂澳洲课纲和教材逻辑。我有原始资料 + 英语能力 + AI 工具，孩子就是真实试用客户。</p>
+      <span class="pill sans">核心金矿</span>
+    </div>
+    <div class="card p-7">
+      <div class="text-xs sans ink-mute uppercase tracking-wider mb-4">02</div>
+      <h3 class="text-xl font-semibold mb-3 tracking-tight">新移民落地知识库</h3>
+      <p class="text-sm ink-soft leading-relaxed mb-5">Medicare、驾照、税号、电费网络办理…… 沉淀成"新移民第一年手册"。</p>
+      <span class="pill-ghost sans">引流和信任</span>
+    </div>
+    <div class="card p-7">
+      <div class="text-xs sans ink-mute uppercase tracking-wider mb-4">03</div>
+      <h3 class="text-xl font-semibold mb-3 tracking-tight">AI 工作流分享</h3>
+      <p class="text-sm ink-soft leading-relaxed mb-5">不做泛泛的"AI 赋能个人成长"，只做具体场景：「我如何用 Claude Code 给孩子做澳洲数学笔记」。</p>
+      <span class="pill-ghost sans">差异化精进</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 幕后工作流 -->
+<section id="workflow-story" class="max-w-5xl mx-auto px-6 py-28">
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Behind The Scenes</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">一个作品背后，是一条产线</h2>
+  <p class="ink-soft text-lg mb-12">以 Year 6 · 数与运算基础（Unit 1）为例。</p>
+
+  <div class="grid md:grid-cols-3 gap-4">
+    <div class="card p-7">
+      <div class="sans text-xs accent uppercase tracking-[0.2em] mb-3">Step 01 · Source</div>
+      <h3 class="font-semibold mb-3 tracking-tight">MathsOnline 原始 PDF</h3>
+      <p class="text-sm ink-soft leading-relaxed">从澳洲学校官方系统下载的英文 lesson summary 课件。中国家长看着头大。</p>
+    </div>
+
+    <div class="card-glow p-7">
+      <div class="sans text-xs accent uppercase tracking-[0.2em] mb-3">Step 02 · Draft</div>
+      <h3 class="font-semibold mb-3 tracking-tight">Obsidian 结构化笔记</h3>
+      <p class="text-sm ink-soft leading-relaxed mb-4">中文引入 · 概念讲解 · 中英对照词汇 · 例题解析 · 独立练习 · 折叠答案。</p>
+      <span class="pill sans">10 课 · 一个单元</span>
+    </div>
+
+    <div class="card p-7">
+      <div class="sans text-xs accent uppercase tracking-[0.2em] mb-3">Step 03 · Output</div>
+      <h3 class="font-semibold mb-3 tracking-tight">精美 HTML 课件</h3>
+      <p class="text-sm ink-soft leading-relaxed mb-4">用开源模板渲染，配上我自己的中英对照内容。孩子愿意翻完，家长直接打印。</p>
+      <a href="./works/03-primes-composites.html" target="_blank" class="sans text-xs accent hover:underline">看 Lesson 03 成品 →</a>
+      <div class="sans text-[10px] ink-mute mt-4 pt-3 border-t border-line tracking-wider">
+        STACK · <a href="https://github.com/zarazhangrui/beautiful-html-templates" target="_blank" class="hover:text-[#f59e0b] underline decoration-dotted">beautiful-html-templates</a> · <a href="https://www.anygen.io/" target="_blank" class="hover:text-[#f59e0b] underline decoration-dotted">anygen.io</a> · Claude Code
+      </div>
+    </div>
+  </div>
+
+  <!-- Punchline -->
+  <div class="mt-8 card p-8 text-center">
+    <p class="text-lg md:text-xl leading-relaxed">
+      你看到的 <span class="accent font-semibold">1 个 HTML</span>，是
+      <span class="accent font-semibold">10 课草稿</span> +
+      <span class="accent font-semibold">2 个自研 Skills</span> +
+      <span class="accent font-semibold">1 套开源模板</span> 串起来的。
+    </p>
+    <p class="sans text-sm ink-soft mt-3">工具是别人的，内容和体系是我的。这条产线可以批量复制到 Year 7、Year 8、Year 9 ……</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 作品 -->
+<section id="works" class="max-w-5xl mx-auto px-6 py-28">
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Selected Works</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">精选作品</h2>
+  <p class="ink-soft text-lg mb-12">慢慢累积。质比量重要。</p>
+
+  <div class="grid md:grid-cols-2 gap-5">
+    <!-- 作品 1: 质数与合数 -->
+    <a href="./works/03-primes-composites.html" target="_blank" class="card p-5 block group">
+      <div class="aspect-video rounded-lg mb-5 overflow-hidden relative cover-cream">
+        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+          <div class="text-5xl mb-2" style="font-family: 'Inter', sans-serif; font-weight: 700; color: #2D2D2D; letter-spacing: -0.02em;">7 · 13</div>
+          <div class="text-[10px] uppercase tracking-[0.2em]" style="font-family: 'Inter', sans-serif; font-weight: 500; color: #6B6B6B;">Primes & Composites</div>
+          <div class="mt-3 inline-block px-3 py-1 rounded-full text-[10px] uppercase tracking-wider" style="background: #2D2D2D; color: #F5F0E6; font-family: 'Inter', sans-serif; font-weight: 500;">Lesson 03</div>
+        </div>
+      </div>
+      <div class="px-2 pb-2">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="pill sans">数学课件 PPT</span>
+          <span class="pill-ghost sans">中英双语</span>
+        </div>
+        <h3 class="text-lg font-semibold mb-2 tracking-tight group-hover:text-[#f59e0b] transition">第03课 · 质数与合数</h3>
+        <p class="text-sm ink-soft leading-relaxed">全屏滚动 PPT 风格的数学课件 —— 开源模板 beautiful-html-templates + 我自己的中英对照笔记。把澳洲 Year 7 数学知识点做成孩子愿意翻完的样子。</p>
+        <div class="mt-4 text-xs accent sans">点击查看 →</div>
+      </div>
+    </a>
+
+    <!-- 占位 -->
+    <div class="card p-5 opacity-50">
+      <div class="aspect-video rounded-lg mb-5 flex items-center justify-center sans text-xs ink-mute uppercase tracking-[0.2em]" style="background: var(--bg-elev); border: 1px dashed var(--line);">
+        Next Work · Coming Soon
+      </div>
+      <div class="px-2 pb-2">
+        <span class="pill-ghost sans mb-3">待发布</span>
+        <h3 class="text-lg font-semibold mt-3 mb-2 tracking-tight">慢慢累积中</h3>
+        <p class="text-sm ink-soft leading-relaxed">每一个上来的作品都是我亲手做、亲身验证过的。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AI 工作流 -->
+<section id="workflows" class="max-w-5xl mx-auto px-6 py-28">
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Built by Me</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">我自己写的 Claude Skills</h2>
+  <p class="ink-soft text-lg mb-12">为整理澳洲学校课件而生。一个英语 + 外贸出身的妈妈，亲手写的 AI 工作流。</p>
+
+  <div class="grid md:grid-cols-2 gap-5">
+    <div class="card p-8">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="pill sans">Live</span>
+        <span class="sans text-xs ink-mute">v1.0</span>
+      </div>
+      <h3 class="text-xl font-semibold mb-3 tracking-tight">课件整理 · 学校</h3>
+      <p class="text-sm ink-soft leading-relaxed mb-5">把孩子从学校带回来的课件照片（HEIC/JPG），自动生成中英双语 .md 笔记 + .html 打印版三件套。</p>
+      <div class="text-xs ink-mute sans border-t border-line pt-4 leading-relaxed">手机拍的课件照片堆在相册里 → 一键变成可打印的双语辅导笔记</div>
+    </div>
+    <div class="card p-8">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="pill sans">Live</span>
+        <span class="sans text-xs ink-mute">v1.0</span>
+      </div>
+      <h3 class="text-xl font-semibold mb-3 tracking-tight">课件整理 · MathsOnline</h3>
+      <p class="text-sm ink-soft leading-relaxed mb-5">根据 MathsOnline Lesson Summary PDF，自动生成中英双语数学辅导笔记。已覆盖 Year 6–8 全套课程。</p>
+      <div class="text-xs ink-mute sans border-t border-line pt-4 leading-relaxed">澳洲数学教材中国家长看不懂 → AI 自动产出可打印的中英对照笔记</div>
+    </div>
+  </div>
+
+  <div class="mt-10 text-center sans text-sm ink-mute">
+    More skills on the way · 每一个都从真实场景里生长出来
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 联系 -->
+<section id="contact" class="max-w-5xl mx-auto px-6 py-28 text-center">
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Get in touch</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-6 tracking-tight">想聊聊吗？</h2>
+  <p class="ink-soft text-lg mb-12 max-w-xl mx-auto leading-relaxed">
+    如果你正在准备移民澳洲，或者已经在悉尼/墨尔本陪娃读书，<br/>欢迎来加我，互相取暖、互通有无。
+  </p>
+  <div class="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto sans">
+    <a href="#" class="card p-7 block text-left">
+      <div class="text-xs sans ink-mute uppercase tracking-wider mb-2">小红书</div>
+      <div class="font-semibold text-lg tracking-tight">@待填</div>
+      <div class="text-xs ink-soft mt-3">→ 关注</div>
+    </a>
+    <a href="#" class="card p-7 block text-left">
+      <div class="text-xs sans ink-mute uppercase tracking-wider mb-2">公众号</div>
+      <div class="font-semibold text-lg tracking-tight">@待填</div>
+      <div class="text-xs ink-soft mt-3">→ 订阅</div>
+    </a>
+    <a href="#" class="card p-7 block text-left">
+      <div class="text-xs sans ink-mute uppercase tracking-wider mb-2">飞书</div>
+      <div class="font-semibold text-lg tracking-tight">扫码加好友</div>
+      <div class="text-xs ink-soft mt-3">→ 待填</div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-line">
+  <div class="max-w-5xl mx-auto px-6 py-10 sans text-xs ink-mute flex justify-between">
+    <div>© 2026 Jessica · Made with Claude Code in Sydney</div>
+    <div>v0.2 · Dark</div>
+  </div>
+</footer>
+
+</body>
+</html>

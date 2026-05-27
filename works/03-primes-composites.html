@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第03课 — 质数与合数 | Primes and Composites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#F5F0E6;--turquoise:#7ECDC0;--soft-pink:#F7C8D4;--butter:#FDE68A;
+  --mint:#A8E6CF;--lavender:#D4A5E8;--peach:#FFCBA4;--sky:#A8D8F0;--coral:#F8635F;
+  --text-dark:#2D2D2D;--text-muted:#6B6B6B;
+  --border:#2D2D2D;--border-width:3px;--radius:20px;--radius-lg:28px;
+  --shadow:6px 6px 0 var(--border);--shadow-sm:4px 4px 0 var(--border);
+  --font-display:'Fredoka One',cursive;--font-body:'Quicksand',sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font-body);color:var(--text-dark);background:var(--cream)}
+
+/* ---- Slide system ---- */
+.slides-container{width:100vw;height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth}
+.slide{width:100vw;height:100vh;min-height:100vh;scroll-snap-align:start;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding:40px 60px}
+
+/* ---- Typography ---- */
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:400;letter-spacing:.02em}
+h1{font-size:clamp(2.5rem,5vw,4.5rem);line-height:1.1}
+h2{font-size:clamp(1.8rem,3.5vw,3rem);line-height:1.15}
+h3{font-size:clamp(1.3rem,2vw,1.8rem);line-height:1.2}
+h4{font-size:clamp(1rem,1.5vw,1.3rem);line-height:1.3}
+p{font-size:clamp(.95rem,1.3vw,1.15rem);line-height:1.6}
+
+/* ---- Utilities ---- */
+.card{background:#fff;border:var(--border-width) solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.badge{display:inline-block;padding:8px 20px;border-radius:50px;border:var(--border-width) solid var(--border);font-family:var(--font-display);font-size:.85rem;background:var(--butter)}
+
+/* ---- Decorations ---- */
+.deco{position:absolute;pointer-events:none;z-index:1}
+.deco svg{width:100%;height:100%;display:block}
+
+/* ---- Nav ---- */
+.nav-dots{position:fixed;right:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:100}
+.nav-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:#fff;cursor:pointer;transition:all .2s}
+.nav-dot.active{background:var(--butter);transform:scale(1.2)}
+.slide-counter{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;border:var(--border-width) solid var(--border);border-radius:50px;padding:6px 20px;font-family:var(--font-display);font-size:.8rem;z-index:100;box-shadow:var(--shadow-sm)}
+
+/* ======================================== SLIDE 1 — Title ======================================== */
+.slide-title{background:var(--cream)}
+.slide-title .title-box{text-align:center;z-index:2;position:relative}
+.slide-title h1{color:var(--text-dark);margin-bottom:12px;font-size:clamp(3.2rem,7vw,6.5rem)}
+.slide-title .subtitle{font-family:var(--font-body);font-weight:600;font-size:clamp(1rem,1.8vw,1.4rem);color:var(--text-muted);margin-top:16px}
+.slide-title .deco-daisy-tl{top:-30px;left:-30px;width:220px;height:220px}
+.slide-title .deco-daisy-tr{top:20px;right:-20px;width:180px;height:180px}
+.slide-title .deco-daisy-bl{bottom:-40px;left:20px;width:200px;height:200px}
+.slide-title .deco-daisy-br{bottom:10px;right:-30px;width:210px;height:210px}
+.slide-title .deco-star-1{top:12%;left:6%;width:90px;height:90px}
+.slide-title .deco-star-2{bottom:18%;left:10%;width:70px;height:70px}
+.slide-title .deco-star-3{top:18%;right:8%;width:80px;height:80px}
+
+/* ======================================== SLIDE 2 — Welcome ======================================== */
+.slide-welcome{background:var(--cream)}
+.welcome-frame{width:100%;max-width:880px;position:relative;z-index:2}
+.welcome-header{background:var(--mint);border:var(--border-width) solid var(--border);border-bottom:none;border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:18px 32px;text-align:center}
+.welcome-header h2{font-size:clamp(1.4rem,2.5vw,2rem);color:var(--text-dark)}
+.welcome-body{background:#fff;border:var(--border-width) solid var(--border);border-radius:0 0 var(--radius-lg) var(--radius-lg);padding:36px 48px;box-shadow:var(--shadow)}
+.welcome-list{list-style:none;display:flex;flex-direction:column;gap:18px}
+.welcome-list li{font-size:clamp(.95rem,1.4vw,1.15rem);font-weight:600;padding-left:36px;position:relative;line-height:1.5}
+.welcome-list li::before{content:"";position:absolute;left:0;top:4px;width:20px;height:20px;background:var(--butter);border:2px solid var(--border);border-radius:50%}
+.slide-welcome .deco-sun{top:6%;left:4%;width:140px;height:140px}
+.slide-welcome .deco-rainbow{bottom:4%;right:3%;width:180px;height:130px}
+.slide-welcome .deco-star-1{top:14%;right:7%;width:75px;height:75px}
+.slide-welcome .deco-star-2{bottom:16%;left:6%;width:60px;height:60px}
+
+/* ======================================== SLIDE 3 — Number Grid ======================================== */
+.slide-weekly{background:var(--turquoise);padding:30px 40px}
+.slide-weekly h2{text-align:center;color:#fff;text-shadow:3px 3px 0 var(--border);margin-bottom:28px;font-size:clamp(1.8rem,3.5vw,3rem);position:relative;z-index:2}
+.weekly-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;width:100%;max-width:1100px;z-index:2;position:relative}
+.day-card{background:#fff;border:var(--border-width) solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-sm)}
+.day-header{padding:10px 8px;text-align:center;font-family:var(--font-display);font-size:clamp(.85rem,1.3vw,1.1rem);border-bottom:var(--border-width) solid var(--border)}
+.day-header.pink{background:var(--soft-pink)}.day-header.green{background:var(--mint)}.day-header.coral{background:var(--coral);color:#fff}.day-header.yellow{background:var(--butter)}.day-header.lavender{background:var(--lavender)}
+.day-body{padding:10px 12px}
+.day-body ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.day-body li{font-size:clamp(.78rem,1.05vw,.92rem);font-weight:600;padding:4px 8px;border-radius:10px;text-align:center;border:2px solid var(--border)}
+.day-body li.prime{background:var(--soft-pink)}
+.day-body li.composite{background:var(--mint)}
+.day-body li.special{background:var(--butter)}
+.slide-weekly .deco-daisy-tl{top:-20px;left:-25px;width:160px;height:160px}
+.slide-weekly .deco-daisy-br{bottom:-25px;right:-20px;width:170px;height:170px}
+.slide-weekly .deco-star-1{bottom:10%;left:3%;width:80px;height:80px}
+.slide-weekly .deco-star-2{bottom:5%;left:10%;width:50px;height:50px}
+/* Legend */
+.num-legend{display:flex;gap:16px;justify-content:center;margin-bottom:16px;z-index:2;position:relative}
+.num-legend span{padding:4px 14px;border-radius:20px;border:2px solid var(--border);font-family:var(--font-display);font-size:.85rem}
+
+/* ======================================== SLIDE 4 — Timeline ======================================== */
+.slide-timeline{background:var(--soft-pink)}
+.slide-timeline h2{text-align:center;color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.2);margin-bottom:32px;z-index:2;position:relative}
+.timeline-wrap{display:flex;flex-direction:column;gap:18px;width:100%;max-width:700px;z-index:2;position:relative}
+.timeline-row{display:flex;align-items:center;gap:20px}
+.timeline-dot{width:48px;height:48px;border-radius:50%;border:var(--border-width) solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.1rem;color:#fff}
+.timeline-dot.d1{background:var(--coral)}.timeline-dot.d2{background:var(--mint);color:var(--text-dark)}.timeline-dot.d3{background:var(--sky);color:var(--text-dark)}.timeline-dot.d4{background:var(--lavender);color:var(--text-dark)}.timeline-dot.d5{background:var(--butter);color:var(--text-dark)}
+.timeline-card{flex:1;background:#fff;border:var(--border-width) solid var(--border);border-radius:var(--radius);padding:14px 20px;box-shadow:var(--shadow-sm)}
+.timeline-card h4{margin-bottom:4px;font-size:1.05rem}.timeline-card p{font-size:.88rem;color:var(--text-muted);font-weight:500}
+.slide-timeline .deco-cloud{top:6%;right:5%;width:160px;height:160px}
+.slide-timeline .deco-cloud-2{bottom:10%;left:3%;width:130px;height:130px}
+.slide-timeline .deco-star-1{top:14%;left:6%;width:70px;height:70px}
+.slide-timeline .deco-daisy{bottom:5%;right:5%;width:120px;height:120px}
+
+/* ======================================== SLIDE 5 — Bar Chart ======================================== */
+.slide-chart-bar{background:var(--butter)}
+.slide-chart-bar h2{text-align:center;margin-bottom:20px;z-index:2;position:relative}
+.chart-container{background:#fff;border:var(--border-width) solid var(--border);border-radius:var(--radius-lg);padding:24px 32px;box-shadow:var(--shadow);width:100%;max-width:800px;z-index:2;position:relative}
+.chart-svg{width:100%;height:auto}
+.chart-legend{display:flex;justify-content:center;gap:24px;margin-top:14px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.9rem}
+.legend-swatch{width:18px;height:18px;border:2px solid var(--border);border-radius:4px}
+.slide-chart-bar .deco-star-1{top:6%;left:5%;width:80px;height:80px}
+.slide-chart-bar .deco-star-2{top:12%;right:7%;width:60px;height:60px}
+.slide-chart-bar .deco-daisy{bottom:5%;left:4%;width:140px;height:140px}
+.slide-chart-bar .deco-cloud{bottom:7%;right:5%;width:150px;height:150px}
+
+/* ======================================== SLIDE 6 — Info Cards ======================================== */
+.slide-cards{background:var(--cream)}
+.slide-cards h2{text-align:center;margin-bottom:32px;z-index:2;position:relative}
+.cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;width:100%;max-width:820px;z-index:2;position:relative}
+.info-card{background:#fff;border:var(--border-width) solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:10px}
+.info-card .card-icon{width:48px;height:48px;border-radius:50%;border:var(--border-width) solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.3rem;margin-bottom:4px}
+.info-card .card-icon.i1{background:var(--soft-pink)}.info-card .card-icon.i2{background:var(--mint)}.info-card .card-icon.i3{background:var(--butter)}.info-card .card-icon.i4{background:var(--lavender)}
+.info-card h4{font-size:1.2rem}.info-card p{font-size:.88rem;color:var(--text-muted);font-weight:500;line-height:1.5}
+.info-card .examples{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.info-card .ex-num{padding:3px 10px;border-radius:20px;border:2px solid var(--border);font-family:var(--font-display);font-size:.8rem}
+.slide-cards .deco-rainbow{top:4%;right:3%;width:160px;height:116px}
+.slide-cards .deco-daisy-tl{top:-15px;left:-15px;width:140px;height:140px}
+.slide-cards .deco-star-1{bottom:10%;left:4%;width:70px;height:70px}
+.slide-cards .deco-sun{bottom:4%;right:4%;width:120px;height:120px}
+
+/* ======================================== SLIDE 7 — Quote ======================================== */
+.slide-quote{background:var(--lavender)}
+.quote-box{background:#fff;border:var(--border-width) solid var(--border);border-radius:var(--radius-lg);padding:44px 52px;box-shadow:var(--shadow);max-width:760px;width:100%;text-align:center;z-index:2;position:relative}
+.quote-mark{font-family:var(--font-display);font-size:4rem;line-height:1;color:var(--soft-pink);margin-bottom:4px}
+.quote-text{font-family:var(--font-display);font-size:clamp(1.2rem,2.2vw,1.7rem);line-height:1.4;color:var(--text-dark);margin-bottom:20px}
+.quote-author{font-weight:700;font-size:.95rem;color:var(--text-muted)}
+.quote-extra{font-size:.85rem;font-weight:500;color:var(--text-muted);margin-top:8px;line-height:1.5}
+.slide-quote .deco-daisy-tl{top:4%;left:4%;width:150px;height:150px}
+.slide-quote .deco-daisy-br{bottom:4%;right:4%;width:160px;height:160px}
+.slide-quote .deco-star-1{top:10%;right:12%;width:75px;height:75px}
+.slide-quote .deco-star-2{bottom:16%;left:8%;width:60px;height:60px}
+.slide-quote .deco-rainbow{top:6%;right:3%;width:140px;height:102px}
+
+/* ======================================== SLIDE 8 — Factorization ======================================== */
+.slide-team{background:var(--mint)}
+.slide-team h2{text-align:center;color:#fff;text-shadow:3px 3px 0 rgba(0,0,0,.15);margin-bottom:32px;z-index:2;position:relative}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;width:100%;max-width:900px;z-index:2;position:relative}
+.team-member{display:flex;flex-direction:column;align-items:center;gap:10px}
+.team-avatar{width:110px;height:110px;border-radius:50%;border:var(--border-width) solid var(--border);background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);padding:8px}
+.team-avatar .av-num{font-family:var(--font-display);font-size:1.5rem;color:var(--text-dark)}
+.team-avatar .av-eq{font-family:var(--font-body);font-size:.65rem;font-weight:700;color:var(--text-muted);text-align:center;line-height:1.4;margin-top:2px}
+.team-name{font-family:var(--font-display);font-size:1rem;text-align:center;color:var(--text-dark)}
+.team-role{font-size:.78rem;font-weight:700;color:var(--text-dark);text-align:center;opacity:.7}
+.slide-team .deco-daisy-tl{top:-10px;left:-10px;width:150px;height:150px}
+.slide-team .deco-daisy-tr{top:10px;right:-15px;width:140px;height:140px}
+.slide-team .deco-star-1{bottom:10%;left:5%;width:70px;height:70px}
+.slide-team .deco-star-2{bottom:6%;right:6%;width:55px;height:55px}
+
+/* ======================================== SLIDE 9 — Process ======================================== */
+.slide-process{background:var(--peach)}
+.slide-process h2{text-align:center;margin-bottom:36px;z-index:2;position:relative}
+.process-flow{display:flex;align-items:flex-start;justify-content:center;gap:16px;width:100%;max-width:950px;z-index:2;position:relative}
+.process-step{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px}
+.process-arrow{font-family:var(--font-display);font-size:2rem;color:var(--border);margin-top:30px;flex-shrink:0}
+.step-circle{width:90px;height:90px;border-radius:50%;border:var(--border-width) solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.8rem;color:#fff;box-shadow:var(--shadow-sm);flex-shrink:0}
+.step-circle.s1{background:var(--coral)}.step-circle.s2{background:var(--turquoise)}.step-circle.s3{background:var(--lavender);color:var(--text-dark)}
+.step-title{font-family:var(--font-display);font-size:1.1rem}
+.step-desc{font-size:.85rem;font-weight:600;color:var(--text-muted);line-height:1.45;max-width:220px}
+.step-example{background:#fff;border:2px solid var(--border);border-radius:14px;padding:8px 12px;font-size:.8rem;font-weight:700;margin-top:4px;box-shadow:var(--shadow-sm)}
+.slide-process .deco-cloud{top:6%;left:4%;width:150px;height:150px}
+.slide-process .deco-cloud-2{top:10%;right:5%;width:120px;height:120px}
+.slide-process .deco-star-1{bottom:10%;left:7%;width:70px;height:70px}
+.slide-process .deco-daisy{bottom:4%;right:4%;width:150px;height:150px}
+
+/* ======================================== SLIDE 10 — Donut ======================================== */
+.slide-donut{background:var(--sky)}
+.slide-donut h2{text-align:center;margin-bottom:28px;z-index:2;position:relative}
+.donut-wrap{display:flex;align-items:center;gap:48px;width:100%;max-width:850px;z-index:2;position:relative}
+.donut-chart-box{flex-shrink:0;width:280px;height:280px}
+.donut-chart-box svg{width:100%;height:100%}
+.donut-legend-side{display:flex;flex-direction:column;gap:14px}
+.donut-legend-side h3{margin-bottom:8px}
+.d-legend-item{display:flex;align-items:center;gap:12px;font-weight:600;font-size:.95rem}
+.d-legend-swatch{width:22px;height:22px;border:2px solid var(--border);border-radius:5px;flex-shrink:0}
+.slide-donut .deco-daisy-tl{top:-10px;left:-10px;width:160px;height:160px}
+.slide-donut .deco-daisy-br{bottom:-10px;right:-10px;width:170px;height:170px}
+.slide-donut .deco-star-1{top:10%;right:7%;width:75px;height:75px}
+.slide-donut .deco-star-2{bottom:14%;left:5%;width:60px;height:60px}
+
+/* ======================================== Responsive ======================================== */
+@media(max-width:768px){
+  .slide{padding:24px 20px}
+  .weekly-grid{grid-template-columns:repeat(3,1fr)}
+  .team-grid{grid-template-columns:repeat(2,1fr)}
+  .cards-grid{grid-template-columns:1fr}
+  .process-flow{flex-direction:column;align-items:center}
+  .process-arrow{transform:rotate(90deg);margin:0}
+  .donut-wrap{flex-direction:column;align-items:center}
+  .donut-chart-box{width:200px;height:200px}
+  .nav-dots{display:none}
+  .deco{opacity:.6}
+}
+</style>
+</head>
+<body>
+
+<!-- Re-usable SVG symbols (referenced via <use>) -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="daisy" viewBox="0 0 150 150">
+    <style>.dc1{fill:#FCDF6C}.dc2{fill:none;stroke:#232323;stroke-width:2.07;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}.dc3{fill:#FFFFFF;stroke:#232323;stroke-width:2.07;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}</style>
+    <path class="dc3" d="m66.6 53.8-5.9-13.8c-2.2-5.9-4.6-17.9-1.7-26.2 1.7-4.9 6.7-11.4 15.4-11.4 8.7-.2 13.4 4.6 15.7 8.6 4.8 8.1 2.5 20.3-.1 27.7l-6.8 15.1"/>
+    <path class="dc3" d="m92.1 115.2c1.3 5.8 1.9 13.8-.2 19.9-1.9 5.1-6.4 12.5-16.9 12.5-8.4 0-14.9-5.3-16.8-13.1-1.7-7-.6-15.2 1.7-22l6.7-16.4"/>
+    <path class="dc3" d="m96 66.4 14.7-5.8c5.9-2.4 16.2-8.3 19.8-17 2.8-6.4 2.1-14.2-4.3-19.7-2.8-2.5-6.2-4.2-10.2-5-9.3-.6-15.8 5.5-20.3 10.9-2.7 3.4-5.1 7.4-6.8 11l-5.7 12.8"/>
+    <path class="dc3" d="m54 84-14.7 5.5c-5.7 2.1-12.3 6.6-15.9 10.9-1.9 2.3-4 5.7-4.9 8.9-2.1 8.5 2.8 18 11.7 21.8 4.9 1.3 9.3.9 13.6-1.2 7.6-3.6 13.8-12.1 16.9-18.5l5.9-13.6"/>
+    <path class="dc3" d="m96.2 83.8 14.5 5.5c5.9 2.1 15.7 8.3 19.5 16.2 2.6 5.1 3.2 12.1-1.9 18.7-2.7 3.3-7 6.9-13.2 6.9-8.5 0-14.1-5-18.3-9.7-2.6-3.2-5.4-7.6-7.3-11.5l-6.1-14.2"/>
+    <path class="dc3" d="m54 66.1-14.3-5.5c-5.7-2.1-15.9-3.4-23.1-2.1-6.2 1.2-11.9 5.9-13.4 12.1-1.7 7.6 1.7 17.2 11.9 20.2 7 2.1 16.8 1.1 23.6-1.1l15.5-5.9"/>
+    <path class="dc3" d="m116.4 58.9c4.2-.9 9.2-1.5 14.1-.9 5.1.5 9.7 2.6 12.9 6.4 6.2 7 5.1 17.3-1.5 22.8-2.3 2.1-5.5 3.8-9.5 4.4-6.8 1.1-14.1.3-21.3-1.9"/>
+    <path class="dc3" d="m60.7 40c-3.3-6.4-10.5-17.1-18.8-20.5-7.2-3.1-15.5-1.5-20.4 4.9-2.1 2.8-3.7 6.2-3.7 10-.2 8.5 5.8 15.4 13.7 20.7 3.2 2.1 7 4.2 10.6 5.5"/>
+    <path class="dc1" d="m75.1 52.1c-10.9 0-22.6 8.9-22.6 23 0 9.3 7 22.1 22.6 22.1 11.7 0 22.5-8.7 22.5-21.9 0-11.1-9.3-23.2-22.5-23.2z"/>
+    <path class="dc2" d="m75.1 52.1c-10.9 0-22.6 8.9-22.6 23 0 9.3 7 22.1 22.6 22.1 11.7 0 22.5-8.7 22.5-21.9 0-11.1-9.3-23.2-22.5-23.2z"/>
+  </symbol>
+  <symbol id="star-pink" viewBox="0 0 100 98.6">
+    <path fill="#FBB0C7" stroke="#2D2D2D" stroke-width="2.4" stroke-miterlimit="10" d="m57.7 7.8 8.3 19.1c.5 1.3 1.5 2.1 2.8 2.3l21.5 2.2c6.4.8 9.4 8.3 5.3 13.7l-16.2 15.2c-1 .9-1.5 2.5-1.2 4.2l4.3 21.1c.9 6.2-4.9 11.6-12 8.7l-18.1-10.2c-1.4-.8-3.3-.8-4.8 0l-17.8 10.2c-6 2.9-13.2-.6-12.7-8l4.5-21.3c.3-1.7-.1-3.5-1.3-4.5l-15.2-13.5c-4.5-4.3-3.6-13.6 4.2-15.6l21.5-2.2c1.3-.1 2.3-.9 2.9-2.3l8.7-19.1c2.7-6 11.5-7.7 15.3 0z"/>
+  </symbol>
+  <symbol id="star-yellow" viewBox="0 0 100 98.6">
+    <path fill="#FDE366" stroke="#2D2D2D" stroke-width="2.4" stroke-miterlimit="10" d="m57.7 7.8 8.3 19.1c.5 1.3 1.5 2.1 2.8 2.3l21.5 2.2c6.4.8 9.4 8.3 5.3 13.7l-16.2 15.2c-1 .9-1.5 2.5-1.2 4.2l4.3 21.1c.9 6.2-4.9 11.6-12 8.7l-18.1-10.2c-1.4-.8-3.3-.8-4.8 0l-17.8 10.2c-6 2.9-13.2-.6-12.7-8l4.5-21.3c.3-1.7-.1-3.5-1.3-4.5l-15.2-13.5c-4.5-4.3-3.6-13.6 4.2-15.6l21.5-2.2c1.3-.1 2.3-.9 2.9-2.3l8.7-19.1c2.7-6 11.5-7.7 15.3 0z"/>
+  </symbol>
+  <symbol id="star-mint" viewBox="0 0 100 98.6">
+    <path fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2.4" stroke-miterlimit="10" d="m57.7 7.8 8.3 19.1c.5 1.3 1.5 2.1 2.8 2.3l21.5 2.2c6.4.8 9.4 8.3 5.3 13.7l-16.2 15.2c-1 .9-1.5 2.5-1.2 4.2l4.3 21.1c.9 6.2-4.9 11.6-12 8.7l-18.1-10.2c-1.4-.8-3.3-.8-4.8 0l-17.8 10.2c-6 2.9-13.2-.6-12.7-8l4.5-21.3c.3-1.7-.1-3.5-1.3-4.5l-15.2-13.5c-4.5-4.3-3.6-13.6 4.2-15.6l21.5-2.2c1.3-.1 2.3-.9 2.9-2.3l8.7-19.1c2.7-6 11.5-7.7 15.3 0z"/>
+  </symbol>
+  <symbol id="star-lavender" viewBox="0 0 100 98.6">
+    <path fill="#D4A5E8" stroke="#2D2D2D" stroke-width="2.4" stroke-miterlimit="10" d="m57.7 7.8 8.3 19.1c.5 1.3 1.5 2.1 2.8 2.3l21.5 2.2c6.4.8 9.4 8.3 5.3 13.7l-16.2 15.2c-1 .9-1.5 2.5-1.2 4.2l4.3 21.1c.9 6.2-4.9 11.6-12 8.7l-18.1-10.2c-1.4-.8-3.3-.8-4.8 0l-17.8 10.2c-6 2.9-13.2-.6-12.7-8l4.5-21.3c.3-1.7-.1-3.5-1.3-4.5l-15.2-13.5c-4.5-4.3-3.6-13.6 4.2-15.6l21.5-2.2c1.3-.1 2.3-.9 2.9-2.3l8.7-19.1c2.7-6 11.5-7.7 15.3 0z"/>
+  </symbol>
+  <symbol id="star-white" viewBox="0 0 100 98.6">
+    <path fill="#fff" stroke="#2D2D2D" stroke-width="2.4" stroke-miterlimit="10" d="m57.7 7.8 8.3 19.1c.5 1.3 1.5 2.1 2.8 2.3l21.5 2.2c6.4.8 9.4 8.3 5.3 13.7l-16.2 15.2c-1 .9-1.5 2.5-1.2 4.2l4.3 21.1c.9 6.2-4.9 11.6-12 8.7l-18.1-10.2c-1.4-.8-3.3-.8-4.8 0l-17.8 10.2c-6 2.9-13.2-.6-12.7-8l4.5-21.3c.3-1.7-.1-3.5-1.3-4.5l-15.2-13.5c-4.5-4.3-3.6-13.6 4.2-15.6l21.5-2.2c1.3-.1 2.3-.9 2.9-2.3l8.7-19.1c2.7-6 11.5-7.7 15.3 0z"/>
+  </symbol>
+  <symbol id="cloud" viewBox="0 0 128 128">
+    <style>.cl0{fill:#C6E3F6}.cl1{fill:none;stroke:#000;stroke-width:2.14;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}.cl2{fill:#fff;stroke:#000;stroke-width:2.14;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10}</style>
+    <path class="cl2" d="m106.8 57.3c-.3 0 0 0 0 0 1.7 0 2.8.1 3.8.3.2-1 .3-2 .3-3.1 0-7.2-6.3-16.3-15.5-16.3-2 0-3.9.4-6.2 1.1-2.2-6.2-9.3-16-23.8-16-10 0-18.8 5.8-23 15-1.9-.7-4.1-1.1-6.7-1.1-10.1 0-19.2 8.3-19.2 19.6 0 1.3.2 2.6.4 4.3-7.6 1.5-14.2 8.2-14.2 17.7 0 8.4 6.4 18.9 17.4 18.9 2.2 0 3.8-.1 5.5-.7l27.3 2.6 48.1-4.7c1.9.5 3.8.8 6.2.8 11.3 0 18.2-9 18.2-19.7 0-7.8-6.4-17.4-15-18.4l-3.6-.3z"/>
+    <path class="cl0" d="m123.7 70.6c-1.4 6.3-6.6 14.5-17.8 14.6-1 0-1.9-.1-2.8-.2l-1.6.9c-2.9 2.8-6.9 5.3-12.5 5.3-2.1 0-4.4-.3-6.4-1.1-.5-.2-1.2-.1-1.6.2-2.1 1.6-7.4 5.2-14.8 5.2-5.1 0-10.5-1.9-15.2-5.5-.8-1.1-2.3-1.1-2.4.6-2 4-14.5 7.7-23-3.8-.5-1.2-2.1-1.4-2.3.6-8.8 1-16.3-2.3-19.6-10.6-1.4 5.3 1.5 20.3 16 20.2 2.2 0 4.2-.1 5.9-.6l28.3 4.2c3-1.5 4.2 4.3 12.6 4 6.1-.2 11.1-2 14.2-5.6 2 .6 3.9 1.6 7.7 1.6 5 0 9.5-1.5 12.5-5.6l3.5.4c1 .2 2 .2 3 .2 11.2 0 19.2-10 17.2-21.6l-.9-3.4z"/>
+  </symbol>
+  <symbol id="sun" viewBox="0 0 120 120">
+    <circle cx="60" cy="60" r="26" fill="#FFCD57" stroke="#2D2D2D" stroke-width="2.8"/>
+    <g stroke="#2D2D2D" stroke-width="2.8" stroke-linecap="round">
+      <line x1="60" y1="10" x2="60" y2="24"/><line x1="60" y1="96" x2="60" y2="110"/>
+      <line x1="10" y1="60" x2="24" y2="60"/><line x1="96" y1="60" x2="110" y2="60"/>
+      <line x1="24.5" y1="24.5" x2="34" y2="34"/><line x1="86" y1="86" x2="95.5" y2="95.5"/>
+      <line x1="24.5" y1="95.5" x2="34" y2="86"/><line x1="86" y1="34" x2="95.5" y2="24.5"/>
+    </g>
+    <circle cx="51" cy="55" r="3" fill="#2D2D2D"/><circle cx="69" cy="55" r="3" fill="#2D2D2D"/>
+    <path d="M 50 68 Q 60 76 70 68" fill="none" stroke="#2D2D2D" stroke-width="2.8" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="rainbow" viewBox="0 0 140 101.4">
+    <style>.rb1{fill:#F8635F;stroke:#1E1E1C;stroke-width:1.6;stroke-miterlimit:10}.rb2{fill:#FDE366;stroke:#1E1E1C;stroke-width:1.6;stroke-miterlimit:10}.rb3{fill:#8DE3B7;stroke:#1E1E1C;stroke-width:1.6;stroke-miterlimit:10}.rb4{fill:#85C5FE;stroke:#1E1E1C;stroke-width:1.6;stroke-miterlimit:10}</style>
+    <path class="rb1" d="M130 95c0-35-25.5-63.5-60-63.5S10 60 10 95"/>
+    <path class="rb2" d="M115 95c0-26.2-19-48.5-45-48.5S25 68.8 25 95"/>
+    <path class="rb3" d="M100 95c0-17.5-12.8-33.5-30-33.5S40 77.5 40 95"/>
+    <path class="rb4" d="M85 95c0-8.8-6.3-18.5-15-18.5S55 86.2 55 95"/>
+  </symbol>
+</svg>
+
+<div class="slides-container" id="slideContainer">
+
+<!-- ====== SLIDE 1: 封面 Title ====== -->
+<section class="slide slide-title" id="slide-1">
+  <div class="deco deco-daisy-tl"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-daisy-tr"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-daisy-bl"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-daisy-br"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-pink"/></svg></div>
+  <div class="deco deco-star-2"><svg><use href="#star-yellow"/></svg></div>
+  <div class="deco deco-star-3"><svg><use href="#star-mint"/></svg></div>
+
+  <div class="title-box">
+    <div class="badge">第 03 课 · Lesson 03</div>
+    <h1 style="margin-top:16px">质数与合数</h1>
+    <p class="subtitle">Primes and Composites · 家长辅导版</p>
+  </div>
+</section>
+
+<!-- ====== SLIDE 2: 学习目标 ====== -->
+<section class="slide slide-welcome" id="slide-2">
+  <div class="deco deco-sun"><svg><use href="#sun"/></svg></div>
+  <div class="deco deco-rainbow"><svg><use href="#rainbow"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-pink"/></svg></div>
+  <div class="deco deco-star-2"><svg><use href="#star-yellow"/></svg></div>
+
+  <div class="welcome-frame">
+    <div class="welcome-header"><h2>今天我们学什么？</h2></div>
+    <div class="welcome-body">
+      <ul class="welcome-list">
+        <li>理解什么是质数：只有 1 和它本身两个因数的数</li>
+        <li>理解什么是合数：有三个或更多因数的数</li>
+        <li>认识特殊的 1：既不是质数，也不是合数</li>
+        <li>学会分解质因数，找出一个数的质因数组成</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SLIDE 3: 数字分类表 ====== -->
+<section class="slide slide-weekly" id="slide-3">
+  <div class="deco deco-daisy-tl"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-daisy-br"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-yellow"/></svg></div>
+  <div class="deco deco-star-2"><svg><use href="#star-white"/></svg></div>
+
+  <h2>数字大分类（1—25）</h2>
+  <div class="num-legend">
+    <span style="background:var(--soft-pink)">⭐ 质数 Prime</span>
+    <span style="background:var(--mint)">● 合数 Composite</span>
+    <span style="background:var(--butter)">★ 特殊 Special</span>
+  </div>
+  <div class="weekly-grid">
+    <div class="day-card">
+      <div class="day-header pink">1 — 5</div>
+      <div class="day-body"><ul>
+        <li class="special">1 ★</li>
+        <li class="prime">2 ⭐</li>
+        <li class="prime">3 ⭐</li>
+        <li class="composite">4 ●</li>
+        <li class="prime">5 ⭐</li>
+      </ul></div>
+    </div>
+    <div class="day-card">
+      <div class="day-header green">6 — 10</div>
+      <div class="day-body"><ul>
+        <li class="composite">6 ●</li>
+        <li class="prime">7 ⭐</li>
+        <li class="composite">8 ●</li>
+        <li class="composite">9 ●</li>
+        <li class="composite">10 ●</li>
+      </ul></div>
+    </div>
+    <div class="day-card">
+      <div class="day-header coral">11 — 15</div>
+      <div class="day-body"><ul>
+        <li class="prime">11 ⭐</li>
+        <li class="composite">12 ●</li>
+        <li class="prime">13 ⭐</li>
+        <li class="composite">14 ●</li>
+        <li class="composite">15 ●</li>
+      </ul></div>
+    </div>
+    <div class="day-card">
+      <div class="day-header yellow">16 — 20</div>
+      <div class="day-body"><ul>
+        <li class="composite">16 ●</li>
+        <li class="prime">17 ⭐</li>
+        <li class="composite">18 ●</li>
+        <li class="prime">19 ⭐</li>
+        <li class="composite">20 ●</li>
+      </ul></div>
+    </div>
+    <div class="day-card">
+      <div class="day-header lavender">21 — 25</div>
+      <div class="day-body"><ul>
+        <li class="composite">21 ●</li>
+        <li class="composite">22 ●</li>
+        <li class="prime">23 ⭐</li>
+        <li class="composite">24 ●</li>
+        <li class="composite">25 ●</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SLIDE 4: 质数定义 & 关键概念 ====== -->
+<section class="slide slide-timeline" id="slide-4">
+  <div class="deco deco-cloud"><svg><use href="#cloud"/></svg></div>
+  <div class="deco deco-cloud-2"><svg><use href="#cloud"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-yellow"/></svg></div>
+  <div class="deco deco-daisy"><svg style="position:absolute;bottom:5%;right:5%;width:120px;height:120px"><use href="#daisy"/></svg></div>
+
+  <h2>核心概念速览</h2>
+  <div class="timeline-wrap">
+    <div class="timeline-row">
+      <div class="timeline-dot d1">质</div>
+      <div class="timeline-card">
+        <h4>质数（Prime Number）</h4>
+        <p>只有 <strong>1 和本身</strong> 两个因数的自然数。例：2、3、5、7、11、13……</p>
+      </div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-dot d2">合</div>
+      <div class="timeline-card">
+        <h4>合数（Composite Number）</h4>
+        <p>除了 1 和本身之外，还有其他因数。例：4 = 1×2×4，6 = 1×2×3×6</p>
+      </div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-dot d3">1</div>
+      <div class="timeline-card">
+        <h4>特殊的 1</h4>
+        <p>只有 <strong>1 个因数</strong>（就是它自己），所以既不是质数，也不是合数。</p>
+      </div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-dot d4">偶</div>
+      <div class="timeline-card">
+        <h4>唯一的偶质数</h4>
+        <p>2 是最小的质数，也是唯一的偶数质数。所有其他偶数都是合数。</p>
+      </div>
+    </div>
+    <div class="timeline-row">
+      <div class="timeline-dot d5">记</div>
+      <div class="timeline-card">
+        <h4>口诀记忆</h4>
+        <p>因数只有两个→质数 ✦ 因数超过两个→合数 ✦ 因数只有一个→特殊的1</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SLIDE 5: 质数分布图 ====== -->
+<section class="slide slide-chart-bar" id="slide-5">
+  <div class="deco deco-star-1"><svg><use href="#star-pink"/></svg></div>
+  <div class="deco deco-star-2"><svg><use href="#star-mint"/></svg></div>
+  <div class="deco deco-daisy"><svg style="position:absolute;bottom:5%;left:4%;width:140px;height:140px"><use href="#daisy"/></svg></div>
+  <div class="deco deco-cloud"><svg style="position:absolute;bottom:7%;right:5%;width:150px;height:150px"><use href="#cloud"/></svg></div>
+
+  <h2>1—50 中质数有几个？</h2>
+  <div class="chart-container">
+    <svg class="chart-svg" viewBox="0 0 730 280">
+      <!-- Grid lines -->
+      <line x1="70" y1="250" x2="680" y2="250" stroke="#2D2D2D" stroke-width="2"/>
+      <line x1="70" y1="20"  x2="70"  y2="250" stroke="#2D2D2D" stroke-width="2"/>
+      <line x1="70" y1="192" x2="680" y2="192" stroke="#E0E0E0" stroke-width="1"/>
+      <line x1="70" y1="135" x2="680" y2="135" stroke="#E0E0E0" stroke-width="1"/>
+      <line x1="70" y1="77"  x2="680" y2="77"  stroke="#E0E0E0" stroke-width="1"/>
+      <line x1="70" y1="20"  x2="680" y2="20"  stroke="#E0E0E0" stroke-width="1"/>
+      <!-- Y labels -->
+      <text x="58" y="254" text-anchor="end" font-family="Quicksand" font-size="13" fill="#6B6B6B">0</text>
+      <text x="58" y="196" text-anchor="end" font-family="Quicksand" font-size="13" fill="#6B6B6B">1</text>
+      <text x="58" y="139" text-anchor="end" font-family="Quicksand" font-size="13" fill="#6B6B6B">2</text>
+      <text x="58" y="81"  text-anchor="end" font-family="Quicksand" font-size="13" fill="#6B6B6B">3</text>
+      <text x="58" y="24"  text-anchor="end" font-family="Quicksand" font-size="13" fill="#6B6B6B">4</text>
+      <!-- Bar 1: 1-10 → 4 primes (2,3,5,7) -->
+      <rect x="100" y="20" width="88" height="230" fill="#F8635F" stroke="#2D2D2D" stroke-width="2" rx="6"/>
+      <text x="144" y="14" text-anchor="middle" font-family="Fredoka One" font-size="16" fill="#2D2D2D">4</text>
+      <text x="144" y="270" text-anchor="middle" font-family="Quicksand" font-size="13" font-weight="700" fill="#6B6B6B">1—10</text>
+      <!-- Bar 2: 11-20 → 4 primes (11,13,17,19) -->
+      <rect x="220" y="20" width="88" height="230" fill="#7ECDC0" stroke="#2D2D2D" stroke-width="2" rx="6"/>
+      <text x="264" y="14" text-anchor="middle" font-family="Fredoka One" font-size="16" fill="#2D2D2D">4</text>
+      <text x="264" y="270" text-anchor="middle" font-family="Quicksand" font-size="13" font-weight="700" fill="#6B6B6B">11—20</text>
+      <!-- Bar 3: 21-30 → 2 primes (23,29) -->
+      <rect x="340" y="135" width="88" height="115" fill="#A8E6CF" stroke="#2D2D2D" stroke-width="2" rx="6"/>
+      <text x="384" y="129" text-anchor="middle" font-family="Fredoka One" font-size="16" fill="#2D2D2D">2</text>
+      <text x="384" y="270" text-anchor="middle" font-family="Quicksand" font-size="13" font-weight="700" fill="#6B6B6B">21—30</text>
+      <!-- Bar 4: 31-40 → 2 primes (31,37) -->
+      <rect x="460" y="135" width="88" height="115" fill="#D4A5E8" stroke="#2D2D2D" stroke-width="2" rx="6"/>
+      <text x="504" y="129" text-anchor="middle" font-family="Fredoka One" font-size="16" fill="#2D2D2D">2</text>
+      <text x="504" y="270" text-anchor="middle" font-family="Quicksand" font-size="13" font-weight="700" fill="#6B6B6B">31—40</text>
+      <!-- Bar 5: 41-50 → 3 primes (41,43,47) -->
+      <rect x="580" y="77" width="88" height="173" fill="#FDE68A" stroke="#2D2D2D" stroke-width="2" rx="6"/>
+      <text x="624" y="71" text-anchor="middle" font-family="Fredoka One" font-size="16" fill="#2D2D2D">3</text>
+      <text x="624" y="270" text-anchor="middle" font-family="Quicksand" font-size="13" font-weight="700" fill="#6B6B6B">41—50</text>
+    </svg>
+    <div class="chart-legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:#F8635F"></span>2,3,5,7</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:#7ECDC0"></span>11,13,17,19</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:#A8E6CF"></span>23,29</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:#D4A5E8"></span>31,37</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:#FDE68A"></span>41,43,47</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SLIDE 6: 概念卡片 ====== -->
+<section class="slide slide-cards" id="slide-6">
+  <div class="deco deco-rainbow" style="top:4%;right:3%;"><svg><use href="#rainbow"/></svg></div>
+  <div class="deco deco-daisy-tl" style="top:-15px;left:-15px;width:140px;height:140px"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-pink"/></svg></div>
+  <div class="deco deco-sun"><svg><use href="#sun"/></svg></div>
+
+  <h2>概念卡片</h2>
+  <div class="cards-grid">
+    <div class="info-card">
+      <div class="card-icon i1">质</div>
+      <h4>质数 Prime</h4>
+      <p>只有 <strong>两个因数</strong>：1 和本身。不能被任何其他整数整除。</p>
+      <div class="examples">
+        <span class="ex-num" style="background:var(--soft-pink)">2</span>
+        <span class="ex-num" style="background:var(--soft-pink)">3</span>
+        <span class="ex-num" style="background:var(--soft-pink)">5</span>
+        <span class="ex-num" style="background:var(--soft-pink)">7</span>
+        <span class="ex-num" style="background:var(--soft-pink)">11</span>
+        <span class="ex-num" style="background:var(--soft-pink)">13</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="card-icon i2">合</div>
+      <h4>合数 Composite</h4>
+      <p>有 <strong>三个或更多因数</strong>，除了1和本身，还能被其他数整除。</p>
+      <div class="examples">
+        <span class="ex-num" style="background:var(--mint)">4</span>
+        <span class="ex-num" style="background:var(--mint)">6</span>
+        <span class="ex-num" style="background:var(--mint)">8</span>
+        <span class="ex-num" style="background:var(--mint)">9</span>
+        <span class="ex-num" style="background:var(--mint)">12</span>
+        <span class="ex-num" style="background:var(--mint)">15</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="card-icon i3">1</div>
+      <h4>特殊的 1</h4>
+      <p>只有 <strong>1 个因数</strong>（它自己）。规定既不是质数，也不是合数。</p>
+      <div class="examples">
+        <span class="ex-num" style="background:var(--butter)">1 的因数：只有 1</span>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="card-icon i4">法</div>
+      <h4>判断小口诀</h4>
+      <p>数一数因数的个数：<strong>1个→特殊，2个→质数，3个以上→合数</strong></p>
+      <div class="examples">
+        <span class="ex-num" style="background:var(--lavender)">找因数</span>
+        <span class="ex-num" style="background:var(--lavender)">数个数</span>
+        <span class="ex-num" style="background:var(--lavender)">做判断</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SLIDE 7: 埃拉托色尼筛法 ====== -->
+<section class="slide slide-quote" id="slide-7">
+  <div class="deco deco-daisy-tl" style="top:4%;left:4%;width:150px;height:150px"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-daisy-br" style="bottom:4%;right:4%;width:160px;height:160px"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-yellow"/></svg></div>
+  <div class="deco deco-star-2"><svg><use href="#star-mint"/></svg></div>
+  <div class="deco deco-rainbow" style="top:6%;right:3%;width:140px;height:102px"><svg><use href="#rainbow"/></svg></div>
+
+  <div class="quote-box">
+    <div class="quote-mark">&ldquo;</div>
+    <p class="quote-text">质数就像数字世界里的"原子"——所有的合数，都可以拆成质数的乘积！</p>
+    <p class="quote-author">— 数学小课堂</p>
+    <p class="quote-extra">
+      🧺 古希腊数学家埃拉托色尼发明了"筛法"：<br>
+      从2开始，把每个质数的倍数全部划掉，剩下的就是质数。<br>
+      这个方法叫做<strong>埃拉托色尼筛</strong>，2200年后的今天还在用！
+    </p>
+  </div>
+</section>
+
+<!-- ====== SLIDE 8: 质因数分解 ====== -->
+<section class="slide slide-team" id="slide-8">
+  <div class="deco deco-daisy-tl"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-daisy-tr"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-white"/></svg></div>
+  <div class="deco deco-star-2"><svg><use href="#star-yellow"/></svg></div>
+
+  <h2>质因数分解 Prime Factorization</h2>
+  <div class="team-grid">
+    <div class="team-member">
+      <div class="team-avatar" style="background:var(--soft-pink)">
+        <div class="av-num">12</div>
+        <div class="av-eq">÷2 ÷2 ÷3</div>
+      </div>
+      <div class="team-name">12</div>
+      <div class="team-role">= 2 × 2 × 3</div>
+      <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-align:center;margin-top:2px">= 2² × 3</div>
+    </div>
+    <div class="team-member">
+      <div class="team-avatar" style="background:var(--butter)">
+        <div class="av-num">18</div>
+        <div class="av-eq">÷2 ÷3 ÷3</div>
+      </div>
+      <div class="team-name">18</div>
+      <div class="team-role">= 2 × 3 × 3</div>
+      <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-align:center;margin-top:2px">= 2 × 3²</div>
+    </div>
+    <div class="team-member">
+      <div class="team-avatar" style="background:var(--sky)">
+        <div class="av-num">24</div>
+        <div class="av-eq">÷2 ÷2 ÷2 ÷3</div>
+      </div>
+      <div class="team-name">24</div>
+      <div class="team-role">= 2 × 2 × 2 × 3</div>
+      <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-align:center;margin-top:2px">= 2³ × 3</div>
+    </div>
+    <div class="team-member">
+      <div class="team-avatar" style="background:var(--lavender)">
+        <div class="av-num">30</div>
+        <div class="av-eq">÷2 ÷3 ÷5</div>
+      </div>
+      <div class="team-name">30</div>
+      <div class="team-role">= 2 × 3 × 5</div>
+      <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);text-align:center;margin-top:2px">三个不同质因数</div>
+    </div>
+  </div>
+  <p style="margin-top:20px;font-size:.85rem;font-weight:600;color:var(--text-dark);opacity:.75;z-index:2;position:relative">
+    方法：从最小质数 2 开始，一直整除，直到商为 1 为止。
+  </p>
+</section>
+
+<!-- ====== SLIDE 9: 判断三步法 ====== -->
+<section class="slide slide-process" id="slide-9">
+  <div class="deco deco-cloud"><svg><use href="#cloud"/></svg></div>
+  <div class="deco deco-cloud-2"><svg><use href="#cloud"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-pink"/></svg></div>
+  <div class="deco deco-daisy" style="position:absolute;bottom:4%;right:4%;width:150px;height:150px"><svg><use href="#daisy"/></svg></div>
+
+  <h2>判断质数三步法</h2>
+  <div class="process-flow">
+    <div class="process-step">
+      <div class="step-circle s1">1</div>
+      <div class="step-title">找因数</div>
+      <div class="step-desc">把这个数的所有因数找出来，可以用"试除法"逐一检验</div>
+      <div class="step-example">试：13 ÷ 2? ÷ 3? ÷ 4? ÷ 5? ÷ 6?<br>全都除不尽！</div>
+    </div>
+    <div class="process-arrow">&rarr;</div>
+    <div class="process-step">
+      <div class="step-circle s2">2</div>
+      <div class="step-title">数个数</div>
+      <div class="step-desc">数一数找到的因数共有几个，这是判断的关键一步</div>
+      <div class="step-example">13 的因数：<br>只有 1 和 13<br>→ 共 2 个</div>
+    </div>
+    <div class="process-arrow">&rarr;</div>
+    <div class="process-step">
+      <div class="step-circle s3">3</div>
+      <div class="step-title">下结论</div>
+      <div class="step-desc">2个因数→质数，3个以上→合数，1个→特殊的1</div>
+      <div class="step-example">13 有 2 个因数<br>∴ <strong>13 是质数</strong> ✓</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== SLIDE 10: 总结 ====== -->
+<section class="slide slide-donut" id="slide-10">
+  <div class="deco deco-daisy-tl"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-daisy-br"><svg><use href="#daisy"/></svg></div>
+  <div class="deco deco-star-1"><svg><use href="#star-yellow"/></svg></div>
+  <div class="deco deco-star-2"><svg><use href="#star-white"/></svg></div>
+
+  <h2>1—20 中的数字组成</h2>
+  <div class="donut-wrap">
+    <div class="donut-chart-box">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- circumference = 2π×80 ≈ 502.65 -->
+        <!-- prime 40% = 201, composite 55% = 276.5, special 5% = 25.1 -->
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#F5F0E6" stroke-width="32"/>
+        <!-- Prime: coral, 40% -->
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#F8635F" stroke-width="32"
+          stroke-dasharray="201 502" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+        <!-- Composite: mint, 55% -->
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#A8E6CF" stroke-width="32"
+          stroke-dasharray="277 502" stroke-dashoffset="-201" transform="rotate(-90 100 100)"/>
+        <!-- Special 1: butter, 5% -->
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#FDE68A" stroke-width="32"
+          stroke-dasharray="25 502" stroke-dashoffset="-478" transform="rotate(-90 100 100)"/>
+        <!-- Outline ring -->
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#2D2D2D" stroke-width="2"/>
+        <!-- Inner hole -->
+        <circle cx="100" cy="100" r="55" fill="#A8D8F0" stroke="#2D2D2D" stroke-width="2.5"/>
+        <text x="100" y="95"  text-anchor="middle" font-family="Fredoka One" font-size="13" fill="#2D2D2D">1—20</text>
+        <text x="100" y="115" text-anchor="middle" font-family="Fredoka One" font-size="18" fill="#2D2D2D">20个</text>
+      </svg>
+    </div>
+    <div class="donut-legend-side">
+      <h3>今天学了什么</h3>
+      <div class="d-legend-item">
+        <span class="d-legend-swatch" style="background:#F8635F"></span>
+        质数 8个（40%）：2,3,5,7,11,13,17,19
+      </div>
+      <div class="d-legend-item">
+        <span class="d-legend-swatch" style="background:#A8E6CF"></span>
+        合数 11个（55%）：4,6,8,9,10,12,14,15,16,18,20
+      </div>
+      <div class="d-legend-item">
+        <span class="d-legend-swatch" style="background:#FDE68A"></span>
+        特殊的 1（5%）：既不是质数也不是合数
+      </div>
+      <div style="margin-top:12px;padding:12px 16px;background:#fff;border:3px solid var(--border);border-radius:16px;box-shadow:var(--shadow-sm)">
+        <p style="font-size:.85rem;font-weight:700;line-height:1.5">
+          🌟 课后练习：判断 29、36、51 分别是质数、合数还是特殊数？
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- end slides-container -->
+
+<div class="nav-dots" id="navDots">
+  <div class="nav-dot active" data-slide="1"></div>
+  <div class="nav-dot" data-slide="2"></div>
+  <div class="nav-dot" data-slide="3"></div>
+  <div class="nav-dot" data-slide="4"></div>
+  <div class="nav-dot" data-slide="5"></div>
+  <div class="nav-dot" data-slide="6"></div>
+  <div class="nav-dot" data-slide="7"></div>
+  <div class="nav-dot" data-slide="8"></div>
+  <div class="nav-dot" data-slide="9"></div>
+  <div class="nav-dot" data-slide="10"></div>
+</div>
+<div class="slide-counter" id="slideCounter">1 / 10</div>
+
+<script>
+(function(){
+  const container = document.getElementById('slideContainer');
+  const dots = document.querySelectorAll('.nav-dot');
+  const counter = document.getElementById('slideCounter');
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function goTo(n) {
+    const slide = document.getElementById('slide-' + n);
+    if (slide) slide.scrollIntoView({behavior:'smooth'});
+  }
+
+  dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.slide)));
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    let cur = 1;
+    dots.forEach((d, i) => { if (d.classList.contains('active')) cur = i + 1; });
+    if (['ArrowDown','ArrowRight',' ','PageDown'].includes(e.key)) {
+      e.preventDefault(); if (cur < total) goTo(cur + 1);
+    } else if (['ArrowUp','ArrowLeft','PageUp'].includes(e.key)) {
+      e.preventDefault(); if (cur > 1) goTo(cur - 1);
+    } else if (e.key === 'Home') { e.preventDefault(); goTo(1); }
+    else if (e.key === 'End')  { e.preventDefault(); goTo(total); }
+  });
+
+  // Touch swipe
+  let tx = 0, ty = 0;
+  container.addEventListener('touchstart', e => { tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY; }, {passive:true});
+  container.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    const dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dy) < 50 && Math.abs(dx) < 50) return;
+    let cur = 1;
+    dots.forEach((d, i) => { if (d.classList.contains('active')) cur = i + 1; });
+    if (dy < -50) goTo(Math.min(cur + 1, total));
+    else if (dy > 50) goTo(Math.max(cur - 1, 1));
+  }, {passive:true});
+
+  // IntersectionObserver for active dot + counter
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id.replace('slide-', '');
+        dots.forEach(d => d.classList.toggle('active', d.dataset.slide === id));
+        counter.textContent = id + ' / ' + total;
+      }
+    });
+  }, { root: container, threshold: 0.5 });
+
+  slides.forEach(s => observer.observe(s));
+})();
+</script>
+</body>
+</html>
