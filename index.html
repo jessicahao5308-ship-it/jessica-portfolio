@@ -158,10 +158,11 @@
 <nav class="sans sticky top-0 z-50 nav-bg border-b border-line">
   <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="#" class="font-semibold text-base tracking-tight">Jessica<span class="accent">.</span></a>
-    <div class="flex gap-7 text-sm">
+    <div class="flex gap-6 text-sm">
       <a href="#about" class="nav-link">关于</a>
       <a href="#directions" class="nav-link">方向</a>
-      <a href="#works" class="nav-link">作品</a>
+      <a href="#works" class="nav-link">学科</a>
+      <a href="#visuals" class="nav-link">视觉</a>
       <a href="#workflows" class="nav-link">Skills</a>
       <a href="#contact" class="nav-link">联系</a>
     </div>
@@ -304,11 +305,11 @@
 
 <div class="divider"></div>
 
-<!-- 作品 -->
+<!-- 学科作品 -->
 <section id="works" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Selected Works</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">精选作品</h2>
-  <p class="ink-soft text-lg mb-12">慢慢累积。质比量重要。</p>
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Academic Works</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">学科作品</h2>
+  <p class="ink-soft text-lg mb-12">澳洲 K-12 课件，AI 串起一条产线。</p>
 
   <div class="grid md:grid-cols-2 gap-5">
     <!-- 作品 1: 质数与合数 -->
@@ -342,6 +343,54 @@
         <p class="text-sm ink-soft leading-relaxed">每一个上来的作品都是我亲手做、亲身验证过的。</p>
       </div>
     </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- AI 视觉创作 -->
+<section id="visuals" class="max-w-5xl mx-auto px-6 py-28">
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Visual Creations</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">AI 视觉创作</h2>
+  <p class="ink-soft text-lg mb-12">AI 生成的图片、卡片、视频。让内容好看到值得点开。</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-5">
+    <!-- 作品: 周日家宴菜单 -->
+    <a href="./works/sunday-menu/index.html" target="_blank" class="block group">
+      <div class="card overflow-hidden">
+        <div class="aspect-[3/4] overflow-hidden relative" style="background: #eedfc7;">
+          <img src="./works/sunday-menu/cover.png" alt="周日家宴菜单" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+        </div>
+        <div class="p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="pill sans">小红书图卡</span>
+            <span class="pill-ghost sans">2026.05</span>
+          </div>
+          <h3 class="text-base font-semibold tracking-tight group-hover:text-[#f59e0b] transition">周日家宴 · A Sunday Table for Seven</h3>
+          <p class="sans text-xs ink-mute mt-3 pt-3 border-t border-line tracking-wider">
+            STACK · guizang-social-card · Claude Code
+          </p>
+        </div>
+      </div>
+    </a>
+
+    <!-- 占位 -->
+    <div class="block opacity-40">
+      <div class="card overflow-hidden">
+        <div class="aspect-[3/4] flex items-center justify-center sans text-xs ink-mute uppercase tracking-[0.2em]" style="background: var(--bg-elev); border: 1px dashed var(--line);">
+          Next · Soon
+        </div>
+        <div class="p-5">
+          <span class="pill-ghost sans mb-2">待发布</span>
+          <h3 class="text-base font-semibold mt-2 tracking-tight">下一个 AI 作品</h3>
+          <p class="sans text-xs ink-mute mt-3 pt-3 border-t border-line">视频工作流 · 待发布</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-10 text-center sans text-sm ink-mute">
+    持续累积 · 图片 · 视频 · AI 工作流产物
   </div>
 </section>
 
