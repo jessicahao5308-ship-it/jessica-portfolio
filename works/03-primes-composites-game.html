@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prime Catcher · 质数合数大作战 · MathsOnline Year 6</title>
+<style>
+  /* ============================================================
+     Prime Catcher — 质数 / 合数分类小游戏（单文件 HTML）
+     · 配套课件：MathsOnline Year 6 · Unit 1 · 03 Primes and Composites
+     · 主色 MathsOnline 蓝 #4a6fa5（与分发版课件统一）
+     · 公域分发版：去隐私（无姓名/学校）+ 品牌署名
+     · 练习按钮全英文；中文提示可开关（默认关）
+     ============================================================ */
+  :root{
+    --blue:#4a6fa5; --blue-dark:#34507a; --blue-tint:#eef3f9; --blue-line:#cdd9ea;
+    --ink:#1f2937; --grey:#6b7280;
+    --prime:#2e9e6b;   --prime-d:#1f7d52;   /* 质数 绿 */
+    --comp:#e0832b;    --comp-d:#b9651a;    /* 合数 橙 */
+    --neither:#8b6fc7; --neither-d:#6f55a8; /* neither 紫 */
+    --danger:#e0526b; --gold:#f4b740;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:"Hiragino Sans GB","Microsoft YaHei","PingFang SC",Arial,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(160deg,#dde8f5 0%,#eef3f9 45%,#f6f1ff 100%);
+    display:flex;justify-content:center;align-items:center;
+    min-height:100vh;padding:10px;user-select:none;-webkit-user-select:none;
+  }
+  .app{
+    width:100%;max-width:460px;background:#fff;border-radius:22px;
+    box-shadow:0 10px 36px rgba(52,80,122,.18);overflow:hidden;
+    display:flex;flex-direction:column;position:relative;
+  }
+
+  /* ---------- 顶部标题 ---------- */
+  header{background:var(--blue);color:#fff;padding:12px 16px 11px;text-align:center;position:relative;}
+  header .eyebrow{font-size:10.5px;opacity:.85;letter-spacing:.06em;font-weight:700;}
+  header h1{font-size:19px;font-weight:800;margin-top:1px;letter-spacing:.01em;}
+  header .sub{font-size:11.5px;opacity:.9;margin-top:1px;}
+
+  /* ---------- HUD ---------- */
+  .hud{display:flex;align-items:center;justify-content:space-between;
+    padding:8px 14px;background:var(--blue-tint);border-bottom:1px solid var(--blue-line);font-size:13px;}
+  .hud .item{font-weight:700;color:var(--blue-dark);display:flex;align-items:center;gap:4px;}
+  .hud .label{font-size:10px;color:var(--grey);font-weight:600;}
+  .hearts{letter-spacing:1px;font-size:15px;}
+  .combo{color:var(--comp-d);min-height:14px;font-size:11.5px;}
+
+  /* ---------- 玩区 ---------- */
+  .play{position:relative;height:54vh;min-height:340px;max-height:520px;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 38px, rgba(74,111,165,.04) 38px 39px),
+      linear-gradient(#fbfcfe,#f3f7fc);
+    overflow:hidden;}
+  .danger-line{position:absolute;left:0;right:0;bottom:54px;height:0;
+    border-top:2px dashed rgba(224,82,107,.5);}
+  .danger-line::after{content:"⚠ catch above this line";position:absolute;right:8px;top:-15px;
+    font-size:9px;color:var(--danger);font-weight:700;}
+
+  .bubble{position:absolute;width:74px;height:74px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:34px;font-weight:800;color:#fff;left:50%;top:0;
+    box-shadow:0 6px 14px rgba(0,0,0,.16),inset 0 -4px 8px rgba(0,0,0,.12);
+    background:radial-gradient(circle at 35% 30%, #7fa3d4, var(--blue));will-change:transform;}
+
+  .toast{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(.6);
+    background:rgba(31,41,55,.92);color:#fff;padding:10px 16px;border-radius:14px;
+    font-size:14px;font-weight:700;text-align:center;opacity:0;pointer-events:none;
+    transition:opacity .18s, transform .18s;max-width:90%;line-height:1.5;z-index:5;}
+  .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .toast small{display:block;font-size:11px;font-weight:500;opacity:.85;margin-top:3px;}
+  .toast.good{background:rgba(46,158,107,.95);}
+  .toast.bad{background:rgba(224,82,107,.95);}
+
+  .burst{position:absolute;width:74px;height:74px;border-radius:50%;pointer-events:none;
+    border:4px solid var(--prime);opacity:0;}
+
+  /* ---------- 答题按钮 ---------- */
+  .controls{display:flex;gap:8px;padding:12px 12px 10px;background:#fff;}
+  .btn{flex:1;border:none;border-radius:16px;padding:13px 4px 11px;color:#fff;cursor:pointer;
+    font-family:inherit;touch-action:manipulation;box-shadow:0 4px 0 rgba(0,0,0,.16);
+    transition:transform .05s, box-shadow .05s;display:flex;flex-direction:column;align-items:center;gap:1px;}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.16);}
+  .btn .en{font-size:15px;font-weight:800;letter-spacing:.01em;}
+  .btn .zh{font-size:10.5px;opacity:.92;font-weight:600;height:0;overflow:hidden;transition:height .15s;}
+  body.zh-on .btn .zh{height:14px;}
+  .btn.prime{background:linear-gradient(var(--prime),var(--prime-d));}
+  .btn.comp{background:linear-gradient(var(--comp),var(--comp-d));}
+  .btn.neither{background:linear-gradient(var(--neither),var(--neither-d));}
+  .btn:disabled{filter:grayscale(.4) opacity(.7);}
+
+  /* ---------- 底部工具条 ---------- */
+  .toolbar{display:flex;justify-content:center;gap:6px;padding:0 12px 10px;flex-wrap:wrap;}
+  .chip{font-size:11px;color:var(--blue-dark);background:var(--blue-tint);border:1px solid var(--blue-line);
+    border-radius:20px;padding:5px 11px;cursor:pointer;font-family:inherit;font-weight:600;}
+  .chip.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .toolbar .chip-label{font-size:11px;color:var(--grey);font-weight:700;align-self:center;margin-right:2px;}
+  .toolbar.diff{padding-top:9px;padding-bottom:6px;}
+
+  footer{font-size:10px;color:#9aa3af;text-align:center;padding:7px 10px 11px;border-top:1px solid var(--blue-line);}
+  footer b{color:var(--blue);}
+
+  /* ---------- 遮罩（开始 / 结束 / 帮助）---------- */
+  .overlay{position:absolute;inset:0;background:rgba(52,80,122,.93);color:#fff;z-index:20;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    padding:26px 24px;gap:11px;}
+  .overlay.hide{display:none;}
+  .overlay h2{font-size:23px;font-weight:800;}
+  .overlay p{font-size:13px;line-height:1.7;opacity:.95;max-width:300px;}
+  .overlay .legend{font-size:12px;line-height:1.9;text-align:left;background:rgba(255,255,255,.1);
+    border-radius:12px;padding:10px 14px;}
+  .overlay .legend b{display:inline-block;min-width:74px;}
+  .play-btn{margin-top:6px;background:var(--gold);color:#5a3d00;border:none;border-radius:30px;
+    padding:13px 34px;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;
+    box-shadow:0 5px 0 #c9920f;touch-action:manipulation;}
+  .play-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c9920f;}
+  .bigscore{font-size:40px;font-weight:800;color:var(--gold);}
+  .overlay .stat{font-size:13px;opacity:.95;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .play.shake{animation:shake .32s;}
+
+  /* ---------- 答错暂停：解释框 ---------- */
+  .explain{font-size:14px;line-height:1.85;background:rgba(255,255,255,.12);border-radius:12px;
+    padding:13px 17px;max-width:320px;}
+  .explain b{color:var(--gold);}
+  #pauseOverlay h2{font-size:21px;}
+
+  /* ---------- 结束页：可滚动 + 错题复盘表 ---------- */
+  #overOverlay{justify-content:flex-start;overflow-y:auto;padding-top:22px;padding-bottom:20px;gap:9px;}
+  #reviewBox{width:100%;max-width:340px;}
+  .review-title{font-size:12.5px;font-weight:700;margin-bottom:6px;opacity:.96;}
+  .review-empty{font-size:14px;background:rgba(255,255,255,.12);border-radius:12px;padding:14px;}
+  table.review{width:100%;border-collapse:collapse;font-size:12px;background:rgba(255,255,255,.96);
+    color:var(--ink);border-radius:10px;overflow:hidden;}
+  table.review th{background:rgba(0,0,0,.20);color:#fff;padding:5px 9px;text-align:left;font-size:11px;}
+  table.review td{padding:5px 9px;border-top:1px solid var(--blue-line);}
+  table.review .rn{font-weight:800;color:var(--blue-dark);font-size:13px;}
+  table.review .rf{color:var(--grey);font-size:11px;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <header>
+    <div class="eyebrow">MATHSONLINE · YEAR 6 · UNIT 1</div>
+    <h1>Prime Catcher 🎯</h1>
+    <div class="sub">质数 / 合数大作战</div>
+  </header>
+
+  <div class="hud">
+    <div class="item"><span class="label">SCORE</span><span id="score">0</span></div>
+    <div class="item combo" id="combo"></div>
+    <div class="item"><span class="label">BEST</span><span id="best">0</span></div>
+    <div class="item"><span class="hearts" id="hearts">❤️❤️❤️</span></div>
+  </div>
+
+  <div class="play" id="play">
+    <div class="danger-line"></div>
+    <div class="burst" id="burst"></div>
+    <div class="toast" id="toast"></div>
+
+    <!-- 开始遮罩 -->
+    <div class="overlay" id="startOverlay">
+      <h2>Prime Catcher</h2>
+      <p>数字会往下掉，在它越过红线前，判断它是<br><b>质数 / 合数 / 都不是</b>，点对应按钮接住它！</p>
+      <div class="legend">
+        <div><b>🟢 Prime</b> 质数：只有 2 个因数（1 和它本身）</div>
+        <div><b>🟠 Composite</b> 合数：超过 2 个因数</div>
+        <div><b>🟣 Neither</b> 都不是：<b style="min-width:auto">1</b> 很特殊哦！</div>
+      </div>
+      <button class="play-btn" id="startBtn">开始游戏 ▶</button>
+    </div>
+
+    <!-- 答错暂停遮罩 -->
+    <div class="overlay hide" id="pauseOverlay">
+      <div style="font-size:46px" id="pauseEmoji">❌</div>
+      <h2 id="pauseTitle">答错了</h2>
+      <div class="explain" id="pauseExplain"></div>
+      <button class="play-btn" id="continueBtn">继续 ▶</button>
+    </div>
+
+    <!-- 结束遮罩 -->
+    <div class="overlay hide" id="overOverlay">
+      <h2>本局结束 🎉</h2>
+      <div class="bigscore" id="finalScore">0</div>
+      <div class="stat" id="finalStat"></div>
+      <div id="reviewBox"></div>
+      <button class="play-btn" id="againBtn">再玩一次 🔄</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn prime" data-ans="prime"><span class="en">Prime</span><span class="zh">质数</span></button>
+    <button class="btn comp" data-ans="composite"><span class="en">Composite</span><span class="zh">合数</span></button>
+    <button class="btn neither" data-ans="neither"><span class="en">Neither</span><span class="zh">都不是</span></button>
+  </div>
+
+  <div class="toolbar diff" id="diffBar">
+    <span class="chip-label">难度</span>
+    <button class="chip" data-diff="easy">🐢 易</button>
+    <button class="chip on" data-diff="med">🙂 中</button>
+    <button class="chip" data-diff="hard">🔥 难</button>
+  </div>
+
+  <div class="toolbar">
+    <button class="chip" id="zhChip">中文提示：关</button>
+    <button class="chip on" id="sndChip">🔊 音效：开</button>
+  </div>
+
+  <footer>根据 MathsOnline（澳洲）Year 6 课程整理 · 仅供学习参考 · 整理 <b>悉尼陪读妈妈Jessica</b></footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ---------- 数学逻辑 ----------
+  function isPrime(n){
+    if(n<2) return false;
+    if(n%2===0) return n===2;
+    for(let i=3;i*i<=n;i+=2){ if(n%i===0) return false; }
+    return true;
+  }
+  function classify(n){ return n===1 ? "neither" : (isPrime(n) ? "prime" : "composite"); }
+  function factors(n){
+    const f=[]; for(let i=1;i<=n;i++){ if(n%i===0) f.push(i); } return f;
+  }
+  const ZH={prime:"质数",composite:"合数",neither:"都不是"};
+  const EN={prime:"Prime",composite:"Composite",neither:"Neither"};
+
+  // ---------- 难度（base=初始掉落速度 px/s；ramp=每升一级加速；every=多少题升一级）----------
+  const DIFF={
+    easy:{base:30, ramp:6,  every:10},  // 🐢 慢慢掉，反应时间充足
+    med: {base:44, ramp:9,  every:8},   // 🙂 默认
+    hard:{base:62, ramp:14, every:6}    // 🔥 越玩越快
+  };
+  let currentDiff="med";
+
+  // ---------- 元素 ----------
+  const play=document.getElementById("play");
+  const burstEl=document.getElementById("burst");
+  const toast=document.getElementById("toast");
+  const scoreEl=document.getElementById("score");
+  const bestEl=document.getElementById("best");
+  const heartsEl=document.getElementById("hearts");
+  const comboEl=document.getElementById("combo");
+  const startOverlay=document.getElementById("startOverlay");
+  const overOverlay=document.getElementById("overOverlay");
+  const finalScore=document.getElementById("finalScore");
+  const finalStat=document.getElementById("finalStat");
+  const reviewBox=document.getElementById("reviewBox");
+  const pauseOverlay=document.getElementById("pauseOverlay");
+  const pauseEmoji=document.getElementById("pauseEmoji");
+  const pauseTitle=document.getElementById("pauseTitle");
+  const pauseExplain=document.getElementById("pauseExplain");
+  const btns=Array.from(document.querySelectorAll(".btn"));
+
+  // ---------- 状态 ----------
+  const BEST_KEY="primeCatcherBest";
+  let state=null, raf=null, bubble=null;
+  let best=parseInt(localStorage.getItem(BEST_KEY)||"0",10);
+  bestEl.textContent=best;
+
+  function newState(){
+    return {running:false, score:0, lives:3, combo:0, correct:0, total:0,
+            level:1, n:null, ans:null, y:0, speed:60, locked:false, lastT:0, mistakes:[]};
+  }
+
+  // ---------- 出题 ----------
+  function spawn(){
+    const s=state;
+    // 10% 出 1（教 neither 易错点）；其余 2..99 随机
+    let n;
+    if(Math.random()<0.10){ n=1; }
+    else { n=2+Math.floor(Math.random()*98); }
+    s.n=n; s.ans=classify(n); s.y=0; s.locked=false;
+    if(!bubble){
+      bubble=document.createElement("div");
+      bubble.className="bubble";
+      play.appendChild(bubble);
+    }
+    bubble.textContent=n;
+    bubble.style.display="flex";
+    bubble.style.transform="translateX(-50%) translateY(0px)";
+  }
+
+  // ---------- 主循环 ----------
+  function loop(t){
+    const s=state;
+    if(!s.running){ return; }
+    if(!s.lastT) s.lastT=t;
+    const dt=Math.min((t-s.lastT)/1000, 0.05); // 防后台卡顿跳变
+    s.lastT=t;
+    s.y += s.speed*dt;
+    const maxY=play.clientHeight-74-46; // 触底（红线下方一点）
+    if(bubble){ bubble.style.transform="translateX(-50%) translateY("+s.y+"px)"; }
+    if(s.y>=maxY && !s.locked){
+      // 漏接 → 暂停看解释
+      s.locked=true; s.total++;
+      handleError("miss");
+      return; // 已暂停，停止本帧调度
+    }
+    raf=requestAnimationFrame(loop);
+  }
+
+  // ---------- 判定 ----------
+  function answer(pick){
+    const s=state;
+    if(!s.running||s.locked||s.n==null) return;
+    s.locked=true; s.total++;
+    if(pick===s.ans){
+      const gain=10+s.combo*2;
+      s.score+=gain; s.correct++; s.combo++;
+      const d=DIFF[currentDiff];
+      s.level=1+Math.floor(s.correct/d.every);
+      s.speed=d.base+(s.level-1)*d.ramp;
+      scoreEl.textContent=s.score;
+      comboEl.textContent = s.combo>=2 ? ("🔥 Combo x"+s.combo) : "";
+      beep(true);
+      doBurst();
+      showToast("good","✓ +"+gain, s.n+" = "+EN[s.ans]);
+      nextSoon(420);
+    } else {
+      handleError("wrong");
+    }
+  }
+
+  // 答错 / 漏接：记错题 + 暂停展示解释（点"继续"才往下）
+  function handleError(reason){
+    const s=state;
+    s.lives--;
+    heartsEl.textContent="❤️".repeat(Math.max(0,s.lives))+"🤍".repeat(3-Math.max(0,s.lives));
+    s.combo=0; comboEl.textContent="";
+    beep(false);
+    play.classList.remove("shake"); void play.offsetWidth; play.classList.add("shake");
+    const n=s.n, ans=s.ans, fs=factors(n);
+    s.mistakes.push({n:n, ans:ans, factors:fs});
+    let explain;
+    if(n===1){
+      explain="<b>1</b> 只有 1 个因数（就是它自己）<br>→ 既不是质数也不是合数 <b>Neither</b>";
+    } else if(ans==="prime"){
+      explain="<b>"+n+"</b> 的因数只有 <b>1</b> 和 <b>"+n+"</b>（共 2 个）<br>→ 是质数 <b>Prime</b>";
+    } else {
+      explain="<b>"+n+"</b> 的因数：<b>"+fs.join(", ")+"</b>（共 "+fs.length+" 个）<br>→ 是合数 <b>Composite</b>";
+    }
+    const title = reason==="miss" ? "没接住，看看它是…" : "答错了，看看为什么";
+    pauseForError(reason==="miss"?"⏱":"❌", title, explain);
+  }
+
+  function pauseForError(emoji, title, explainHTML){
+    const s=state;
+    s.running=false;                 // 冻结，不再下落
+    if(raf) cancelAnimationFrame(raf);
+    if(bubble) bubble.style.display="none";
+    pauseEmoji.textContent=emoji;
+    pauseTitle.textContent=title;
+    pauseExplain.innerHTML=explainHTML;
+    pauseOverlay.classList.remove("hide");
+  }
+
+  function resumeFromPause(){
+    pauseOverlay.classList.add("hide");
+    if(!state) return;
+    if(state.lives<=0){ endGame(); return; }
+    state.running=true; state.lastT=0; spawn();
+    raf=requestAnimationFrame(loop);
+  }
+
+  function nextSoon(ms, gameover){
+    if(bubble) bubble.style.display="none";
+    setTimeout(function(){
+      if(gameover){ endGame(); return; }
+      if(state && state.running){ state.lastT=0; spawn(); }
+    }, ms);
+  }
+
+  // ---------- 反馈特效 ----------
+  let toastTimer=null;
+  function showToast(kind, main, sub){
+    toast.className="toast show "+(kind||"");
+    toast.innerHTML=main+(sub?("<small>"+sub+"</small>"):"");
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){ toast.className="toast "+(kind||""); }, 760);
+  }
+  function doBurst(){
+    if(!bubble) return;
+    const x=bubble.offsetLeft, y=bubble.offsetTop;
+    burstEl.style.left=x+"px"; burstEl.style.top=y+"px";
+    burstEl.style.borderColor=getComputedStyle(document.documentElement).getPropertyValue('--prime');
+    burstEl.style.transition="none"; burstEl.style.transform="scale(.5)"; burstEl.style.opacity="1";
+    requestAnimationFrame(function(){
+      burstEl.style.transition="transform .42s, opacity .42s";
+      burstEl.style.transform="scale(2.1)"; burstEl.style.opacity="0";
+    });
+  }
+
+  // ---------- 音效（WebAudio，首次交互后可用）----------
+  let actx=null, sndOn=true;
+  function beep(good){
+    if(!sndOn) return;
+    try{
+      if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+      const o=actx.createOscillator(), g=actx.createGain();
+      o.connect(g); g.connect(actx.destination);
+      o.type="sine";
+      const now=actx.currentTime;
+      if(good){ o.frequency.setValueAtTime(660,now); o.frequency.exponentialRampToValueAtTime(990,now+.12);}
+      else { o.frequency.setValueAtTime(300,now); o.frequency.exponentialRampToValueAtTime(150,now+.18);}
+      g.gain.setValueAtTime(.18,now); g.gain.exponentialRampToValueAtTime(.0001,now+.22);
+      o.start(now); o.stop(now+.24);
+    }catch(e){}
+  }
+
+  // ---------- 开始 / 结束 ----------
+  function startGame(){
+    if(raf) cancelAnimationFrame(raf);
+    state=newState(); state.running=true;
+    state.speed=DIFF[currentDiff].base;   // 按所选难度设初速
+    scoreEl.textContent="0"; comboEl.textContent="";
+    heartsEl.textContent="❤️❤️❤️";
+    startOverlay.classList.add("hide"); overOverlay.classList.add("hide"); pauseOverlay.classList.add("hide");
+    spawn();
+    state.lastT=0; raf=requestAnimationFrame(loop);
+  }
+  function endGame(){
+    const s=state; s.running=false;
+    if(raf) cancelAnimationFrame(raf);
+    if(bubble) bubble.style.display="none";
+    if(s.score>best){ best=s.score; localStorage.setItem(BEST_KEY,best); bestEl.textContent=best; }
+    finalScore.textContent=s.score;
+    const acc = s.total ? Math.round(s.correct/s.total*100) : 0;
+    finalStat.innerHTML="答对 <b>"+s.correct+"</b> 题 · 正确率 <b>"+acc+"%</b> · 最高分 <b>"+best+"</b>";
+    reviewBox.innerHTML=buildReview(s.mistakes);
+    overOverlay.classList.remove("hide");
+  }
+
+  // 错题复盘表（按数字去重，可截图给娃复习）
+  function buildReview(mistakes){
+    if(!mistakes||!mistakes.length){
+      return '<div class="review-empty">🎉 全对！这一局没有错题，太棒了！</div>';
+    }
+    const seen={}, rows=[];
+    mistakes.forEach(function(m){
+      if(seen[m.n]) return; seen[m.n]=1;
+      const label = m.ans==="prime" ? "质数 Prime"
+                  : m.ans==="composite" ? "合数 Composite" : "都不是 Neither";
+      const why = m.n===1 ? "只有 1 个因数" : ("因数 "+m.factors.join(", "));
+      rows.push('<tr><td class="rn">'+m.n+'</td><td>'+label+'</td><td class="rf">'+why+'</td></tr>');
+    });
+    return '<div class="review-title">📋 错题复盘（'+rows.length+' 个，可截图给娃复习）</div>'+
+           '<table class="review"><tr><th>数字</th><th>正确答案</th><th>为什么</th></tr>'+
+           rows.join('')+'</table>';
+  }
+
+  // ---------- 事件 ----------
+  btns.forEach(function(b){ b.addEventListener("click",function(){ answer(b.dataset.ans); }); });
+  document.getElementById("startBtn").addEventListener("click",startGame);
+  document.getElementById("againBtn").addEventListener("click",startGame);
+  document.getElementById("continueBtn").addEventListener("click",resumeFromPause);
+  // 键盘：← Prime / ↓ Composite / → Neither；暂停时 空格/回车 继续（方便桌面录屏演示）
+  document.addEventListener("keydown",function(e){
+    if(!pauseOverlay.classList.contains("hide")){
+      if(e.key===" "||e.key==="Enter"){ e.preventDefault(); resumeFromPause(); }
+      return;
+    }
+    if(!state||!state.running) return;
+    if(e.key==="ArrowLeft") answer("prime");
+    else if(e.key==="ArrowDown"||e.key==="ArrowUp") answer("composite");
+    else if(e.key==="ArrowRight") answer("neither");
+  });
+  const diffBar=document.getElementById("diffBar");
+  diffBar.querySelectorAll("[data-diff]").forEach(function(b){
+    b.addEventListener("click",function(){
+      currentDiff=b.dataset.diff;
+      diffBar.querySelectorAll("[data-diff]").forEach(function(x){ x.classList.toggle("on", x===b); });
+      if(state&&state.running){ const d=DIFF[currentDiff]; state.speed=d.base+(state.level-1)*d.ramp; }
+    });
+  });
+
+  const zhChip=document.getElementById("zhChip");
+  zhChip.addEventListener("click",function(){
+    document.body.classList.toggle("zh-on");
+    const on=document.body.classList.contains("zh-on");
+    zhChip.classList.toggle("on",on); zhChip.textContent="中文提示："+(on?"开":"关");
+  });
+  const sndChip=document.getElementById("sndChip");
+  sndChip.addEventListener("click",function(){
+    sndOn=!sndOn; sndChip.classList.toggle("on",sndOn);
+    sndChip.textContent=(sndOn?"🔊":"🔇")+" 音效："+(sndOn?"开":"关");
+  });
+  // 后台时暂停掉时间，回前台不跳变
+  document.addEventListener("visibilitychange",function(){ if(state) state.lastT=0; });
+})();
+</script>
+</body>
+</html>

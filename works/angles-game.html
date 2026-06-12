@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angle Catcher · 角的类型大作战</title>
+<!--
+  ============================================================
+  课件互动游戏 · 分类接接乐引擎（单文件 HTML，配置驱动）
+  本游戏：角的类型分类（Acute / Right / Obtuse / Reflex）
+  知识点重新设计，未照搬源课件原文/排版。去隐私，署名「悉尼陪读妈妈Jessica」。
+  ============================================================
+-->
+<style>
+  :root{
+    --theme:#4a6fa5; --theme-dark:#34507a; --tint:#eef3f9; --line:#cdd9ea;
+    --ink:#1f2937; --grey:#6b7280; --danger:#e0526b; --gold:#f4b740;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:"Hiragino Sans GB","Microsoft YaHei","PingFang SC",Arial,sans-serif;color:var(--ink);
+    background:linear-gradient(160deg,#dde8f5,#eef3f9 45%,#f6f1ff);
+    display:flex;justify-content:center;align-items:center;min-height:100vh;padding:10px;
+    user-select:none;-webkit-user-select:none;
+  }
+  .app{width:100%;max-width:460px;background:#fff;border-radius:22px;
+    box-shadow:0 10px 36px rgba(52,80,122,.18);overflow:hidden;display:flex;flex-direction:column;position:relative;}
+  header{background:var(--theme);color:#fff;padding:12px 16px 11px;text-align:center;}
+  header .eyebrow{font-size:10.5px;opacity:.85;letter-spacing:.06em;font-weight:700;}
+  header h1{font-size:19px;font-weight:800;margin-top:1px;}
+  header .sub{font-size:11.5px;opacity:.9;margin-top:1px;}
+  .hud{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;
+    background:var(--tint);border-bottom:1px solid var(--line);font-size:13px;}
+  .hud .item{font-weight:700;color:var(--theme-dark);display:flex;align-items:center;gap:4px;}
+  .hud .label{font-size:10px;color:var(--grey);font-weight:600;}
+  .hearts{letter-spacing:1px;font-size:15px;}
+  .combo{color:#e0832b;min-height:14px;font-size:11.5px;}
+  .play{position:relative;height:54vh;min-height:340px;max-height:520px;
+    background:repeating-linear-gradient(0deg,transparent 0 38px,rgba(74,111,165,.04) 38px 39px),linear-gradient(#fbfcfe,#f3f7fc);overflow:hidden;}
+  .danger-line{position:absolute;left:0;right:0;bottom:54px;border-top:2px dashed rgba(224,82,107,.5);}
+  .danger-line::after{content:"⚠ catch above this line";position:absolute;right:8px;top:-15px;font-size:9px;color:var(--danger);font-weight:700;}
+  .bubble{position:absolute;width:84px;height:84px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#fff;left:50%;top:0;text-align:center;line-height:1.05;padding:4px;
+    box-shadow:0 6px 14px rgba(0,0,0,.16),inset 0 -4px 8px rgba(0,0,0,.12);
+    background:radial-gradient(circle at 35% 30%, #7fa3d4, var(--theme));will-change:transform;}
+  .bubble svg{display:block;}
+  .bubble .deg{font-size:16px;font-weight:800;margin-top:1px;}
+  .burst{position:absolute;width:84px;height:84px;border-radius:50%;pointer-events:none;border:4px solid var(--gold);opacity:0;}
+  .toast{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(.6);background:rgba(46,158,107,.95);color:#fff;
+    padding:10px 16px;border-radius:14px;font-size:14px;font-weight:700;text-align:center;opacity:0;pointer-events:none;
+    transition:opacity .18s,transform .18s;z-index:5;}
+  .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .toast small{display:block;font-size:11px;font-weight:500;opacity:.85;margin-top:3px;}
+  .controls{display:flex;gap:7px;padding:12px 10px 10px;background:#fff;}
+  .btn{flex:1;border:none;border-radius:14px;padding:12px 2px 10px;color:#fff;cursor:pointer;font-family:inherit;
+    touch-action:manipulation;box-shadow:0 4px 0 rgba(0,0,0,.16);transition:transform .05s,box-shadow .05s;
+    display:flex;flex-direction:column;align-items:center;gap:1px;}
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.16);}
+  .btn .en{font-size:14px;font-weight:800;}
+  .btn .zh{font-size:10px;opacity:.92;font-weight:600;height:0;overflow:hidden;transition:height .15s;}
+  body.zh-on .btn .zh{height:13px;}
+  .toolbar{display:flex;justify-content:center;gap:6px;padding:0 12px 10px;flex-wrap:wrap;}
+  .toolbar.diff{padding-top:9px;padding-bottom:6px;}
+  .chip{font-size:11px;color:var(--theme-dark);background:var(--tint);border:1px solid var(--line);border-radius:20px;
+    padding:5px 11px;cursor:pointer;font-family:inherit;font-weight:600;}
+  .chip.on{background:var(--theme);color:#fff;border-color:var(--theme);}
+  .chip-label{font-size:11px;color:var(--grey);font-weight:700;align-self:center;margin-right:2px;}
+  footer{font-size:10px;color:#9aa3af;text-align:center;padding:7px 10px 11px;border-top:1px solid var(--line);}
+  footer b{color:var(--theme);}
+  .overlay{position:absolute;inset:0;background:rgba(52,80,122,.93);color:#fff;z-index:20;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:26px 24px;gap:11px;}
+  .overlay.hide{display:none;}
+  .overlay h2{font-size:23px;font-weight:800;}
+  .overlay p{font-size:13px;line-height:1.7;opacity:.95;max-width:300px;}
+  .legend{font-size:12px;line-height:1.9;text-align:left;background:rgba(255,255,255,.1);border-radius:12px;padding:10px 14px;}
+  .legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+  .play-btn{margin-top:6px;background:var(--gold);color:#5a3d00;border:none;border-radius:30px;padding:13px 34px;
+    font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 5px 0 #c9920f;touch-action:manipulation;}
+  .play-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #c9920f;}
+  .bigscore{font-size:40px;font-weight:800;color:var(--gold);}
+  .stat{font-size:13px;opacity:.95;}
+  .explain{font-size:14px;line-height:1.85;background:rgba(255,255,255,.12);border-radius:12px;padding:13px 17px;max-width:320px;}
+  .explain b{color:var(--gold);}
+  #overOverlay{justify-content:flex-start;overflow-y:auto;padding-top:22px;padding-bottom:20px;gap:9px;}
+  #reviewBox{width:100%;max-width:340px;}
+  .review-title{font-size:12.5px;font-weight:700;margin-bottom:6px;opacity:.96;}
+  .review-empty{font-size:14px;background:rgba(255,255,255,.12);border-radius:12px;padding:14px;}
+  table.review{width:100%;border-collapse:collapse;font-size:12px;background:rgba(255,255,255,.96);color:var(--ink);border-radius:10px;overflow:hidden;}
+  table.review th{background:rgba(0,0,0,.20);color:#fff;padding:5px 9px;text-align:left;font-size:11px;}
+  table.review td{padding:5px 9px;border-top:1px solid var(--line);}
+  table.review .rn{font-weight:800;color:var(--theme-dark);font-size:13px;}
+  table.review .rf{color:var(--grey);font-size:11px;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .play.shake{animation:shake .32s;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="eyebrow" id="eyebrow"></div>
+    <h1 id="title"></h1>
+    <div class="sub" id="subtitle"></div>
+  </header>
+  <div class="hud">
+    <div class="item"><span class="label">SCORE</span><span id="score">0</span></div>
+    <div class="item combo" id="combo"></div>
+    <div class="item"><span class="label">BEST</span><span id="best">0</span></div>
+    <div class="item"><span class="hearts" id="hearts">❤️❤️❤️</span></div>
+  </div>
+  <div class="play" id="play">
+    <div class="danger-line"></div>
+    <div class="burst" id="burst"></div>
+    <div class="toast" id="toast"></div>
+    <div class="overlay" id="startOverlay">
+      <h2 id="startTitle"></h2>
+      <p id="startHow"></p>
+      <div class="legend" id="legend"></div>
+      <button class="play-btn" id="startBtn">开始游戏 ▶</button>
+    </div>
+    <div class="overlay hide" id="pauseOverlay">
+      <div style="font-size:46px" id="pauseEmoji">❌</div>
+      <h2 id="pauseTitle">答错了</h2>
+      <div class="explain" id="pauseExplain"></div>
+      <button class="play-btn" id="continueBtn">继续 ▶</button>
+    </div>
+    <div class="overlay hide" id="overOverlay">
+      <h2>本局结束 🎉</h2>
+      <div class="bigscore" id="finalScore">0</div>
+      <div class="stat" id="finalStat"></div>
+      <div id="reviewBox"></div>
+      <button class="play-btn" id="againBtn">再玩一次 🔄</button>
+    </div>
+  </div>
+  <div class="controls" id="controls"></div>
+  <div class="toolbar diff" id="diffBar">
+    <span class="chip-label">难度</span>
+    <button class="chip" data-diff="easy">🐢 易</button>
+    <button class="chip on" data-diff="med">🙂 中</button>
+    <button class="chip" data-diff="hard">🔥 难</button>
+  </div>
+  <div class="toolbar">
+    <button class="chip" id="zhChip">中文提示：关</button>
+    <button class="chip on" id="sndChip">🔊 音效：开</button>
+  </div>
+  <footer id="footer"></footer>
+</div>
+
+<!-- ================== 配置段 ================== -->
+<script id="config">
+const CONFIG = {
+  eyebrow: "MATHSONLINE · YEAR 6 · ANGLES",
+  title: "Angle Catcher 📐",
+  subtitle: "角的类型大作战",
+  themeColor: "#4a6fa5",
+  brand: "悉尼陪读妈妈Jessica",
+  source: "根据 MathsOnline（澳洲）Year 6 课程整理 · 仅供学习参考",
+  howto: "气泡里画着一个角（还标了度数）。在它越过红线前，判断它是哪一类角，点对应按钮接住它！关键看边界：90° 是 Right，180° 之内是 Obtuse，超过 180° 是 Reflex。",
+  // 4 个分类按钮。key 内部标识；en 按钮英文（练习区只出英文）；zh 中文提示（可开关）；color 按钮色
+  categories: [
+    { key:"acute",   en:"Acute",   zh:"锐角 <90°",     color:"#2e9e6b" },
+    { key:"right",   en:"Right",   zh:"直角 =90°",     color:"#4a6fa5" },
+    { key:"obtuse",  en:"Obtuse",  zh:"钝角 90-180°",  color:"#e0832b" },
+    { key:"reflex",  en:"Reflex",  zh:"优角 >180°",    color:"#8b6fc7" }
+  ],
+  // 返回下一个下落项：display=显示内容(此处用 SVG 角度图)，category=正确分类的 key，explainHTML=答错时讲清楚的话
+  makeItem: function(){
+    // 角度生成：刻意加大"边界陷阱"出现概率 —— 90 / 接近180 / 刚过180 是 Year 6 最常栽的地方
+    const traps = [90, 90, 89, 91, 179, 181, 178, 182, 100, 170, 95, 88];
+    let deg;
+    if(Math.random() < 0.42){
+      deg = traps[Math.floor(Math.random()*traps.length)];
+    } else {
+      // 均匀覆盖 5° ~ 355°（不取 0/180/360 等"平角/周角"，本游戏聚焦 4 类）
+      do { deg = 5 + Math.floor(Math.random()*350); } while(deg===180);
+    }
+
+    let cat, explainHTML;
+    if(deg < 90){
+      cat = "acute";
+      explainHTML = "<b>"+deg+"°</b> 比 90° 小 → 锐角 <b>Acute</b>（0°~90° 之间，开口尖尖的）。";
+    } else if(deg === 90){
+      cat = "right";
+      explainHTML = "<b>90°</b> 恰好是一个直角 → <b>Right</b>。注意：90° <b>不是</b>锐角也<b>不是</b>钝角，它正好在分界点，有专属的小方框记号 ⌐。";
+    } else if(deg < 180){
+      cat = "obtuse";
+      explainHTML = "<b>"+deg+"°</b> 在 90° 和 180° 之间 → 钝角 <b>Obtuse</b>（比直角大、比平角小，开口胖胖的）。";
+    } else {
+      cat = "reflex";
+      explainHTML = "<b>"+deg+"°</b> 超过了 180° → 优角 <b>Reflex</b>（大于半圈，开口张得超过一条直线那么大）。别和钝角搞混：钝角最多到 180°。";
+    }
+    return { display: angleSVG(deg), category: cat, explainHTML: explainHTML };
+  }
+};
+
+// 画一个角的 SVG（顶点在中心，一条边水平向右，另一条边按角度张开），并标出度数
+function angleSVG(deg){
+  const cx=42, cy=46, R=30;            // 圆心与边长
+  const a0 = 0;                        // 第一条边：水平向右（数学正方向）
+  const a1 = deg * Math.PI/180;        // 第二条边：逆时针张开 deg
+  function pt(ang){ return [ cx + R*Math.cos(ang), cy - R*Math.sin(ang) ]; }
+  const p0 = pt(a0), p1 = pt(a1);
+  // 弧线标记开口（小半径）
+  const ar = 13, ax0 = cx+ar, ay0 = cy, ax1 = cx+ar*Math.cos(a1), ay1 = cy-ar*Math.sin(a1);
+  const largeArc = deg > 180 ? 1 : 0;  // reflex 用大弧
+  const arc = "M "+ax0.toFixed(1)+" "+ay0.toFixed(1)+" A "+ar+" "+ar+" 0 "+largeArc+" 0 "+ax1.toFixed(1)+" "+ay1.toFixed(1);
+  return '<svg width="74" height="60" viewBox="0 0 84 60">'+
+    '<path d="'+arc+'" fill="none" stroke="#ffe08a" stroke-width="3"/>'+
+    '<line x1="'+cx+'" y1="'+cy+'" x2="'+p0[0].toFixed(1)+'" y2="'+p0[1].toFixed(1)+'" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>'+
+    '<line x1="'+cx+'" y1="'+cy+'" x2="'+p1[0].toFixed(1)+'" y2="'+p1[1].toFixed(1)+'" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/>'+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="3" fill="#fff"/>'+
+    '</svg><div class="deg">'+deg+'°</div>';
+}
+</script>
+<!-- ============ 以下是引擎，一般不用改 ============ -->
+<script>
+(function(){
+  "use strict";
+  document.documentElement.style.setProperty("--theme", CONFIG.themeColor || "#4a6fa5");
+  document.getElementById("eyebrow").textContent = CONFIG.eyebrow || "";
+  document.getElementById("title").textContent = CONFIG.title || "Catcher";
+  document.getElementById("subtitle").textContent = CONFIG.subtitle || "";
+  document.getElementById("startTitle").textContent = (CONFIG.title||"").replace(/\s*[🎯🎮🧮📐]+$/,"") || "开始";
+  document.getElementById("startHow").textContent = CONFIG.howto || "在下落项越过红线前，点对应的分类按钮接住它！";
+  document.getElementById("footer").innerHTML = (CONFIG.source||"") + " · 整理 <b>" + (CONFIG.brand||"") + "</b>";
+
+  const cats = CONFIG.categories || [];
+  const catByKey = {}; cats.forEach(c=>catByKey[c.key]=c);
+
+  const controls = document.getElementById("controls");
+  cats.forEach(function(c){
+    const b=document.createElement("button");
+    b.className="btn"; b.dataset.ans=c.key;
+    b.style.background="linear-gradient("+c.color+","+shade(c.color,-18)+")";
+    b.innerHTML='<span class="en">'+c.en+'</span><span class="zh">'+(c.zh||"")+'</span>';
+    b.addEventListener("click",function(){ answer(c.key); });
+    controls.appendChild(b);
+  });
+  document.getElementById("legend").innerHTML = cats.map(function(c){
+    return '<div><span class="dot" style="background:'+c.color+'"></span><b>'+c.en+'</b>'+(c.zh?(' '+c.zh):'')+'</div>';
+  }).join("");
+
+  function shade(hex,p){
+    const n=parseInt(hex.slice(1),16); let r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+    r=Math.max(0,Math.min(255,r+p));g=Math.max(0,Math.min(255,g+p));b=Math.max(0,Math.min(255,b+p));
+    return "#"+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);
+  }
+
+  const play=document.getElementById("play"), burstEl=document.getElementById("burst"), toast=document.getElementById("toast");
+  const scoreEl=document.getElementById("score"), bestEl=document.getElementById("best"), heartsEl=document.getElementById("hearts"), comboEl=document.getElementById("combo");
+  const startOverlay=document.getElementById("startOverlay"), overOverlay=document.getElementById("overOverlay"), pauseOverlay=document.getElementById("pauseOverlay");
+  const finalScore=document.getElementById("finalScore"), finalStat=document.getElementById("finalStat"), reviewBox=document.getElementById("reviewBox");
+  const pauseEmoji=document.getElementById("pauseEmoji"), pauseTitle=document.getElementById("pauseTitle"), pauseExplain=document.getElementById("pauseExplain");
+
+  const DIFF={ easy:{base:30,ramp:6,every:10}, med:{base:44,ramp:9,every:8}, hard:{base:62,ramp:14,every:6} };
+  let currentDiff="med";
+  const BEST_KEY="catcher_best_"+(CONFIG.title||"game");
+  let best=parseInt(localStorage.getItem(BEST_KEY)||"0",10); bestEl.textContent=best;
+  let state=null, raf=null, bubble=null;
+
+  function newState(){ return {running:false,score:0,lives:3,combo:0,correct:0,total:0,level:1,item:null,y:0,speed:44,locked:false,lastT:0,mistakes:[]}; }
+
+  function spawn(){
+    const s=state, it=CONFIG.makeItem(); s.item=it; s.y=0; s.locked=false;
+    if(!bubble){ bubble=document.createElement("div"); bubble.className="bubble"; play.appendChild(bubble); }
+    bubble.innerHTML=String(it.display);
+    bubble.style.display="flex"; bubble.style.transform="translateX(-50%) translateY(0px)";
+  }
+
+  function loop(t){
+    const s=state; if(!s.running) return;
+    if(!s.lastT) s.lastT=t;
+    const dt=Math.min((t-s.lastT)/1000,0.05); s.lastT=t;
+    s.y+=s.speed*dt;
+    const maxY=play.clientHeight-84-46;
+    if(bubble) bubble.style.transform="translateX(-50%) translateY("+s.y+"px)";
+    if(s.y>=maxY && !s.locked){ s.locked=true; s.total++; handleError("miss"); return; }
+    raf=requestAnimationFrame(loop);
+  }
+
+  function answer(pick){
+    const s=state; if(!s||!s.running||s.locked||!s.item) return;
+    s.locked=true; s.total++;
+    if(pick===s.item.category){
+      const gain=10+s.combo*2; s.score+=gain; s.correct++; s.combo++;
+      const d=DIFF[currentDiff]; s.level=1+Math.floor(s.correct/d.every); s.speed=d.base+(s.level-1)*d.ramp;
+      scoreEl.textContent=s.score; comboEl.textContent = s.combo>=2 ? ("🔥 Combo x"+s.combo) : "";
+      beep(true); doBurst(); showToast("✓ +"+gain, catByKey[s.item.category].en);
+      if(bubble) bubble.style.display="none";
+      setTimeout(function(){ if(state&&state.running){ state.lastT=0; spawn(); } }, 420);
+    } else { handleError("wrong"); }
+  }
+
+  function handleError(reason){
+    const s=state; s.lives--;
+    heartsEl.textContent="❤️".repeat(Math.max(0,s.lives))+"🤍".repeat(3-Math.max(0,s.lives));
+    s.combo=0; comboEl.textContent=""; beep(false);
+    play.classList.remove("shake"); void play.offsetWidth; play.classList.add("shake");
+    s.mistakes.push({ display:s.item.display, category:s.item.category, explainHTML:s.item.explainHTML });
+    const title = reason==="miss" ? "没接住，看看它是…" : "答错了，看看为什么";
+    pauseForError(reason==="miss"?"⏱":"❌", title, s.item.explainHTML);
+  }
+
+  function pauseForError(emoji,title,explainHTML){
+    const s=state; s.running=false; if(raf) cancelAnimationFrame(raf);
+    if(bubble) bubble.style.display="none";
+    pauseEmoji.textContent=emoji; pauseTitle.textContent=title; pauseExplain.innerHTML=explainHTML;
+    pauseOverlay.classList.remove("hide");
+  }
+  function resumeFromPause(){
+    pauseOverlay.classList.add("hide"); if(!state) return;
+    if(state.lives<=0){ endGame(); return; }
+    state.running=true; state.lastT=0; spawn(); raf=requestAnimationFrame(loop);
+  }
+
+  let toastTimer=null;
+  function showToast(main,sub){
+    toast.className="toast show"; toast.innerHTML=main+(sub?("<small>"+sub+"</small>"):"");
+    clearTimeout(toastTimer); toastTimer=setTimeout(function(){ toast.className="toast"; },760);
+  }
+  function doBurst(){
+    if(!bubble) return;
+    burstEl.style.left=bubble.offsetLeft+"px"; burstEl.style.top=bubble.offsetTop+"px";
+    burstEl.style.transition="none"; burstEl.style.transform="scale(.5)"; burstEl.style.opacity="1";
+    requestAnimationFrame(function(){ burstEl.style.transition="transform .42s,opacity .42s"; burstEl.style.transform="scale(2.1)"; burstEl.style.opacity="0"; });
+  }
+
+  let actx=null, sndOn=true;
+  function beep(good){
+    if(!sndOn) return;
+    try{
+      if(!actx) actx=new (window.AudioContext||window.webkitAudioContext)();
+      const o=actx.createOscillator(), g=actx.createGain(); o.connect(g); g.connect(actx.destination); o.type="sine";
+      const now=actx.currentTime;
+      if(good){ o.frequency.setValueAtTime(660,now); o.frequency.exponentialRampToValueAtTime(990,now+.12); }
+      else { o.frequency.setValueAtTime(300,now); o.frequency.exponentialRampToValueAtTime(150,now+.18); }
+      g.gain.setValueAtTime(.18,now); g.gain.exponentialRampToValueAtTime(.0001,now+.22); o.start(now); o.stop(now+.24);
+    }catch(e){}
+  }
+
+  function startGame(){
+    if(raf) cancelAnimationFrame(raf);
+    state=newState(); state.running=true; state.speed=DIFF[currentDiff].base;
+    scoreEl.textContent="0"; comboEl.textContent=""; heartsEl.textContent="❤️❤️❤️";
+    startOverlay.classList.add("hide"); overOverlay.classList.add("hide"); pauseOverlay.classList.add("hide");
+    spawn(); state.lastT=0; raf=requestAnimationFrame(loop);
+  }
+  function endGame(){
+    const s=state; s.running=false; if(raf) cancelAnimationFrame(raf); if(bubble) bubble.style.display="none";
+    if(s.score>best){ best=s.score; localStorage.setItem(BEST_KEY,best); bestEl.textContent=best; }
+    finalScore.textContent=s.score;
+    const acc=s.total?Math.round(s.correct/s.total*100):0;
+    finalStat.innerHTML="答对 <b>"+s.correct+"</b> 题 · 正确率 <b>"+acc+"%</b> · 最高分 <b>"+best+"</b>";
+    reviewBox.innerHTML=buildReview(s.mistakes); overOverlay.classList.remove("hide");
+  }
+  function buildReview(mistakes){
+    if(!mistakes||!mistakes.length) return '<div class="review-empty">🎉 全对！这一局没有错题，太棒了！</div>';
+    const seen={}, rows=[];
+    mistakes.forEach(function(m){
+      // 用度数文本去重（从讲解里抓首个数字），避免同一度数重复列
+      const why=(m.explainHTML||"").replace(/<[^>]+>/g,"");
+      const k=why.replace(/[^0-9].*$/,"")||why;
+      if(seen[k]) return; seen[k]=1;
+      const c=catByKey[m.category]||{en:m.category,zh:""};
+      const degMatch=why.match(/^(\d+)/); const label=degMatch?degMatch[1]+"°":"?";
+      rows.push('<tr><td class="rn">'+label+'</td><td>'+c.en+(c.zh?(" "+c.zh):"")+'</td><td class="rf">'+why+'</td></tr>');
+    });
+    return '<div class="review-title">📋 错题复盘（'+rows.length+' 个，可截图给娃复习）</div>'+
+           '<table class="review"><tr><th>角度</th><th>正确类型</th><th>为什么</th></tr>'+rows.join('')+'</table>';
+  }
+
+  document.getElementById("startBtn").addEventListener("click",startGame);
+  document.getElementById("againBtn").addEventListener("click",startGame);
+  document.getElementById("continueBtn").addEventListener("click",resumeFromPause);
+  const keyMap={}; if(cats[0])keyMap["1"]=cats[0].key; if(cats[1])keyMap["2"]=cats[1].key; if(cats[2])keyMap["3"]=cats[2].key; if(cats[3])keyMap["4"]=cats[3].key;
+  document.addEventListener("keydown",function(e){
+    if(!pauseOverlay.classList.contains("hide")){ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); resumeFromPause(); } return; }
+    if(!state||!state.running) return;
+    if(keyMap[e.key]) answer(keyMap[e.key]);
+  });
+  const diffBar=document.getElementById("diffBar");
+  diffBar.querySelectorAll("[data-diff]").forEach(function(b){
+    b.addEventListener("click",function(){
+      currentDiff=b.dataset.diff;
+      diffBar.querySelectorAll("[data-diff]").forEach(function(x){ x.classList.toggle("on",x===b); });
+      if(state&&state.running){ const d=DIFF[currentDiff]; state.speed=d.base+(state.level-1)*d.ramp; }
+    });
+  });
+  const zhChip=document.getElementById("zhChip");
+  zhChip.addEventListener("click",function(){ document.body.classList.toggle("zh-on"); const on=document.body.classList.contains("zh-on"); zhChip.classList.toggle("on",on); zhChip.textContent="中文提示："+(on?"开":"关"); });
+  const sndChip=document.getElementById("sndChip");
+  sndChip.addEventListener("click",function(){ sndOn=!sndOn; sndChip.classList.toggle("on",sndOn); sndChip.textContent=(sndOn?"🔊":"🔇")+" 音效："+(sndOn?"开":"关"); });
+  document.addEventListener("visibilitychange",function(){ if(state) state.lastT=0; });
+})();
+</script>
+</body>
+</html>
