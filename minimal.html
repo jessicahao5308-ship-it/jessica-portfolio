@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jessica · Learning, building with AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f6f6f4;
+    --ink: #16150f;
+    --ink-soft: #6f6e69;
+    --ink-mute: #a8a7a1;
+    --line: #ececea;
+    --accent: #16150f;
+  }
+  * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; font-weight: 400; }
+  .zh { font-family: "Noto Sans SC", sans-serif; }
+  .mono { font-family: "IBM Plex Mono", monospace; }
+  .ink-soft { color: var(--ink-soft); }
+  .ink-mute { color: var(--ink-mute); }
+  .label { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-mute); }
+
+  /* i18n: English default; toggle adds .lang-zh */
+  .lzh { display: none; }
+  body.lang-zh .len { display: none; }
+  body.lang-zh .lzh { display: contents; }
+
+  /* nav */
+  .navlink { color: var(--ink-soft); transition: color 0.2s; }
+  .navlink:hover { color: var(--ink); }
+  .lang-btn { font-size: 12px; letter-spacing: 0.06em; color: var(--ink-soft);
+    border: 1px solid var(--line); border-radius: 999px; padding: 5px 11px; background: transparent; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s; }
+  .lang-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* works grid */
+  .works { display: grid; grid-template-columns: repeat(2, 1fr); gap: 56px 48px; }
+  @media (max-width: 760px) { .works { grid-template-columns: 1fr; gap: 44px; } }
+  .work { display: block; }
+  .work .frame { overflow: hidden; background: var(--bg-soft); border-radius: 4px; }
+  .work img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top center;
+    display: block; transition: transform 0.6s ease; }
+  a.work:hover img { transform: scale(1.025); }
+  .work-title { font-size: 16px; font-weight: 500; letter-spacing: -0.01em; margin: 0; }
+  a.work:hover .work-title { color: var(--ink); }
+  .work-meta { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-mute); }
+  .soon { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-mute); border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="sticky top-0 z-50 border-b border-[#ececea]" style="background: rgba(255,255,255,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+  <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#" class="text-base font-semibold tracking-tight">Jessica</a>
+    <div class="flex items-center gap-5 text-sm">
+      <a href="#work" class="navlink"><span class="len">Work</span><span class="lzh">作品</span></a>
+      <a href="#contact" class="navlink"><span class="len">Contact</span><span class="lzh">联系</span></a>
+      <button class="lang-btn" onclick="toggleLang()"><span class="len">中文</span><span class="lzh">EN</span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="max-w-4xl mx-auto px-6 pt-32 pb-28 md:pt-44 md:pb-36">
+  <div class="label mb-8">
+    <span class="len">Sydney · Mum of two · Learn in public, build in public</span>
+    <span class="lzh">悉尼 · 两娃妈妈 · 公开学习，公开构建</span>
+  </div>
+  <h1 class="tracking-tight" style="font-size: clamp(2.4rem, 6vw, 4.5rem); font-weight: 500; line-height: 1.08; letter-spacing: -0.03em;">
+    <span class="len">Learning &amp; building with AI.</span>
+    <span class="lzh zh" style="font-weight:500;">一边陪读，一边用 AI 做东西。</span>
+  </h1>
+  <p class="mt-8 max-w-lg text-lg leading-relaxed ink-soft">
+    <span class="len">A Sydney mum of two, turning everyday education problems into things you can open, play with, and actually use.</span>
+    <span class="lzh zh">悉尼两娃陪读妈妈，把日常教育里的真实问题，做成能打开、能玩、能用的东西。</span>
+  </p>
+  <a href="#work" class="inline-flex items-center gap-2 mt-12 text-sm ink-soft hover:text-[#16150f] transition group">
+    <span class="len">Selected work</span><span class="lzh zh">看作品</span>
+    <span class="group-hover:translate-y-0.5 transition">↓</span>
+  </a>
+</header>
+
+<!-- WORK -->
+<section id="work" class="max-w-4xl mx-auto px-6 pb-28">
+  <div class="flex items-baseline justify-between mb-14 pb-5 border-b border-[#ececea]">
+    <h2 class="label" style="font-size:11px;"><span class="len">Selected Work</span><span class="lzh zh">作品精选</span></h2>
+    <div class="mono text-xs ink-mute">06</div>
+  </div>
+
+  <div class="works">
+    <a class="work group" href="./works/use-ai-ppt/index.html" target="_blank">
+      <div class="frame"><img src="./works/shots/use-ai.png" alt="Use AI deck" loading="lazy" /></div>
+      <div class="flex items-baseline justify-between mt-4">
+        <h3 class="work-title"><span class="len">Keeping Up with AI</span><span class="lzh zh">用好 AI，跟上时代</span></h3>
+        <div class="work-meta">2026.06 · <span class="len">Deck</span><span class="lzh zh">演示</span></div>
+      </div>
+    </a>
+
+    <a class="work group" href="./works/03-primes-composites.html" target="_blank">
+      <div class="frame"><img src="./works/shots/primes-ppt.png" alt="Primes and Composites slides" loading="lazy" /></div>
+      <div class="flex items-baseline justify-between mt-4">
+        <h3 class="work-title"><span class="len">Primes &amp; Composites</span><span class="lzh zh">质数与合数</span></h3>
+        <div class="work-meta">2026.05 · <span class="len">Slides</span><span class="lzh zh">课件</span></div>
+      </div>
+    </a>
+
+    <a class="work group" href="./works/angles-game.html" target="_blank">
+      <div class="frame"><img src="./works/shots/angles-game-m.png" alt="Angle Catcher game" loading="lazy" /></div>
+      <div class="flex items-baseline justify-between mt-4">
+        <h3 class="work-title"><span class="len">Angle Catcher</span><span class="lzh zh">角的类型大作战</span></h3>
+        <div class="work-meta">2026.06 · <span class="len">Game</span><span class="lzh zh">游戏</span></div>
+      </div>
+    </a>
+
+    <a class="work group" href="./works/03-primes-composites-note.html" target="_blank">
+      <div class="frame"><img src="./works/shots/primes-note.png" alt="Bilingual lesson note" loading="lazy" /></div>
+      <div class="flex items-baseline justify-between mt-4">
+        <h3 class="work-title"><span class="len">Bilingual Lesson Notes</span><span class="lzh zh">双语课件笔记</span></h3>
+        <div class="work-meta">2026.05 · <span class="len">Print</span><span class="lzh zh">可打印</span></div>
+      </div>
+    </a>
+
+    <a class="work group" href="./works/03-primes-composites-game.html" target="_blank">
+      <div class="frame"><img src="./works/shots/primes-game-m.png" alt="Prime Catcher game" loading="lazy" /></div>
+      <div class="flex items-baseline justify-between mt-4">
+        <h3 class="work-title"><span class="len">Prime Catcher</span><span class="lzh zh">质数大作战</span></h3>
+        <div class="work-meta">2026.05 · <span class="len">Game</span><span class="lzh zh">游戏</span></div>
+      </div>
+    </a>
+
+    <div class="work">
+      <div class="frame"><img src="./works/kangapet-roo.png" alt="Desktop kangaroo pet" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" /></div>
+      <div class="flex items-baseline justify-between mt-4">
+        <h3 class="work-title"><span class="len">Desktop Kangaroo</span><span class="lzh zh">桌面袋鼠桌宠</span></h3>
+        <div class="work-meta"><span class="soon"><span class="len">soon</span><span class="lzh zh">整理中</span></span> · <span class="len">Mac App</span><span class="lzh zh">桌面应用</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="max-w-4xl mx-auto px-6 pb-28">
+  <div class="pt-16 border-t border-[#ececea]">
+    <p class="tracking-tight mb-3" style="font-size: clamp(1.5rem,3.5vw,2.2rem); font-weight:500; letter-spacing:-0.02em;">
+      <span class="len">Want to swap notes?</span><span class="lzh zh">想聊聊？</span>
+    </p>
+    <p class="ink-soft max-w-md leading-relaxed mb-10">
+      <span class="len">Moving to Australia, or already raising kids here? Come say hi — let's share what we've each figured out.</span>
+      <span class="lzh zh">准备移民澳洲，或已经在这边陪娃读书？欢迎来加我，互通有无。</span>
+    </p>
+    <div class="grid grid-cols-3 gap-4 max-w-lg">
+      <a href="#" class="border border-[#ececea] rounded p-4 hover:border-[#16150f] transition">
+        <div class="label mb-1" style="font-size:10px;">RED · 小红书</div>
+        <div class="font-medium">@TBA</div>
+      </a>
+      <a href="#" class="border border-[#ececea] rounded p-4 hover:border-[#16150f] transition">
+        <div class="label mb-1" style="font-size:10px;">WeChat · 公众号</div>
+        <div class="font-medium">@TBA</div>
+      </a>
+      <a href="#" class="border border-[#ececea] rounded p-4 hover:border-[#16150f] transition">
+        <div class="label mb-1" style="font-size:10px;">Feishu · 飞书</div>
+        <div class="font-medium"><span class="len">Scan</span><span class="lzh zh">扫码</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-[#ececea]">
+  <div class="max-w-4xl mx-auto px-6 py-8 flex items-center justify-between label" style="font-size:10px;">
+    <span>© 2026 Jessica · Made with Claude Code in Sydney</span>
+    <a href="./index.html" class="navlink"><span class="len">View: Magazine ↗</span><span class="lzh zh">看杂志版 ↗</span></a>
+  </div>
+</footer>
+
+<script>
+  function toggleLang() {
+    var zh = document.body.classList.toggle('lang-zh');
+    document.documentElement.lang = zh ? 'zh-CN' : 'en';
+    document.title = zh ? 'Jessica · 一边陪读，一边用 AI 做东西'
+                        : 'Jessica · Learning, building with AI';
+  }
+</script>
+
+</body>
+</html>
