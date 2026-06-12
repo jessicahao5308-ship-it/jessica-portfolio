@@ -150,6 +150,36 @@
     background: #F5F0E6;
     border: 1px solid #2D2D2D;
   }
+
+  /* Showcase card (Design-Lab style) */
+  .sc-card {
+    display: flex;
+    gap: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .sc-card:hover {
+    border-color: rgba(245, 158, 11, 0.4);
+    transform: translateY(-2px);
+  }
+  .sc-icon {
+    flex: 0 0 auto;
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+  }
+  .sc-domain {
+    font-family: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+  }
 </style>
 </head>
 <body>
@@ -159,6 +189,7 @@
   <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="#" class="font-semibold text-base tracking-tight">悉尼陪读妈妈 <span class="accent">Jessica</span></a>
     <div class="flex gap-6 text-sm">
+      <a href="#showcase" class="nav-link">速览</a>
       <a href="#about" class="nav-link">关于</a>
       <a href="#directions" class="nav-link">方向</a>
       <a href="#works" class="nav-link">学科</a>
@@ -211,6 +242,66 @@
     </div>
   </div>
 </section>
+
+<!-- SHOWCASE · 速览墙 -->
+<section id="showcase" class="max-w-5xl mx-auto px-6 py-28">
+  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">★ Showcase</div>
+  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">点开就能玩的作品</h2>
+  <p class="ink-soft text-lg mb-12">不用看简介——这些都是真的能打开、能玩、能用的成品。挑一个点进去。</p>
+
+  <div class="grid md:grid-cols-2 gap-4">
+    <!-- 质数与合数 · 2026.05.27 -->
+    <a href="./works/03-primes-composites.html" target="_blank" class="sc-card group">
+      <div class="sc-icon">🔢</div>
+      <div>
+        <h3 class="text-base font-semibold tracking-tight mb-1 group-hover:text-[#f59e0b] transition">质数与合数 · 4 种学法</h3>
+        <div class="sc-domain mb-2"><span class="accent">2026.05.27</span> · 读 · 印 · 讲 · 玩 / 数学课件</div>
+        <p class="text-sm ink-soft leading-relaxed sans">同一个知识点做成 4 种样子：双语笔记、打印 PDF、HTML 讲解、互动游戏。中英双语原创。</p>
+      </div>
+    </a>
+
+    <!-- 用好 AI PPT · 2026.06.02 -->
+    <a href="./works/use-ai-ppt/index.html" target="_blank" class="sc-card group">
+      <div class="sc-icon">📊</div>
+      <div>
+        <h3 class="text-base font-semibold tracking-tight mb-1 group-hover:text-[#f59e0b] transition">用好 AI，跟上时代</h3>
+        <div class="sc-domain mb-2"><span class="accent">2026.06.02</span> · 横向滚动 / HTML 演示文稿</div>
+        <p class="text-sm ink-soft leading-relaxed sans">牛皮纸质感的全屏滚动 Deck，像翻一本电子杂志。讲给同样想用好 AI 的人听。</p>
+      </div>
+    </a>
+
+    <!-- 角的类型游戏 · 2026.06.12 -->
+    <a href="./works/angles-game.html" target="_blank" class="sc-card group">
+      <div class="sc-icon">📐</div>
+      <div>
+        <h3 class="text-base font-semibold tracking-tight mb-1 group-hover:text-[#f59e0b] transition">角的类型大作战</h3>
+        <div class="sc-domain mb-2"><span class="accent">2026.06.12</span> · 手机可玩 / 互动小游戏</div>
+        <p class="text-sm ink-soft leading-relaxed sans">判断锐角 / 直角 / 钝角 / 优角，答错即讲解 + 自动错题本，难度三档可调。自研游戏引擎出品。</p>
+      </div>
+    </a>
+
+    <!-- 袋鼠桌宠 · 2026.06.12 -->
+    <a href="#fun" class="sc-card group">
+      <div class="sc-icon">🦘</div>
+      <div>
+        <h3 class="text-base font-semibold tracking-tight mb-1 group-hover:text-[#f59e0b] transition">桌面袋鼠 · 陪读桌宠</h3>
+        <div class="sc-domain mb-2"><span class="accent">2026.06.12</span> · Mac 桌面 App / 深夜造物</div>
+        <p class="text-sm ink-soft leading-relaxed sans">Tauri 做的桌面小袋鼠，陪娃写作业时蹦在屏幕角落。纯粹为了让"坐下学习"多点温度。</p>
+      </div>
+    </a>
+  </div>
+
+  <div class="mt-8 flex items-center justify-center gap-3 sans text-xs ink-mute">
+    <span>2026.05</span>
+    <span class="flex-1 max-w-[180px]" style="height:1px;background:linear-gradient(to right,var(--line),var(--accent));"></span>
+    <span class="accent">一路在长 →</span>
+  </div>
+  <div class="mt-6 text-center sans text-sm ink-mute">
+    往下翻 → 还有 <span class="accent">3 个自研 Claude Skills</span>、产线幕后、AI 视觉创作
+  </div>
+</section>
+
+<div class="divider"></div>
 
 <!-- ABOUT -->
 <section id="about" class="max-w-5xl mx-auto px-6 py-28">
