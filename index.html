@@ -1,645 +1,281 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Jessica · 悉尼陪读妈妈</title>
+<title>Jessica · Learning, building with AI</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #0d0c0a;
-    --bg-card: #16140f;
-    --bg-elev: #1c1914;
-    --ink: #e8e2d4;
-    --ink-soft: #8a8275;
+    --bg: #0c0b09;
+    --bg-soft: #131210;
+    --ink: #ece6d8;
+    --ink-soft: #948b7c;
     --ink-mute: #5a5448;
-    --accent: #f59e0b;
-    --accent-bright: #fbbf24;
-    --line: #2a2620;
-    --line-soft: #1f1c17;
+    --accent: #f0a93b;
+    --line: #221f1a;
   }
-  * { -webkit-font-smoothing: antialiased; }
+  * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
+    margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font-family: "Noto Serif SC", "Songti SC", serif;
-    font-feature-settings: "palt";
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
   }
-  .sans { font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; letter-spacing: 0.005em; }
+  .serif-en { font-family: "Playfair Display", serif; }
+  .serif-zh { font-family: "Noto Serif SC", serif; }
+  .mono { font-family: "IBM Plex Mono", monospace; }
   .accent { color: var(--accent); }
-  .bg-card { background: var(--bg-card); }
-  .bg-elev { background: var(--bg-elev); }
-  .border-line { border-color: var(--line); }
   .ink-soft { color: var(--ink-soft); }
   .ink-mute { color: var(--ink-mute); }
 
-  /* Hero gradient & grid */
+  /* ---- i18n: English is default; toggle adds .lang-zh ---- */
+  .lzh { display: none; }
+  body.lang-zh .len { display: none; }
+  body.lang-zh .lzh { display: contents; }
+
+  /* ---- Hero ---- */
   .hero {
     position: relative;
+    min-height: 92vh;
+    display: flex; flex-direction: column; justify-content: center;
+    overflow: hidden;
     background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(245, 158, 11, 0.08), transparent 60%),
-      linear-gradient(180deg, #0d0c0a 0%, #0a0907 100%);
+      radial-gradient(ellipse 90% 70% at 70% 10%, rgba(240,169,59,0.10), transparent 55%),
+      radial-gradient(ellipse 60% 50% at 10% 90%, rgba(240,169,59,0.05), transparent 60%),
+      var(--bg);
   }
   .hero-grid {
     position: absolute; inset: 0; pointer-events: none;
     background-image:
-      linear-gradient(to right, rgba(232,226,212,0.025) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(232,226,212,0.025) 1px, transparent 1px);
-    background-size: 56px 56px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black 30%, transparent 80%);
+      linear-gradient(to right, rgba(236,230,216,0.022) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(236,230,216,0.022) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 70% at 60% 30%, black 20%, transparent 78%);
   }
-
-  /* Cards */
-  .card {
-    background: var(--bg-card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
-  }
-  .card:hover {
-    border-color: rgba(245, 158, 11, 0.35);
-    transform: translateY(-2px);
-  }
-  .card-glow {
-    background: var(--bg-card);
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    border-radius: 12px;
-    position: relative;
-  }
-  .card-glow::before {
-    content: "";
-    position: absolute; inset: -1px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(245,158,11,0.15), transparent 40%);
-    z-index: -1;
-  }
-
-  /* Pill */
   .pill {
-    display: inline-block;
-    background: rgba(245, 158, 11, 0.1);
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(240,169,59,0.08);
     color: var(--accent);
-    border: 1px solid rgba(245, 158, 11, 0.25);
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
+    border: 1px solid rgba(240,169,59,0.22);
+    padding: 5px 13px; border-radius: 999px;
+    font-size: 12px; letter-spacing: 0.02em;
   }
-  .pill-ghost {
-    display: inline-block;
-    background: transparent;
-    color: var(--ink-soft);
-    border: 1px solid var(--line);
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-  }
+  .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); display: inline-block; }
 
-  /* Divider */
-  .divider {
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--line), transparent);
+  /* ---- Marquee ---- */
+  .marquee {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden; white-space: nowrap;
+    background: var(--bg-soft);
   }
+  .marquee-track {
+    display: inline-block; padding: 16px 0;
+    animation: scroll-x 26s linear infinite;
+  }
+  .marquee-track span { font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); }
+  .marquee-track .accent { color: var(--accent); }
+  @keyframes scroll-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-  /* Nav */
-  .nav-bg {
-    background: rgba(13, 12, 10, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+  /* ---- Works masonry ---- */
+  .works { column-count: 2; column-gap: 18px; }
+  @media (max-width: 760px) { .works { column-count: 1; } }
+  .work {
+    display: block; break-inside: avoid; margin-bottom: 18px;
+    border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    background: var(--bg-soft);
+    transition: border-color 0.3s ease, transform 0.3s ease;
   }
-  .nav-link { transition: color 0.15s; color: var(--ink-soft); }
-  .nav-link:hover { color: var(--ink); }
+  a.work:hover { border-color: rgba(240,169,59,0.45); transform: translateY(-3px); }
+  .work img { width: 100%; display: block; transition: filter 0.3s ease, transform 0.5s ease; filter: saturate(0.96); }
+  a.work:hover img { filter: saturate(1.05) brightness(1.03); }
+  .work-cap { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 16px 18px 18px; }
+  .work-cap h3 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  a.work:hover .work-cap h3 { color: var(--accent); }
+  .work-meta { font-size: 11px; letter-spacing: 0.04em; color: var(--ink-mute); white-space: nowrap; }
+  .soon { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; }
 
-  /* Buttons */
-  .btn-primary {
-    background: var(--ink);
-    color: var(--bg);
-    padding: 12px 24px;
-    border-radius: 999px;
-    font-weight: 500;
-    transition: background 0.2s;
+  /* ---- Lang button ---- */
+  .lang-btn {
+    font-size: 12px; letter-spacing: 0.08em; color: var(--ink-soft);
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+    background: transparent; cursor: pointer; transition: border-color 0.2s, color 0.2s;
   }
-  .btn-primary:hover { background: var(--accent-bright); }
-  .btn-ghost {
-    border: 1px solid var(--line);
-    color: var(--ink);
-    padding: 12px 24px;
-    border-radius: 999px;
-    font-weight: 500;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* Numbers */
-  .stat-num {
-    font-family: "Inter", sans-serif;
-    font-weight: 700;
-    font-feature-settings: "tnum";
-    letter-spacing: -0.03em;
-  }
-
-  /* Work cover */
-  .cover-cream {
-    background: #F5F0E6;
-    border: 1px solid #2D2D2D;
-  }
-
-  /* Showcase card (Design-Lab style) */
-  .sc-card {
-    display: flex;
-    gap: 16px;
-    background: var(--bg-card);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 22px;
-    transition: border-color 0.25s ease, transform 0.25s ease;
-  }
-  .sc-card:hover {
-    border-color: rgba(245, 158, 11, 0.4);
-    transform: translateY(-2px);
-  }
-  .sc-icon {
-    flex: 0 0 auto;
-    width: 56px; height: 56px;
-    border-radius: 14px;
-    background: var(--bg-elev);
-    border: 1px solid var(--line);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px;
-  }
-  .sc-domain {
-    font-family: "IBM Plex Mono", "SFMono-Regular", ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 0.04em;
-    color: var(--ink-mute);
-  }
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav class="sans sticky top-0 z-50 nav-bg border-b border-line">
-  <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="#" class="font-semibold text-base tracking-tight">悉尼陪读妈妈 <span class="accent">Jessica</span></a>
-    <div class="flex gap-6 text-sm">
-      <a href="#showcase" class="nav-link">速览</a>
-      <a href="#about" class="nav-link">关于</a>
-      <a href="#directions" class="nav-link">方向</a>
-      <a href="#works" class="nav-link">学科</a>
-      <a href="#visuals" class="nav-link">视觉</a>
-      <a href="#workflows" class="nav-link">Skills</a>
-      <a href="#fun" class="nav-link">好玩</a>
-      <a href="#contact" class="nav-link">联系</a>
+<nav class="sticky top-0 z-50 border-b border-[#221f1a]" style="background: rgba(12,11,9,0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#" class="flex items-baseline gap-3">
+      <span class="text-base font-semibold tracking-tight">Jessica<span class="accent">.</span></span>
+      <span class="mono text-[10px] tracking-[0.18em] uppercase ink-mute hidden sm:inline">Learn &amp; build with AI</span>
+    </a>
+    <div class="flex items-center gap-5 text-sm">
+      <a href="#works" class="ink-soft hover:text-[#ece6d8] transition">
+        <span class="len">Work</span><span class="lzh">作品</span>
+      </a>
+      <a href="#contact" class="ink-soft hover:text-[#ece6d8] transition">
+        <span class="len">Contact</span><span class="lzh">联系</span>
+      </a>
+      <button class="lang-btn" onclick="toggleLang()">
+        <span class="len">中文</span><span class="lzh">EN</span>
+      </button>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<header class="hero">
   <div class="hero-grid"></div>
-  <div class="relative max-w-5xl mx-auto px-6 py-28 md:py-40">
-    <div class="pill mb-6 sans">Sydney · Chatswood</div>
-    <h1 class="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-8">
-      AI 时代的<br/>
-      悉尼<span class="accent">陪读妈妈</span>
+  <div class="relative max-w-6xl mx-auto px-6 w-full">
+    <div class="pill mb-8"><span class="dot"></span>
+      <span class="len">Sydney · Study-mum of two · Building with AI</span>
+      <span class="lzh">悉尼 · 两娃陪读妈妈 · 用 AI 动手做</span>
+    </div>
+
+    <h1 class="leading-[1.04] tracking-tight mb-8" style="font-size: clamp(2.6rem, 7vw, 5.5rem); font-weight: 600;">
+      <span class="len serif-en">Learning out loud,<br/>building <span class="italic accent">with AI</span>.</span>
+      <span class="lzh serif-zh" style="font-weight:600;">一边陪读，<br/>一边用 <span class="accent">AI</span> 做东西。</span>
     </h1>
-    <p class="text-lg md:text-xl ink-soft leading-relaxed max-w-2xl font-normal">
-      两个娃的妈妈。热爱学习，拥抱 AI。<br/>
-      其余的，都在下面我做的东西里。
+
+    <p class="ink-soft max-w-xl text-lg leading-relaxed">
+      <span class="len">A Sydney study-mum of two, turning everyday education problems into things you can open, play with, and actually use.</span>
+      <span class="lzh serif-zh">悉尼两娃陪读妈妈，把日常教育里的真实问题，做成能打开、能玩、能用的东西。</span>
     </p>
-    <div class="mt-12 flex gap-3 sans text-sm">
-      <a href="#works" class="btn-primary">看作品 →</a>
-      <a href="#contact" class="btn-ghost">联系我</a>
-    </div>
+
+    <a href="#works" class="inline-flex items-center gap-2 mt-12 text-sm ink-soft hover:text-[#f0a93b] transition group">
+      <span class="len">See the work</span><span class="lzh">看作品</span>
+      <span class="group-hover:translate-y-0.5 transition">↓</span>
+    </a>
   </div>
-</section>
+</header>
 
-<!-- 数字震撼条 -->
-<section class="border-y border-line bg-elev">
-  <div class="max-w-5xl mx-auto px-6 py-14 grid grid-cols-2 md:grid-cols-4 gap-8">
-    <div>
-      <div class="stat-num text-4xl md:text-5xl accent">500+</div>
-      <div class="sans text-xs ink-soft mt-2 uppercase tracking-wider">澳洲数学课件笔记</div>
-    </div>
-    <div>
-      <div class="stat-num text-4xl md:text-5xl accent">3</div>
-      <div class="sans text-xs ink-soft mt-2 uppercase tracking-wider">自研 Claude Skills</div>
-    </div>
-    <div>
-      <div class="stat-num text-4xl md:text-5xl accent">3</div>
-      <div class="sans text-xs ink-soft mt-2 uppercase tracking-wider">核心方向</div>
-    </div>
-    <div>
-      <div class="stat-num text-4xl md:text-5xl accent">2</div>
-      <div class="sans text-xs ink-soft mt-2 uppercase tracking-wider">真实试用客户（自家娃）</div>
-    </div>
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="len">Courseware&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">Interactive Games</span>&nbsp;&nbsp;—&nbsp;&nbsp;Bilingual Notes&nbsp;&nbsp;—&nbsp;&nbsp;HTML Decks&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">Desktop Apps</span>&nbsp;&nbsp;—&nbsp;&nbsp;Print-ready PDFs&nbsp;&nbsp;—&nbsp;&nbsp;Courseware&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">Interactive Games</span>&nbsp;&nbsp;—&nbsp;&nbsp;Bilingual Notes&nbsp;&nbsp;—&nbsp;&nbsp;HTML Decks&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">Desktop Apps</span>&nbsp;&nbsp;—&nbsp;&nbsp;Print-ready PDFs&nbsp;&nbsp;—&nbsp;&nbsp;</span>
+    <span class="lzh">课件&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">互动小游戏</span>&nbsp;&nbsp;—&nbsp;&nbsp;双语笔记&nbsp;&nbsp;—&nbsp;&nbsp;HTML 演示&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">桌面应用</span>&nbsp;&nbsp;—&nbsp;&nbsp;可打印 PDF&nbsp;&nbsp;—&nbsp;&nbsp;课件&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">互动小游戏</span>&nbsp;&nbsp;—&nbsp;&nbsp;双语笔记&nbsp;&nbsp;—&nbsp;&nbsp;HTML 演示&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">桌面应用</span>&nbsp;&nbsp;—&nbsp;&nbsp;可打印 PDF&nbsp;&nbsp;—&nbsp;&nbsp;</span>
   </div>
-</section>
+</div>
 
-<!-- SHOWCASE · 速览墙 -->
-<section id="showcase" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">★ Showcase</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">点开就能玩的作品</h2>
-  <p class="ink-soft text-lg mb-12">不用看简介——这些都是真的能打开、能玩、能用的成品。挑一个点进去。</p>
+<!-- WORKS -->
+<section id="works" class="max-w-6xl mx-auto px-6 py-24 md:py-32">
+  <div class="flex items-baseline justify-between mb-12">
+    <h2 class="tracking-tight" style="font-size: clamp(1.8rem,4vw,3rem); font-weight:600;">
+      <span class="len serif-en">Selected Work</span>
+      <span class="lzh serif-zh">作品精选</span>
+    </h2>
+    <div class="mono text-xs ink-mute">2026.05 — 2026.06</div>
+  </div>
 
-  <div class="grid md:grid-cols-2 gap-4">
-    <!-- 质数与合数 · 2026.05.27 -->
-    <a href="./works/03-primes-composites.html" target="_blank" class="sc-card group">
-      <div class="sc-icon">🔢</div>
-      <div>
-        <h3 class="text-base font-semibold tracking-tight mb-1 group-hover:text-[#f59e0b] transition">质数与合数 · 4 种学法</h3>
-        <div class="sc-domain mb-2"><span class="accent">2026.05.27</span> · 读 · 印 · 讲 · 玩 / 数学课件</div>
-        <p class="text-sm ink-soft leading-relaxed sans">同一个知识点做成 4 种样子：双语笔记、打印 PDF、HTML 讲解、互动游戏。中英双语原创。</p>
+  <div class="works">
+    <!-- use-ai deck -->
+    <a class="work group" href="./works/use-ai-ppt/index.html" target="_blank">
+      <img src="./works/shots/use-ai.png" alt="Use AI deck" loading="lazy" />
+      <div class="work-cap">
+        <h3><span class="len">Use AI, Keep Up</span><span class="lzh serif-zh">用好 AI，跟上时代</span></h3>
+        <div class="work-meta">2026.06.02 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
       </div>
     </a>
 
-    <!-- 用好 AI PPT · 2026.06.02 -->
-    <a href="./works/use-ai-ppt/index.html" target="_blank" class="sc-card group">
-      <div class="sc-icon">📊</div>
-      <div>
-        <h3 class="text-base font-semibold tracking-tight mb-1 group-hover:text-[#f59e0b] transition">用好 AI，跟上时代</h3>
-        <div class="sc-domain mb-2"><span class="accent">2026.06.02</span> · 横向滚动 / HTML 演示文稿</div>
-        <p class="text-sm ink-soft leading-relaxed sans">牛皮纸质感的全屏滚动 Deck，像翻一本电子杂志。讲给同样想用好 AI 的人听。</p>
+    <!-- primes ppt -->
+    <a class="work group" href="./works/03-primes-composites.html" target="_blank">
+      <img src="./works/shots/primes-ppt.png" alt="Primes and Composites slides" loading="lazy" />
+      <div class="work-cap">
+        <h3><span class="len">Primes &amp; Composites</span><span class="lzh serif-zh">质数与合数</span></h3>
+        <div class="work-meta">2026.05.27 · <span class="len">Maths Slides</span><span class="lzh">数学课件</span></div>
       </div>
     </a>
 
-    <!-- 角的类型游戏 · 2026.06.12 -->
-    <a href="./works/angles-game.html" target="_blank" class="sc-card group">
-      <div class="sc-icon">📐</div>
-      <div>
-        <h3 class="text-base font-semibold tracking-tight mb-1 group-hover:text-[#f59e0b] transition">角的类型大作战</h3>
-        <div class="sc-domain mb-2"><span class="accent">2026.06.12</span> · 手机可玩 / 互动小游戏</div>
-        <p class="text-sm ink-soft leading-relaxed sans">判断锐角 / 直角 / 钝角 / 优角，答错即讲解 + 自动错题本，难度三档可调。自研游戏引擎出品。</p>
+    <!-- angles game (portrait) -->
+    <a class="work group" href="./works/angles-game.html" target="_blank">
+      <img src="./works/shots/angles-game-m.png" alt="Angle Catcher game" loading="lazy" />
+      <div class="work-cap">
+        <h3><span class="len">Angle Catcher</span><span class="lzh serif-zh">角的类型大作战</span></h3>
+        <div class="work-meta">2026.06.12 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
       </div>
     </a>
 
-    <!-- 袋鼠桌宠 · 2026.06.12 -->
-    <a href="#fun" class="sc-card group">
-      <div class="sc-icon">🦘</div>
-      <div>
-        <h3 class="text-base font-semibold tracking-tight mb-1 group-hover:text-[#f59e0b] transition">桌面袋鼠 · 陪读桌宠</h3>
-        <div class="sc-domain mb-2"><span class="accent">2026.06.12</span> · Mac 桌面 App / 深夜造物</div>
-        <p class="text-sm ink-soft leading-relaxed sans">Tauri 做的桌面小袋鼠，陪娃写作业时蹦在屏幕角落。纯粹为了让"坐下学习"多点温度。</p>
+    <!-- bilingual note -->
+    <a class="work group" href="./works/03-primes-composites-note.html" target="_blank">
+      <img src="./works/shots/primes-note.png" alt="Bilingual lesson note" loading="lazy" />
+      <div class="work-cap">
+        <h3><span class="len">Bilingual Lesson Notes</span><span class="lzh serif-zh">双语课件笔记</span></h3>
+        <div class="work-meta">2026.05.27 · <span class="len">Print-ready</span><span class="lzh">可打印</span></div>
       </div>
     </a>
-  </div>
 
-  <div class="mt-8 flex items-center justify-center gap-3 sans text-xs ink-mute">
-    <span>2026.05</span>
-    <span class="flex-1 max-w-[180px]" style="height:1px;background:linear-gradient(to right,var(--line),var(--accent));"></span>
-    <span class="accent">一路在长 →</span>
-  </div>
-  <div class="mt-6 text-center sans text-sm ink-mute">
-    往下翻 → 还有 <span class="accent">3 个自研 Claude Skills</span>、产线幕后、AI 视觉创作
-  </div>
-</section>
+    <!-- prime catcher game (portrait) -->
+    <a class="work group" href="./works/03-primes-composites-game.html" target="_blank">
+      <img src="./works/shots/primes-game-m.png" alt="Prime Catcher game" loading="lazy" />
+      <div class="work-cap">
+        <h3><span class="len">Prime Catcher</span><span class="lzh serif-zh">质数大作战</span></h3>
+        <div class="work-meta">2026.05.27 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
+      </div>
+    </a>
 
-<div class="divider"></div>
-
-<!-- ABOUT -->
-<section id="about" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">About</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-12 tracking-tight">为什么是我？</h2>
-  <div class="grid md:grid-cols-2 gap-12">
-    <div class="space-y-5 leading-relaxed text-lg">
-      <p>一个不会写代码的妈妈，一头扎进了 AI。</p>
-      <p>热爱学习、热爱捣鼓 —— 把这份热爱，用在陪两个娃身上，也用在做点好玩的东西上。</p>
-      <p class="ink-soft">比起卖现成资料，我更想把这一路<span class="accent">趟过的坑、攒下的经验</span>，一点点分享给你。</p>
-    </div>
-    <div class="card-glow p-7 sans text-sm space-y-3">
-      <div class="text-xs ink-soft uppercase tracking-[0.2em]">2026 · 05 · Turning Point</div>
-      <p class="leading-relaxed text-base" style="font-family: 'Noto Serif SC', serif;">第一次跑通完整链路：</p>
-      <p class="leading-relaxed accent font-medium text-base" style="font-family: 'Noto Serif SC', serif;">真实场景 → 独家资源 → AI 工具加持 → 真实可用的产出</p>
-      <p class="leading-relaxed ink-soft" style="font-family: 'Noto Serif SC', serif;">下载了学校 MathsOnline Year 8–12 全套原始课件，在 Obsidian + Claude Code 协作下，制作出可直接打印的中英双语辅导笔记。</p>
+    <!-- kangaroo desktop pet (no live link yet) -->
+    <div class="work">
+      <img src="./works/kangapet-roo.png" alt="Desktop kangaroo pet" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" />
+      <div class="work-cap">
+        <h3><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></h3>
+        <div class="work-meta"><span class="soon"><span class="len">soon</span><span class="lzh">整理中</span></span> · <span class="len">Mac App</span><span class="lzh">桌面应用</span></div>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="divider"></div>
-
-<!-- 三层方向 -->
-<section id="directions" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Three Directions</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-12 tracking-tight">我在做什么</h2>
-  <div class="grid md:grid-cols-3 gap-5">
-    <div class="card p-7">
-      <div class="text-xs sans ink-mute uppercase tracking-wider mb-4">01</div>
-      <h3 class="text-xl font-semibold mb-3 tracking-tight">澳洲 K-12 学科辅导</h3>
-      <p class="text-sm ink-soft leading-relaxed mb-5">中国家长看不懂澳洲课纲和教材逻辑。我有原始资料 + 英语能力 + AI 工具，孩子就是真实试用客户。</p>
-    </div>
-    <div class="card p-7">
-      <div class="text-xs sans ink-mute uppercase tracking-wider mb-4">02</div>
-      <h3 class="text-xl font-semibold mb-3 tracking-tight">新移民落地知识库</h3>
-      <p class="text-sm ink-soft leading-relaxed mb-5">Medicare、驾照、税号、电费网络办理…… 沉淀成"新移民第一年手册"。</p>
-    </div>
-    <div class="card p-7">
-      <div class="text-xs sans ink-mute uppercase tracking-wider mb-4">03</div>
-      <h3 class="text-xl font-semibold mb-3 tracking-tight">AI 工作流分享</h3>
-      <p class="text-sm ink-soft leading-relaxed mb-5">不做泛泛的"AI 赋能个人成长"，只做具体场景：「我如何用 Claude Code 给孩子做澳洲数学笔记」。</p>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- 幕后工作流 -->
-<section id="workflow-story" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Behind The Scenes</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">一个作品背后，是一条产线</h2>
-  <p class="ink-soft text-lg mb-12">以 Year 6 · 数与运算基础（Unit 1）为例。</p>
-
-  <div class="grid md:grid-cols-3 gap-4">
-    <div class="card p-7">
-      <div class="sans text-xs accent uppercase tracking-[0.2em] mb-3">Step 01 · Source</div>
-      <h3 class="font-semibold mb-3 tracking-tight">MathsOnline 原始 PDF</h3>
-      <p class="text-sm ink-soft leading-relaxed">从澳洲学校官方系统下载的英文 lesson summary 课件。中国家长看着头大。</p>
-    </div>
-
-    <div class="card-glow p-7">
-      <div class="sans text-xs accent uppercase tracking-[0.2em] mb-3">Step 02 · Draft</div>
-      <h3 class="font-semibold mb-3 tracking-tight">Obsidian 结构化笔记</h3>
-      <p class="text-sm ink-soft leading-relaxed mb-4">中文引入 · 概念讲解 · 中英对照词汇 · 例题解析 · 独立练习 · 折叠答案。</p>
-      <span class="pill sans">10 课 · 一个单元</span>
-    </div>
-
-    <div class="card p-7">
-      <div class="sans text-xs accent uppercase tracking-[0.2em] mb-3">Step 03 · Output</div>
-      <h3 class="font-semibold mb-3 tracking-tight">精美 HTML 课件</h3>
-      <p class="text-sm ink-soft leading-relaxed mb-4">用开源模板渲染，配上我自己的中英对照内容。孩子愿意翻完，家长直接打印。</p>
-      <a href="./works/03-primes-composites.html" target="_blank" class="sans text-xs accent hover:underline">看 Lesson 03 成品 →</a>
-      <div class="sans text-[10px] ink-mute mt-4 pt-3 border-t border-line tracking-wider">
-        STACK · <a href="https://github.com/zarazhangrui/beautiful-html-templates" target="_blank" class="hover:text-[#f59e0b] underline decoration-dotted">beautiful-html-templates</a> · <a href="https://www.anygen.io/" target="_blank" class="hover:text-[#f59e0b] underline decoration-dotted">anygen.io</a> · Claude Code
-      </div>
-    </div>
-  </div>
-
-  <!-- Punchline -->
-  <div class="mt-8 card p-8 text-center">
-    <p class="text-lg md:text-xl leading-relaxed">
-      你看到的 <span class="accent font-semibold">1 个 HTML</span>，是
-      <span class="accent font-semibold">10 课草稿</span> +
-      <span class="accent font-semibold">2 个自研 Skills</span> +
-      <span class="accent font-semibold">1 套开源模板</span> 串起来的。
+<!-- CONTACT / FOOTER -->
+<footer id="contact" class="border-t border-[#221f1a]">
+  <div class="max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <p class="serif-en text-2xl md:text-3xl tracking-tight mb-2">
+      <span class="len">Want to swap notes?</span><span class="lzh serif-zh">想聊聊？</span>
     </p>
-    <p class="sans text-sm ink-soft mt-3">工具是别人的，内容和体系是我的。这条产线可以批量复制到 Year 7、Year 8、Year 9 ……</p>
-  </div>
-</section>
+    <p class="ink-soft max-w-md leading-relaxed mb-10">
+      <span class="len">Moving to Australia, or already raising kids here? Come say hi — let's share what we've each figured out.</span>
+      <span class="lzh serif-zh">准备移民澳洲，或已经在这边陪娃读书？欢迎来加我，互通有无。</span>
+    </p>
 
-<div class="divider"></div>
-
-<!-- 学科作品 -->
-<section id="works" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Academic Works</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">学科作品</h2>
-  <p class="ink-soft text-lg mb-12">澳洲 K-12 课件 + 互动小游戏，AI 串起一条产线。</p>
-
-  <!-- 质数与合数：一个知识点，4 种呈现 -->
-  <div class="card-glow p-7 mb-5">
-    <div class="flex items-center gap-2 mb-2">
-      <span class="pill sans">同一知识点 · 4 种学法</span>
-      <span class="pill-ghost sans">第03课 · 质数与合数</span>
-    </div>
-    <h3 class="text-xl font-semibold mb-2 tracking-tight">一章内容，做成 4 种样子</h3>
-    <p class="text-sm ink-soft leading-relaxed mb-6">同样是「质数与合数」，我做了 4 种呈现 —— 读的、打印的、讲的、玩的。你更喜欢哪一种？</p>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sans">
-      <a href="./works/03-primes-composites-note.html" target="_blank" class="card p-5 block group text-center">
-        <div class="text-3xl mb-3">📖</div>
-        <div class="text-sm font-semibold group-hover:text-[#f59e0b] transition" style="font-family:'Noto Serif SC',serif;">双语笔记</div>
-        <div class="text-[11px] ink-mute mt-1 leading-relaxed">概念+词汇+练习+折叠答案</div>
-        <div class="mt-3 text-[11px] accent">阅读 →</div>
+    <div class="grid grid-cols-3 gap-4 max-w-lg">
+      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition group">
+        <div class="text-xs ink-mute mb-1">RED · 小红书</div>
+        <div class="font-semibold group-hover:text-[#f0a93b] transition">@TBA</div>
       </a>
-      <a href="./works/03-primes-composites.pdf" target="_blank" class="card p-5 block group text-center">
-        <div class="text-3xl mb-3">🖨️</div>
-        <div class="text-sm font-semibold group-hover:text-[#f59e0b] transition" style="font-family:'Noto Serif SC',serif;">打印版 PDF</div>
-        <div class="text-[11px] ink-mute mt-1 leading-relaxed">下载即打、给娃做题</div>
-        <div class="mt-3 text-[11px] accent">下载 →</div>
+      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition group">
+        <div class="text-xs ink-mute mb-1">WeChat · 公众号</div>
+        <div class="font-semibold group-hover:text-[#f0a93b] transition">@TBA</div>
       </a>
-      <a href="./works/03-primes-composites.html" target="_blank" class="card p-5 block group text-center">
-        <div class="text-3xl mb-3">🎞️</div>
-        <div class="text-sm font-semibold group-hover:text-[#f59e0b] transition" style="font-family:'Noto Serif SC',serif;">HTML 版 PPT</div>
-        <div class="text-[11px] ink-mute mt-1 leading-relaxed">全屏滚动讲解</div>
-        <div class="mt-3 text-[11px] accent">观看 →</div>
-      </a>
-      <a href="./works/03-primes-composites-game.html" target="_blank" class="card p-5 block group text-center">
-        <div class="text-3xl mb-3">🎯</div>
-        <div class="text-sm font-semibold group-hover:text-[#f59e0b] transition" style="font-family:'Noto Serif SC',serif;">互动游戏</div>
-        <div class="text-[11px] ink-mute mt-1 leading-relaxed">边玩边练 + 错题本</div>
-        <div class="mt-3 text-[11px] accent">开始玩 →</div>
+      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition group">
+        <div class="text-xs ink-mute mb-1">Feishu · 飞书</div>
+        <div class="font-semibold group-hover:text-[#f0a93b] transition">
+          <span class="len">Scan</span><span class="lzh">扫码</span>
+        </div>
       </a>
     </div>
-    <div class="sans text-[10px] ink-mute mt-5 pt-3 border-t border-line tracking-wider leading-relaxed">
-      HTML 版 PPT 用了 <a href="https://github.com/zarazhangrui/beautiful-html-templates" target="_blank" class="hover:text-[#f59e0b] underline decoration-dotted">张扎拉 ZhangZara · beautiful-html-templates</a> 开源模板（把 PPT 用 HTML 形式呈现）· 游戏由自研 skill「课件互动游戏」生成 · 内容均为中英双语原创
+
+    <div class="mt-16 pt-6 border-t border-[#221f1a] flex items-center justify-between mono text-xs ink-mute">
+      <span>© 2026 Jessica · Learn &amp; build with AI · Made with Claude Code in Sydney</span>
+      <span>v1.0</span>
     </div>
-  </div>
-
-  <div class="grid md:grid-cols-2 gap-5">
-    <!-- 角的类型游戏 -->
-    <a href="./works/angles-game.html" target="_blank" class="card p-5 block group">
-      <div class="aspect-video rounded-lg mb-5 overflow-hidden relative" style="background:#2e9e6b;">
-        <div class="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
-          <div class="text-5xl mb-2" style="font-family:'Inter',sans-serif;font-weight:700;color:#fff;letter-spacing:-0.02em;">📐 90°</div>
-          <div class="text-[10px] uppercase tracking-[0.2em]" style="font-family:'Inter',sans-serif;font-weight:500;color:rgba(255,255,255,.82);">Angle Catcher</div>
-          <div class="mt-3 inline-block px-3 py-1 rounded-full text-[10px] uppercase tracking-wider" style="background:#fff;color:#2e9e6b;font-family:'Inter',sans-serif;font-weight:600;">▶ 可玩</div>
-        </div>
-      </div>
-      <div class="px-2 pb-2">
-        <div class="flex items-center gap-2 mb-3">
-          <span class="pill sans">互动游戏</span>
-          <span class="pill-ghost sans">手机可玩</span>
-        </div>
-        <h3 class="text-lg font-semibold mb-2 tracking-tight group-hover:text-[#f59e0b] transition">角的类型大作战</h3>
-        <p class="text-sm ink-soft leading-relaxed">判断锐角 / 直角 / 钝角 / 优角，气泡里画出真实张开的角。答错讲解 + 错题本，难度三档可调。同一套引擎做出来的第二个游戏。</p>
-        <div class="mt-4 text-xs accent sans">开始玩 →</div>
-      </div>
-    </a>
-
-    <!-- 占位 -->
-    <div class="card p-5 opacity-50">
-      <div class="aspect-video rounded-lg mb-5 flex items-center justify-center sans text-xs ink-mute uppercase tracking-[0.2em]" style="background: var(--bg-elev); border: 1px dashed var(--line);">
-        Next Work · Coming Soon
-      </div>
-      <div class="px-2 pb-2">
-        <span class="pill-ghost sans mb-3">待发布</span>
-        <h3 class="text-lg font-semibold mt-3 mb-2 tracking-tight">慢慢累积中</h3>
-        <p class="text-sm ink-soft leading-relaxed">每一个上来的作品都是我亲手做、亲身验证过的。</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- AI 视觉创作 -->
-<section id="visuals" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Visual Creations</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">AI 视觉创作</h2>
-  <p class="ink-soft text-lg mb-12">AI 生成的图片、卡片、视频。让内容好看到值得点开。</p>
-
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-5">
-    <!-- 作品: 用好 AI 跟上时代 PPT -->
-    <a href="./works/use-ai-ppt/index.html" target="_blank" class="block group">
-      <div class="card overflow-hidden">
-        <div class="aspect-[3/4] overflow-hidden relative flex flex-col justify-between p-6" style="background: #eedfc7; color: #2a1e13;">
-          <div class="flex justify-between items-start" style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0.55;">
-            <span>USE AI · KEEP UP</span>
-            <span>2026</span>
-          </div>
-          <div class="text-center">
-            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.3em; opacity: 0.5; margin-bottom: 16px;">DECK · 网罗灯下黑</div>
-            <div style="font-family: 'Noto Serif SC', serif; font-weight: 500; font-size: 36px; line-height: 1.2; letter-spacing: 0.04em;">用好 AI</div>
-            <div style="font-family: 'Noto Serif SC', serif; font-weight: 400; font-size: 20px; line-height: 1.3; margin-top: 6px; opacity: 0.75;">跟上时代</div>
-            <div style="width: 32px; height: 1px; background: currentColor; margin: 18px auto; opacity: 0.4;"></div>
-            <div style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 12px; opacity: 0.55;">Stay Ahead in the AI Era</div>
-          </div>
-          <div class="flex justify-between items-end" style="font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.55;">
-            <span>↔ Scroll Deck</span>
-            <span>Kraft Paper</span>
-          </div>
-        </div>
-        <div class="p-5">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="pill sans">HTML PPT</span>
-            <span class="pill-ghost sans">横向滚动</span>
-          </div>
-          <h3 class="text-base font-semibold tracking-tight group-hover:text-[#f59e0b] transition">用好 AI，跟上时代</h3>
-          <p class="sans text-xs ink-mute mt-3 pt-3 border-t border-line tracking-wider">
-            STACK · guizang-ppt-skill · Claude Code
-          </p>
-        </div>
-      </div>
-    </a>
-
-    <!-- 占位 -->
-    <div class="block opacity-40">
-      <div class="card overflow-hidden">
-        <div class="aspect-[3/4] flex items-center justify-center sans text-xs ink-mute uppercase tracking-[0.2em]" style="background: var(--bg-elev); border: 1px dashed var(--line);">
-          Next · Soon
-        </div>
-        <div class="p-5">
-          <span class="pill-ghost sans mb-2">待发布</span>
-          <h3 class="text-base font-semibold mt-2 tracking-tight">下一个 AI 作品</h3>
-          <p class="sans text-xs ink-mute mt-3 pt-3 border-t border-line">视频工作流 · 待发布</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="mt-10 text-center sans text-sm ink-mute">
-    持续累积 · 图片 · 视频 · AI 工作流产物
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- Just for Fun · 好玩的 -->
-<section id="fun" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Just for Fun</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">也捣鼓点好玩的</h2>
-  <p class="ink-soft text-lg mb-12">陪读之余，用 AI 做些不那么正经、但让人开心的小东西。</p>
-
-  <div class="card-glow overflow-hidden">
-    <div class="aspect-[2/1] flex items-center justify-center" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);">
-      <img src="./works/kangapet-roo.png" alt="桌面袋鼠桌宠" class="h-[86%] w-auto object-contain" style="filter:drop-shadow(0 8px 16px rgba(0,0,0,.18));" loading="lazy" />
-    </div>
-    <div class="p-7 md:p-8">
-      <div class="flex items-center gap-2 mb-3">
-        <span class="pill sans">桌面桌宠</span>
-        <span class="pill-ghost sans">Mac · 深夜造物</span>
-      </div>
-      <h3 class="text-xl font-semibold mb-3 tracking-tight">桌面袋鼠 · 陪读精神伴侣</h3>
-      <p class="text-sm ink-soft leading-relaxed">一只深夜用 Claude Code 做出来的桌面袋鼠，陪娃写作业时就蹦跶在屏幕角落。它不解决什么大问题，纯粹是想让「坐下来学习」这件事，多一点点陪伴和温度。</p>
-      <p class="sans text-xs ink-mute mt-4 pt-4 border-t border-line tracking-wider">
-        STACK · Tauri 桌面应用 · Claude Code · 袋鼠形象来自 Pexels（免费可商用）· 桌面 App（下载版整理中）
-      </p>
-    </div>
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- AI 工作流 -->
-<section id="workflows" class="max-w-5xl mx-auto px-6 py-28">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Built by Me</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">我自己写的 Claude Skills</h2>
-  <p class="ink-soft text-lg mb-12">为整理澳洲学校课件而生。一个英语 + 外贸出身的妈妈，亲手写的 AI 工作流 —— 从最初的单个指令文档，长成了带模板、参考资料和脚本的完整工具。</p>
-
-  <div class="grid md:grid-cols-2 gap-5">
-    <div class="card p-8">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="pill sans">Live</span>
-        <span class="sans text-xs ink-mute">v2.0</span>
-      </div>
-      <h3 class="text-xl font-semibold mb-3 tracking-tight">课件整理 · 学校</h3>
-      <p class="text-sm ink-soft leading-relaxed mb-5">把孩子从学校带回来的课件照片（HEIC/JPG）自动整理成中英双语笔记 + 打印版。现在内置 5 种课件形态自动识别 + 打印模板 + 水印脚本。</p>
-      <div class="text-xs ink-mute sans border-t border-line pt-4 leading-relaxed">手机拍的课件照片堆在相册里 → 一键变成可打印的双语辅导笔记</div>
-    </div>
-    <div class="card p-8">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="pill sans">Live</span>
-        <span class="sans text-xs ink-mute">v2.0</span>
-      </div>
-      <h3 class="text-xl font-semibold mb-3 tracking-tight">课件整理 · MathsOnline</h3>
-      <p class="text-sm ink-soft leading-relaxed mb-5">根据 MathsOnline Lesson Summary PDF 自动生成中英双语数学辅导笔记。内置渲染模板 + 单元目录 / 课程包 / 自动转 PDF，已覆盖 Year 6–9。</p>
-      <div class="text-xs ink-mute sans border-t border-line pt-4 leading-relaxed">澳洲数学教材中国家长看不懂 → AI 自动产出可打印的中英对照笔记</div>
-    </div>
-    <div class="card-glow p-8 md:col-span-2">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="pill sans">Live</span>
-        <span class="sans text-xs ink-mute">v1.0 · New</span>
-      </div>
-      <h3 class="text-xl font-semibold mb-3 tracking-tight">课件互动游戏</h3>
-      <p class="text-sm ink-soft leading-relaxed mb-5">把课件里的一个知识点，做成手机能玩的 HTML 互动小游戏：练习 + 答错讲解 + 自动错题本 + 难度三档。内置一套配置驱动的游戏引擎，换个知识点就能出新游戏。<span class="accent">上面"质数合数"和"角的类型"那两个游戏，就是它做的。</span></p>
-      <div class="text-xs ink-mute sans border-t border-line pt-4 leading-relaxed">静态笔记治不了"看懂了一做题又错" → 同一个知识点，变成娃抢着玩、还自动复盘的小游戏</div>
-    </div>
-  </div>
-
-  <div class="mt-10 text-center sans text-sm ink-mute">
-    More skills on the way · 每一个都从真实场景里生长出来
-  </div>
-</section>
-
-<div class="divider"></div>
-
-<!-- 联系 -->
-<section id="contact" class="max-w-5xl mx-auto px-6 py-28 text-center">
-  <div class="text-xs sans ink-soft uppercase tracking-[0.2em] mb-4">Get in touch</div>
-  <h2 class="text-3xl md:text-5xl font-bold mb-6 tracking-tight">想聊聊吗？</h2>
-  <p class="ink-soft text-lg mb-12 max-w-xl mx-auto leading-relaxed">
-    如果你正在准备移民澳洲，或者已经在悉尼/墨尔本陪娃读书，<br/>欢迎来加我，互相取暖、互通有无。
-  </p>
-  <div class="grid md:grid-cols-3 gap-4 max-w-3xl mx-auto sans">
-    <a href="#" class="card p-7 block text-left">
-      <div class="text-xs sans ink-mute uppercase tracking-wider mb-2">小红书</div>
-      <div class="font-semibold text-lg tracking-tight">@待填</div>
-      <div class="text-xs ink-soft mt-3">→ 关注</div>
-    </a>
-    <a href="#" class="card p-7 block text-left">
-      <div class="text-xs sans ink-mute uppercase tracking-wider mb-2">公众号</div>
-      <div class="font-semibold text-lg tracking-tight">@待填</div>
-      <div class="text-xs ink-soft mt-3">→ 订阅</div>
-    </a>
-    <a href="#" class="card p-7 block text-left">
-      <div class="text-xs sans ink-mute uppercase tracking-wider mb-2">飞书</div>
-      <div class="font-semibold text-lg tracking-tight">扫码加好友</div>
-      <div class="text-xs ink-soft mt-3">→ 待填</div>
-    </a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="border-t border-line">
-  <div class="max-w-5xl mx-auto px-6 py-10 sans text-xs ink-mute flex justify-between">
-    <div>© 2026 Jessica · Made with Claude Code in Sydney</div>
-    <div>v0.2 · Dark</div>
   </div>
 </footer>
+
+<script>
+  function toggleLang() {
+    var zh = document.body.classList.toggle('lang-zh');
+    document.documentElement.lang = zh ? 'zh-CN' : 'en';
+    document.title = zh ? 'Jessica · 一边陪读，一边用 AI 做东西'
+                        : 'Jessica · Learning, building with AI';
+  }
+</script>
 
 </body>
 </html>
