@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<!-- ⚠️ 必改：把下面 [英文标题] 换成真实课程名，否则浏览器标签会显示尴尬占位符 -->
+<title>Primes and Composites · MathsOnline 学习笔记</title>
+<style>
+  /* ============================================================
+     MathsOnline 对外分发版打印模板
+     · 主色：MathsOnline 蓝 #4a6fa5（统一色，不要改）
+     · 这是「分发/引流版」：干净、无个人隐私（无姓名/学校/学习记录）
+     · 填充方式：复制本文件 → 替换所有 [占位符] 与 <!-- 区块 --> → grep "[" 确认无残留
+     ============================================================ */
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --blue:      #4a6fa5;   /* MathsOnline 主蓝 */
+    --blue-dark: #34507a;
+    --blue-tint: #eef3f9;   /* 浅蓝底 */
+    --blue-line: #cdd9ea;
+    --ink:       #1f2937;
+    --grey:      #6b7280;
+    --grey-soft: #9aa3af;
+    --amber-bg:  #fff7ed;   /* 易错点 / 提示 */
+    --amber-ink: #9a5b1e;
+    --green-bg:  #f0fdf4;   /* 答案区 */
+    --green-ink: #15803d;
+  }
+  @page { size: A4; margin: 1cm 1.6cm; }
+  body {
+    /* 字体栈说明：Hiragino Sans GB 打头，因为 PingFang SC 在 headless Chrome 自动转 PDF 时
+       加载失败、且会"截断"后续 fallback（认了它就不往后退），导致正文中文整段渲染不出来。
+       Hiragino Sans GB / Heiti SC 在 headless 与普通浏览器下都稳，Windows 端走 Microsoft YaHei。 */
+    font-family: "Hiragino Sans GB", "Microsoft YaHei", "PingFang SC", "Heiti SC", Arial, sans-serif;
+    font-size: 12.5px; line-height: 1.6; color: var(--ink);
+    background: #e8edf2; padding: 16px;
+  }
+  .page-wrapper {
+    width: 210mm; max-width: 210mm; margin: 0 auto; background: #fff;
+    padding: 26px 30px 18px; box-shadow: 0 2px 14px rgba(0,0,0,.12);
+  }
+
+  /* ---------- 页眉（无姓名/无日期，纯课程信息）---------- */
+  .page-header { border-bottom: 3px solid var(--blue); padding-bottom: 12px; margin-bottom: 18px; }
+  .page-header .eyebrow { font-size: 11px; color: var(--blue); font-weight: 700; letter-spacing: .04em; }
+  .page-header .title   { font-size: 22px; font-weight: 800; color: var(--blue-dark); margin-top: 3px; }
+  .page-header .subtitle{ font-size: 13px; color: var(--grey); margin-top: 4px; }
+
+  /* ---------- 章节标题 ---------- */
+  .section { margin-bottom: 20px; }
+  .section-title {
+    display: inline-block; font-size: 13px; font-weight: 700; color: #fff;
+    background: var(--blue); padding: 5px 14px; border-radius: 6px; margin-bottom: 10px;
+  }
+
+  /* ---------- 概念讲解 ---------- */
+  .concept p { margin-bottom: 7px; }
+  .concept h4 { font-size: 13.5px; color: var(--blue-dark); margin: 12px 0 5px; }
+  .formula {
+    background: var(--blue-tint); border: 1px solid var(--blue-line); border-radius: 8px;
+    text-align: center; font-size: 18px; font-weight: 800; color: var(--blue-dark);
+    padding: 12px; margin: 10px 0; letter-spacing: .03em;
+  }
+  .ascii {
+    /* 等宽字体后挂一个中文字体：ASCII 图示的拉丁/数字仍走等宽对齐，
+       行尾的中文注释才不会在 headless 转 PDF 时消失（同 body 的 PingFang 坑）。 */
+    font-family: "SF Mono", "Menlo", Consolas, "Hiragino Sans GB", monospace; font-size: 12px;
+    background: #f7f9fc; border: 1px solid var(--blue-line); border-radius: 8px;
+    padding: 12px 14px; margin: 10px 0; white-space: pre; overflow-x: auto; line-height: 1.45;
+  }
+  .callout {
+    border-left: 4px solid var(--amber-ink); background: var(--amber-bg);
+    border-radius: 0 8px 8px 0; padding: 9px 13px; margin: 10px 0;
+    font-size: 12px; color: var(--amber-ink);
+  }
+
+  /* ---------- 通用表格（词汇表 / 实例表）---------- */
+  table.t {
+    width: 100%; border-collapse: collapse; border: 1px solid var(--blue-line);
+    border-radius: 8px; overflow: hidden; font-size: 12px; margin: 6px 0;
+  }
+  table.t th { background: var(--blue); color: #fff; text-align: left; padding: 7px 11px; font-weight: 700; }
+  table.t td { padding: 6px 11px; border-top: 1px solid var(--blue-line); vertical-align: top; }
+  table.t tr:nth-child(even) td { background: var(--blue-tint); }
+  table.t .en { font-weight: 700; color: var(--blue-dark); }
+
+  /* ---------- 练习题 ---------- */
+  .qgroup { margin-bottom: 12px; page-break-inside: avoid; }
+  .qgroup-label {
+    font-size: 12px; font-weight: 700; color: var(--blue-dark);
+    background: var(--blue-tint); border-radius: 6px; padding: 4px 11px; margin-bottom: 6px; display: inline-block;
+  }
+  .qgroup-label.challenge { color: var(--amber-ink); background: var(--amber-bg); }
+  ol.q { margin: 0 0 0 20px; }
+  ol.q li { margin-bottom: 6px; padding-left: 4px; }
+
+  /* ---------- 答案区（单独一块，可裁剪）---------- */
+  .answers {
+    margin-top: 22px; border: 2px dashed var(--green-ink); border-radius: 10px;
+    padding: 14px 18px; background: var(--green-bg); page-break-before: auto;
+  }
+  .answers .answers-title { font-size: 14px; font-weight: 800; color: var(--green-ink); margin-bottom: 8px; }
+  .answers .scissors { font-size: 11px; color: var(--grey-soft); font-weight: 600; margin-bottom: 10px;
+    border-top: 1px dashed var(--grey-soft); padding-top: 4px; }
+  .answers h5 { font-size: 12.5px; color: var(--green-ink); margin: 9px 0 3px; }
+  .answers ol { margin-left: 20px; } .answers li { margin-bottom: 4px; font-size: 12px; }
+
+  /* ---------- 页脚轻品牌 ---------- */
+  .footer {
+    margin-top: 22px; padding-top: 10px; border-top: 1px solid var(--blue-line);
+    text-align: center; font-size: 10.5px; color: var(--grey-soft);
+  }
+  .footer .brand { color: var(--blue); font-weight: 700; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page-wrapper { box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
+    .qgroup, .vocab, table.t { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ============ 页眉 ============ -->
+  <div class="page-header">
+    <div class="eyebrow">MathsOnline · Year 6 · Representing Numbers</div>
+    <div class="title">03 - Primes and Composites</div>
+    <div class="subtitle">质数与合数</div>
+  </div>
+
+  <!-- ============ 概念讲解 ============ -->
+  <div class="section concept">
+    <div class="section-title">🇨🇳 核心概念讲解</div>
+    <!-- 填：中文讲解。公式用 <div class="formula">…</div>；
+         图示用 <div class="ascii">…</div>；提示/陷阱用 <div class="callout">…</div>；
+         小标题用 <h4>…</h4> -->
+    <p>把一个数拆成<strong>因数</strong>来看：有的数只能被 1 和它自己整除，有的数还能被很多别的数整除。靠这一点，就能把整数分成<strong>质数</strong>和<strong>合数</strong>两类。</p>
+
+    <h4>核心定义</h4>
+    <table class="t">
+      <tr><th style="width:18%">类型</th><th style="width:32%">English</th><th>定义</th></tr>
+      <tr><td>质数 / 素数</td><td class="en">prime number</td><td>只有 <strong>2 个因数</strong>：1 和它本身</td></tr>
+      <tr><td>合数</td><td class="en">composite number</td><td>有 <strong>超过 2 个</strong>因数</td></tr>
+      <tr><td>既不是质数也不是合数</td><td class="en">neither</td><td><strong>1</strong> 很特殊——两者都不是！</td></tr>
+    </table>
+
+    <h4>用因数来理解</h4>
+    <div class="ascii">7 的因数：1 × 7        → 只有 2 个因数 → 质数 ✅
+6 的因数：1 × 6, 2 × 3  → 有 4 个因数   → 合数 ✅
+1 的因数：只有 1        → 只有 1 个因数 → 既不是质数也不是合数 ⚠️</div>
+
+    <h4>100 以内的质数（背下来很有用）</h4>
+    <div class="formula">2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97</div>
+    <p>100 以内一共 <strong>25</strong> 个质数。其中 <strong>2 是唯一的偶数质数</strong>，其余偶数都能被 2 整除，全是合数。</p>
+
+    <h4>判断示例（prime or composite?）</h4>
+    <table class="t">
+      <tr><th style="width:14%">数字</th><th style="width:42%">因数</th><th>类型 / English</th></tr>
+      <tr><td>7</td><td>1, 7（只有 2 个）</td><td>质数 · <span class="en">prime</span></td></tr>
+      <tr><td>6</td><td>1, 2, 3, 6（4 个）</td><td>合数 · <span class="en">composite</span></td></tr>
+      <tr><td>11</td><td>1, 11（只有 2 个）</td><td>质数 · <span class="en">prime</span></td></tr>
+      <tr><td>15</td><td>1, 3, 5, 15（4 个）</td><td>合数 · <span class="en">composite</span></td></tr>
+    </table>
+
+    <div class="callout">⚠️ 最容易错：把 <strong>1</strong> 当成质数。1 只有 1 个因数，<strong>既不是质数也不是合数（neither prime nor composite）</strong>，要单独记住。</div>
+  </div>
+
+  <!-- ============ 词汇表 ============ -->
+  <div class="section">
+    <div class="section-title">🔑 中英双语词汇表</div>
+    <table class="t">
+      <tr><th style="width:22%">中文</th><th style="width:28%">English</th><th>说明 / 例子</th></tr>
+      <!-- 每个词汇一行：<tr><td>中文</td><td class="en">English</td><td>说明</td></tr> -->
+      <tr><td>质数 / 素数</td><td class="en">prime number</td><td>只有 1 和它本身两个因数</td></tr>
+      <tr><td>合数</td><td class="en">composite number</td><td>有超过 2 个因数</td></tr>
+      <tr><td>因数</td><td class="en">factor</td><td>能整除某个数的数</td></tr>
+      <tr><td>整除</td><td class="en">divide into (evenly)</td><td>除得尽、没有余数</td></tr>
+      <tr><td>既不是质数也不是合数</td><td class="en">neither prime nor composite</td><td>专指 1</td></tr>
+    </table>
+  </div>
+
+  <!-- ============ 练习题（题目，全英文）============ -->
+  <div class="section">
+    <div class="section-title">💪 Practice Questions</div>
+
+    <div class="qgroup">
+      <span class="qgroup-label">Group 1 · Prime or composite?</span>
+      <ol class="q"><li>Is <strong>13</strong> prime or composite?</li><li>Is <strong>21</strong> prime or composite?</li><li>Is <strong>37</strong> prime or composite?</li><li>Is <strong>49</strong> prime or composite?</li><li>Is <strong>1</strong> prime or composite?</li></ol>
+    </div>
+    <div class="qgroup">
+      <span class="qgroup-label">Group 2 · Identify the prime numbers</span>
+      <ol class="q"><li>List <strong>all</strong> the prime numbers in this set: 4, 5, 9, 11, 15, 17, 20, 23.</li></ol>
+    </div>
+    <div class="qgroup">
+      <span class="qgroup-label challenge">Group 3 · ⭐ List the factors, then classify</span>
+      <ol class="q"><li>List all factors of <strong>18</strong>. Is 18 prime or composite?</li><li>List all factors of <strong>29</strong>. Is 29 prime or composite?</li></ol>
+    </div>
+  </div>
+
+  <!-- ============ 答案区（单独一块，可沿虚线裁剪）============ -->
+  <div class="answers">
+    <div class="answers-title">📋 Answers / 参考答案</div>
+    <div class="scissors">✂ - - - - - 给孩子做题时可沿此区裁开 - - - - -</div>
+    <h5>Group 1 — Prime or composite?</h5>
+    <ol><li><strong>prime</strong> 质数（factors: 1 and 13 only）</li><li><strong>composite</strong> 合数（factors: 1, 3, 7, 21）</li><li><strong>prime</strong> 质数（factors: 1 and 37 only）</li><li><strong>composite</strong> 合数（factors: 1, 7, 49）</li><li>⚠️ <strong>neither</strong> — 1 既不是质数也不是合数！</li></ol>
+    <h5>Group 2 — Identify the prime numbers</h5>
+    <ol><li><strong>5, 11, 17, 23</strong>（4, 9, 15, 20 都是合数）</li></ol>
+    <h5>Group 3 — List the factors, then classify</h5>
+    <ol><li>Factors of 18: 1, 2, 3, 6, 9, 18 → <strong>composite</strong> 合数</li><li>Factors of 29: 1, 29 → <strong>prime</strong> 质数</li></ol>
+  </div>
+
+  <!-- ============ 页脚轻品牌 ============ -->
+  <div class="footer">
+    本笔记根据 MathsOnline（澳洲）原版课程整理 · 仅供学习参考<br>
+    整理 · <span class="brand">悉尼陪读妈妈Jessica</span>
+  </div>
+
+</div><!-- /.page-wrapper -->
+</body>
+</html>
