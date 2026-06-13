@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>Angle Types and Labelling · MathsOnline 学习笔记</title>
+<style>
+  /* ============================================================
+     MathsOnline 对外分发版打印模板
+     · 主色：MathsOnline 蓝 #4a6fa5（统一色，不要改）
+     · 这是「分发/引流版」：干净、无个人隐私（无姓名/学校/学习记录）
+     · 填充方式：复制本文件 → 替换所有 [占位符] 与 <!-- 区块 --> → grep "[" 确认无残留
+     ============================================================ */
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --blue:      #4a6fa5;   /* MathsOnline 主蓝 */
+    --blue-dark: #34507a;
+    --blue-tint: #eef3f9;   /* 浅蓝底 */
+    --blue-line: #cdd9ea;
+    --ink:       #1f2937;
+    --grey:      #6b7280;
+    --grey-soft: #9aa3af;
+    --amber-bg:  #fff7ed;   /* 易错点 / 提示 */
+    --amber-ink: #9a5b1e;
+    --green-bg:  #f0fdf4;   /* 答案区 */
+    --green-ink: #15803d;
+  }
+  @page { size: A4; margin: 1cm 1.6cm; }
+  body {
+    /* 字体栈说明：Hiragino Sans GB 打头，因为 PingFang SC 在 headless Chrome 自动转 PDF 时
+       加载失败、且会"截断"后续 fallback（认了它就不往后退），导致正文中文整段渲染不出来。
+       Hiragino Sans GB / Heiti SC 在 headless 与普通浏览器下都稳，Windows 端走 Microsoft YaHei。 */
+    font-family: "Hiragino Sans GB", "Microsoft YaHei", "PingFang SC", "Heiti SC", Arial, sans-serif;
+    font-size: 12.5px; line-height: 1.6; color: var(--ink);
+    background: #e8edf2; padding: 16px;
+  }
+  .page-wrapper {
+    width: 210mm; max-width: 210mm; margin: 0 auto; background: #fff;
+    padding: 26px 30px 18px; box-shadow: 0 2px 14px rgba(0,0,0,.12);
+  }
+
+  /* ---------- 页眉（无姓名/无日期，纯课程信息）---------- */
+  .page-header { border-bottom: 3px solid var(--blue); padding-bottom: 12px; margin-bottom: 18px; }
+  .page-header .eyebrow { font-size: 11px; color: var(--blue); font-weight: 700; letter-spacing: .04em; }
+  .page-header .title   { font-size: 22px; font-weight: 800; color: var(--blue-dark); margin-top: 3px; }
+  .page-header .subtitle{ font-size: 13px; color: var(--grey); margin-top: 4px; }
+
+  /* ---------- 章节标题 ---------- */
+  .section { margin-bottom: 20px; }
+  .section-title {
+    display: inline-block; font-size: 13px; font-weight: 700; color: #fff;
+    background: var(--blue); padding: 5px 14px; border-radius: 6px; margin-bottom: 10px;
+  }
+
+  /* ---------- 概念讲解 ---------- */
+  .concept p { margin-bottom: 7px; }
+  .concept h4 { font-size: 13.5px; color: var(--blue-dark); margin: 12px 0 5px; }
+  .formula {
+    background: var(--blue-tint); border: 1px solid var(--blue-line); border-radius: 8px;
+    text-align: center; font-size: 18px; font-weight: 800; color: var(--blue-dark);
+    padding: 12px; margin: 10px 0; letter-spacing: .03em;
+  }
+  .ascii {
+    /* 等宽字体后挂一个中文字体：ASCII 图示的拉丁/数字仍走等宽对齐，
+       行尾的中文注释才不会在 headless 转 PDF 时消失（同 body 的 PingFang 坑）。 */
+    font-family: "SF Mono", "Menlo", Consolas, "Hiragino Sans GB", monospace; font-size: 12px;
+    background: #f7f9fc; border: 1px solid var(--blue-line); border-radius: 8px;
+    padding: 12px 14px; margin: 10px 0; white-space: pre; overflow-x: auto; line-height: 1.45;
+  }
+  .callout {
+    border-left: 4px solid var(--amber-ink); background: var(--amber-bg);
+    border-radius: 0 8px 8px 0; padding: 9px 13px; margin: 10px 0;
+    font-size: 12px; color: var(--amber-ink);
+  }
+
+  /* ---------- 通用表格（词汇表 / 实例表）---------- */
+  table.t {
+    width: 100%; border-collapse: collapse; border: 1px solid var(--blue-line);
+    border-radius: 8px; overflow: hidden; font-size: 12px; margin: 6px 0;
+  }
+  table.t th { background: var(--blue); color: #fff; text-align: left; padding: 7px 11px; font-weight: 700; }
+  table.t td { padding: 6px 11px; border-top: 1px solid var(--blue-line); vertical-align: top; }
+  table.t tr:nth-child(even) td { background: var(--blue-tint); }
+  table.t .en { font-weight: 700; color: var(--blue-dark); }
+
+  /* ---------- 练习题 ---------- */
+  .qgroup { margin-bottom: 12px; page-break-inside: avoid; }
+  .qgroup-label {
+    font-size: 12px; font-weight: 700; color: var(--blue-dark);
+    background: var(--blue-tint); border-radius: 6px; padding: 4px 11px; margin-bottom: 6px; display: inline-block;
+  }
+  .qgroup-label.challenge { color: var(--amber-ink); background: var(--amber-bg); }
+  ol.q { margin: 0 0 0 20px; }
+  ol.q li { margin-bottom: 6px; padding-left: 4px; }
+
+  /* ---------- 答案区（单独一块，可裁剪）---------- */
+  .answers {
+    margin-top: 22px; border: 2px dashed var(--green-ink); border-radius: 10px;
+    padding: 14px 18px; background: var(--green-bg); page-break-before: auto;
+  }
+  .answers .answers-title { font-size: 14px; font-weight: 800; color: var(--green-ink); margin-bottom: 8px; }
+  .answers .scissors { font-size: 11px; color: var(--grey-soft); font-weight: 600; margin-bottom: 10px;
+    border-top: 1px dashed var(--grey-soft); padding-top: 4px; }
+  .answers h5 { font-size: 12.5px; color: var(--green-ink); margin: 9px 0 3px; }
+  .answers ol { margin-left: 20px; } .answers li { margin-bottom: 4px; font-size: 12px; }
+
+  /* ---------- 页脚轻品牌 ---------- */
+  .footer {
+    margin-top: 22px; padding-top: 10px; border-top: 1px solid var(--blue-line);
+    text-align: center; font-size: 10.5px; color: var(--grey-soft);
+  }
+  .footer .brand { color: var(--blue); font-weight: 700; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page-wrapper { box-shadow: none; width: 100%; max-width: 100%; padding: 0; }
+    .qgroup, .vocab, table.t { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ============ 页眉 ============ -->
+  <div class="page-header">
+    <div class="eyebrow">MathsOnline · Year 6 · Geometric Measure — Angles</div>
+    <div class="title">01 - Angle Types and Labelling</div>
+    <div class="subtitle">角的类型与标注</div>
+  </div>
+
+  <!-- ============ 概念讲解 ============ -->
+  <div class="section concept">
+    <div class="section-title">🇨🇳 核心概念讲解</div>
+    <p>角就是两条射线从同一个点出发所形成的"开口"。开口越大，角越大。数学里我们用"度（°）"来量角，就像用厘米量长度一样。</p>
+
+    <h4>角的 6 种类型</h4>
+    <table class="t">
+      <tr><th style="width:14%">类型</th><th style="width:26%">English</th><th style="width:30%">大小范围</th><th>记忆方法</th></tr>
+      <tr><td>锐角</td><td class="en">Acute angle</td><td>0° 到 90° 之间</td><td>"尖尖的角"，比直角小</td></tr>
+      <tr><td>直角</td><td class="en">Right angle</td><td>恰好 = 90°</td><td>正方形的角，有小方框标记</td></tr>
+      <tr><td>钝角</td><td class="en">Obtuse angle</td><td>90° 到 180° 之间</td><td>"胖胖的角"，比直角大</td></tr>
+      <tr><td>平角</td><td class="en">Straight angle</td><td>恰好 = 180°</td><td>一条直线，像躺平了</td></tr>
+      <tr><td>优角</td><td class="en">Reflex angle</td><td>180° 到 360° 之间</td><td>超过半圈的"大肚子角"</td></tr>
+      <tr><td>周角</td><td class="en">Revolution</td><td>恰好 = 360°</td><td>转一整圈回到原点</td></tr>
+    </table>
+    <div class="ascii">锐角 &lt; 90° &lt; 直角 = 90° &lt; 钝角 &lt; 180° = 平角 &lt; 优角 &lt; 360° = 周角</div>
+
+    <h4>如何用字母命名角</h4>
+    <p>角的顶点（两条射线的交点）是关键！命名规则：</p>
+    <p>· <strong>用 3 个字母</strong>：格式为 ∠ABC，其中 <strong>B 是顶点</strong>，A 和 C 在两条射线上各一个。<br>
+    · <strong>用 1 个字母</strong>：如果顶点处只有一个角，可以直接写 ∠B。<br>
+    · <strong>注意</strong>：如果顶点处有多个角，就<strong>不能</strong>只用顶点字母，否则不清楚是哪个角。</p>
+
+    <h4>例题详解</h4>
+    <p><strong>例 (a)：</strong> 图中有顶点 R，两条射线分别经过点 P 和点 Q。</p>
+    <p>· 正确命名：∠PRQ 或 ∠QRP 或 ∠R（因为顶点处只有一个角）<br>
+    · 规律：顶点字母 <strong>R</strong> 一定在中间！</p>
+    <p><strong>例 (b)：</strong> 图中有顶点 S，射线分别经过 M、N（在一条直线上）和 T。</p>
+    <p>· 正确命名：∠MST 或 ∠TSM<br>
+    · <strong>错误</strong>：不能写 ∠S，因为顶点 S 处有多个角（S 在直线 MN 上，还有射线 ST），不清楚是哪个角。</p>
+
+    <div class="callout">⚠️ 命名角时务必把<strong>顶点字母放中间</strong>（∠ABC 的 B 是顶点）——这是最常见错误。只有当顶点处<strong>只有一个角</strong>时才能用单字母（如 ∠R）。</div>
+  </div>
+
+  <!-- ============ 词汇表 ============ -->
+  <div class="section">
+    <div class="section-title">🔑 中英双语词汇表</div>
+    <table class="t">
+      <tr><th style="width:22%">中文</th><th style="width:28%">English</th><th>说明 / 例子</th></tr>
+      <tr><td>角</td><td class="en">Angle</td><td>两条射线的夹角</td></tr>
+      <tr><td>度</td><td class="en">Degree (°)</td><td>角的单位</td></tr>
+      <tr><td>顶点</td><td class="en">Vertex</td><td>两条射线的交点</td></tr>
+      <tr><td>射线</td><td class="en">Ray</td><td>从一点出发，向一个方向无限延伸</td></tr>
+      <tr><td>锐角</td><td class="en">Acute angle</td><td>0° &lt; 角 &lt; 90°</td></tr>
+      <tr><td>直角</td><td class="en">Right angle</td><td>角 = 90°，用小方框表示</td></tr>
+      <tr><td>钝角</td><td class="en">Obtuse angle</td><td>90° &lt; 角 &lt; 180°</td></tr>
+      <tr><td>平角</td><td class="en">Straight angle</td><td>角 = 180°，看起来是一条直线</td></tr>
+      <tr><td>优角（反射角）</td><td class="en">Reflex angle</td><td>180° &lt; 角 &lt; 360°</td></tr>
+      <tr><td>周角</td><td class="en">Revolution</td><td>角 = 360°，转完整一圈</td></tr>
+      <tr><td>分类</td><td class="en">Classify</td><td>按类型分组</td></tr>
+      <tr><td>标注</td><td class="en">Label / Name</td><td>给角取名字</td></tr>
+    </table>
+  </div>
+
+  <!-- ============ 练习题（题目，全英文）============ -->
+  <div class="section">
+    <div class="section-title">💪 Practice Questions</div>
+
+    <div class="qgroup">
+      <span class="qgroup-label">Group 1 · Basic Practice — Classify the Angles</span>
+      <ol class="q"><li>An angle of 35°. What type of angle is it?</li><li>An angle of 90°. What type of angle is it?</li><li>An angle of 155°. What type of angle is it?</li><li>An angle of 200°. What type of angle is it?</li><li>An angle of 180°. What type of angle is it?</li></ol>
+    </div>
+    <div class="qgroup">
+      <span class="qgroup-label">Group 2 · Intermediate Practice — Naming Angles</span>
+      <ol class="q" start="6"><li>A triangle has vertices A, B and C. Write the name of the angle at vertex B (give two ways).</li><li>An angle has vertex X, with rays passing through points Y and Z. Name this angle (give at least two ways).</li><li>Point M lies on the straight line PQ, and a ray points from M to N. Write the correct name of the marked angle. Why can't it be named ∠M?</li></ol>
+    </div>
+    <div class="qgroup">
+      <span class="qgroup-label challenge">Group 3 · ⭐ Challenge Problems</span>
+      <ol class="q" start="9"><li>A clock shows 3:00. What type of angle is formed between the hour hand and the minute hand, and how many degrees is it?</li><li>A clock shows 6:00. What type of angle is formed between the hour hand and the minute hand, and how many degrees is it?</li></ol>
+    </div>
+  </div>
+
+  <!-- ============ 答案区（单独一块，可沿虚线裁剪）============ -->
+  <div class="answers">
+    <div class="answers-title">📋 Answers / 参考答案</div>
+    <div class="scissors">✂ - - - - - 给孩子做题时可沿此区裁开 - - - - -</div>
+    <h5>Group 1 — Classify the Angles</h5>
+    <ol><li>锐角 Acute angle（35° 在 0° 到 90° 之间）</li><li>直角 Right angle（恰好等于 90°）</li><li>钝角 Obtuse angle（155° 在 90° 到 180° 之间）</li><li>优角 Reflex angle（200° 在 180° 到 360° 之间）</li><li>平角 Straight angle（恰好等于 180°）</li></ol>
+    <h5>Group 2 — Naming Angles</h5>
+    <ol start="6"><li>∠ABC 或 ∠CBA 或 ∠B（顶点只有一个角时可用单字母）</li><li>∠YXZ 或 ∠ZXY 或 ∠X</li><li>正确写法：∠PMN 或 ∠NMP 或 ∠NMQ 或 ∠QMN；不能写 ∠M 是因为 M 在直线上，顶点处有两个角（直线两侧各一个角），写 ∠M 不清楚指哪个</li></ol>
+    <h5>Group 3 — Challenge Problems</h5>
+    <ol start="9"><li>直角（Right angle），90°（时针指 3，分针指 12，夹角为 1/4 圆）</li><li>平角（Straight angle），180°（时针指 6，分针指 12，两针成一条直线）</li></ol>
+  </div>
+
+  <!-- ============ 页脚轻品牌 ============ -->
+  <div class="footer">
+    本笔记根据 MathsOnline（澳洲）原版课程整理 · 仅供学习参考<br>
+    整理 · <span class="brand">悉尼陪读妈妈Jessica</span>
+  </div>
+
+</div><!-- /.page-wrapper -->
+</body>
+</html>
