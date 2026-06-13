@@ -7,16 +7,16 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #f3efe6;
-    --bg-soft: #ece6d9;
-    --ink: #1b1916;
-    --ink-soft: #6c6557;
-    --ink-mute: #a59c8a;
-    --accent: #b1502e;
-    --line: #d9d1c1;
+    --bg: #0c0b09;
+    --bg-soft: #131210;
+    --ink: #ece6d8;
+    --ink-soft: #948b7c;
+    --ink-mute: #5a5448;
+    --accent: #f0a93b;
+    --line: #221f1a;
   }
   * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -28,187 +28,168 @@
   .accent { color: var(--accent); }
   .ink-soft { color: var(--ink-soft); }
   .ink-mute { color: var(--ink-mute); }
-  .kicker { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-mute); }
 
   /* i18n: English default; toggle adds .lang-zh */
   .lzh { display: none; }
   body.lang-zh .len { display: none; }
   body.lang-zh .lzh { display: contents; }
 
-  .rule { height: 1px; background: var(--line); }
-  .rule-ink { height: 2px; background: var(--ink); }
+  /* hero */
+  .hero { position: relative; min-height: 88vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden;
+    background: radial-gradient(ellipse 90% 70% at 72% 8%, rgba(240,169,59,0.10), transparent 55%), var(--bg); }
+  .hero-grid { position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(to right, rgba(236,230,216,0.022) 1px, transparent 1px), linear-gradient(to bottom, rgba(236,230,216,0.022) 1px, transparent 1px);
+    background-size: 64px 64px; mask-image: radial-gradient(ellipse 80% 70% at 60% 30%, black 20%, transparent 78%); }
+  .pill { display: inline-flex; align-items: center; gap: 7px; background: rgba(240,169,59,0.08); color: var(--accent);
+    border: 1px solid rgba(240,169,59,0.22); padding: 5px 13px; border-radius: 999px; font-size: 12px; letter-spacing: 0.02em; }
+  .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); display: inline-block; }
 
-  /* masthead */
-  .masthead { border-bottom: 1px solid var(--line); }
-
-  /* in-this-issue strip */
-  .issue-strip { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-
-  /* works grid */
-  .works { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 36px; }
-  @media (max-width: 760px) { .works { grid-template-columns: 1fr; gap: 36px; } }
-  .work { display: block; }
-  .work .frame {
-    border: 1px solid var(--line); overflow: hidden; background: var(--bg-soft);
-    transition: border-color 0.3s ease;
-  }
-  .work img {
-    width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top center;
-    display: block; transition: transform 0.6s ease, filter 0.3s ease; filter: saturate(0.97);
-  }
-  a.work:hover .frame { border-color: var(--ink); }
-  a.work:hover img { transform: scale(1.02); }
-  .work-no { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--accent); }
-  .work-title { font-family: "Playfair Display", serif; font-size: 21px; font-weight: 600; letter-spacing: -0.01em; margin: 2px 0 0; }
-  a.work:hover .work-title { text-decoration: underline; text-underline-offset: 3px; }
-  .work-meta { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-mute); }
-
-  .lang-btn { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--ink-soft);
-    border: 1px solid var(--line); border-radius: 2px; padding: 5px 9px; background: transparent; cursor: pointer;
-    transition: border-color 0.2s, color 0.2s; }
-  .lang-btn:hover { border-color: var(--ink); color: var(--ink); }
   .navlink { color: var(--ink-soft); transition: color 0.2s; }
-  .navlink:hover { color: var(--accent); }
-  .soon { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--ink-mute); border: 1px solid var(--line); border-radius: 2px; padding: 1px 6px; }
+  .navlink:hover { color: var(--ink); }
+  .lang-btn { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--ink-soft);
+    border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; background: transparent; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* marquee */
+  .marquee { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; background: var(--bg-soft); }
+  .marquee-track { display: inline-block; padding: 14px 0; animation: scroll-x 28s linear infinite; }
+  .marquee-track span { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); }
+  .marquee-track .accent { color: var(--accent); }
+  @keyframes scroll-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* work list */
+  .work-row { display: flex; align-items: baseline; justify-content: space-between; gap: 18px;
+    padding: 26px 4px; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: padding-left 0.3s ease; }
+  .work-list .work-row:last-child { border-bottom: 1px solid var(--line); }
+  .work-row:hover { padding-left: 14px; }
+  .row-left { display: flex; align-items: baseline; gap: 18px; min-width: 0; }
+  .rownum { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--accent); flex: 0 0 auto; }
+  .rowtitle { font-family: "Playfair Display", serif; font-size: clamp(1.4rem, 3.2vw, 2.3rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; transition: color 0.2s; }
+  .work-row:hover .rowtitle { color: var(--accent); }
+  .rowmeta { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-mute); white-space: nowrap; flex: 0 0 auto; }
+  .row-thumb { display: none; }
+  .soon { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mute); border: 1px solid var(--line); border-radius: 999px; padding: 1px 6px; }
+
+  /* floating hover preview (desktop) */
+  #hoverPreview { position: fixed; top: 0; left: 0; width: 340px; max-width: 34vw; aspect-ratio: 16/10; object-fit: cover; object-position: top center;
+    border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 24px 60px rgba(0,0,0,0.6); opacity: 0; transform: translateY(-50%);
+    transition: opacity 0.25s ease; pointer-events: none; z-index: 60; background: var(--bg-soft); }
+
+  @media (max-width: 760px) {
+    #hoverPreview { display: none !important; }
+    .work-row { flex-direction: column; align-items: stretch; gap: 12px; }
+    .work-row:hover { padding-left: 4px; }
+    .row-thumb { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; object-position: top center; border: 1px solid var(--line); border-radius: 8px; }
+    .rowmeta { align-self: flex-start; }
+  }
 </style>
 </head>
 <body>
 
-<!-- MASTHEAD -->
-<header class="masthead sticky top-0 z-50" style="background: rgba(243,239,230,0.86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
-  <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-    <a href="#" class="serif-en text-xl font-semibold tracking-tight">Jessica</a>
+<!-- NAV -->
+<nav class="sticky top-0 z-50 border-b border-[#221f1a]" style="background: rgba(12,11,9,0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+  <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#" class="flex items-baseline gap-3">
+      <span class="text-base font-semibold tracking-tight">Jessica<span class="accent">.</span></span>
+      <span class="mono text-[10px] tracking-[0.18em] uppercase ink-mute hidden sm:inline">Learn in public · Build in public</span>
+    </a>
     <div class="flex items-center gap-5 text-sm">
       <a href="#work" class="navlink"><span class="len">Work</span><span class="lzh">作品</span></a>
       <a href="#contact" class="navlink"><span class="len">Contact</span><span class="lzh">联系</span></a>
       <button class="lang-btn" onclick="toggleLang()"><span class="len">中文</span><span class="lzh">EN</span></button>
     </div>
   </div>
-</header>
+</nav>
 
-<!-- COVER / HERO -->
-<section class="max-w-5xl mx-auto px-6">
-  <div class="flex items-center justify-between py-5 kicker">
-    <span>Learn in public · Build in public</span>
-    <span class="hidden sm:inline">Est. 2026 · Sydney</span>
-  </div>
-  <div class="rule-ink"></div>
-
-  <div class="py-16 md:py-24">
-    <div class="kicker mb-6">
-      <span class="len">A Sydney mum of two · Self-taught with AI</span>
-      <span class="lzh">悉尼两娃陪读妈妈 · 自学 AI</span>
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-grid"></div>
+  <div class="relative max-w-5xl mx-auto px-6 w-full">
+    <div class="pill mb-8"><span class="dot"></span>
+      <span class="len">Sydney · Mum of two · Self-taught with AI</span>
+      <span class="lzh">悉尼 · 两娃妈妈 · 自学 AI</span>
     </div>
-    <h1 class="serif-en tracking-tight" style="font-size: clamp(2.6rem, 7.5vw, 6rem); font-weight: 600; line-height: 1.02;">
-      <span class="len">Learning &amp; building<br/>with <span class="italic accent">AI</span>.</span>
+    <h1 class="leading-[1.04] tracking-tight mb-8" style="font-size: clamp(2.6rem, 7vw, 5.5rem); font-weight: 600;">
+      <span class="len serif-en">Learning &amp; building<br/><span class="italic accent">with AI</span>.</span>
       <span class="lzh serif-zh" style="font-weight:600;">一边陪读，<br/>一边用 <span class="accent">AI</span> 做东西。</span>
     </h1>
-    <p class="mt-9 max-w-xl text-lg leading-relaxed ink-soft">
-      <span class="len">Turning everyday education problems into things you can open, play with, and actually use.</span>
-      <span class="lzh serif-zh">把日常教育里的真实问题，做成能打开、能玩、能用的东西。</span>
+    <p class="ink-soft max-w-xl text-lg leading-relaxed">
+      <span class="len">A Sydney mum of two — turning everyday education problems into things you can open, play with, and actually use.</span>
+      <span class="lzh serif-zh">悉尼两娃陪读妈妈，把日常教育里的真实问题，做成能打开、能玩、能用的东西。</span>
     </p>
+    <a href="#work" class="inline-flex items-center gap-2 mt-12 text-sm ink-soft hover:text-[#f0a93b] transition group">
+      <span class="len">See the work</span><span class="lzh">看作品</span>
+      <span class="group-hover:translate-y-0.5 transition">↓</span>
+    </a>
   </div>
-</section>
+</header>
 
-<!-- IN THIS ISSUE -->
-<div class="issue-strip">
-  <div class="max-w-5xl mx-auto px-6 py-4 flex flex-wrap items-center gap-x-6 gap-y-2 kicker">
-    <span class="ink-soft"><span class="len">In this issue</span><span class="lzh">本期收录</span></span>
-    <span><span class="len">Courseware</span><span class="lzh">课件</span></span>
-    <span class="accent">·</span>
-    <span><span class="len">Interactive Games</span><span class="lzh">互动游戏</span></span>
-    <span class="accent">·</span>
-    <span><span class="len">Bilingual Notes</span><span class="lzh">双语笔记</span></span>
-    <span class="accent">·</span>
-    <span><span class="len">HTML Decks</span><span class="lzh">HTML 演示</span></span>
-    <span class="accent">·</span>
-    <span><span class="len">Desktop Apps</span><span class="lzh">桌面应用</span></span>
+<!-- MARQUEE -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="len">Courseware&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">Interactive Games</span>&nbsp;&nbsp;—&nbsp;&nbsp;Bilingual Notes&nbsp;&nbsp;—&nbsp;&nbsp;HTML Decks&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">Desktop Apps</span>&nbsp;&nbsp;—&nbsp;&nbsp;Print-ready PDFs&nbsp;&nbsp;—&nbsp;&nbsp;Courseware&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">Interactive Games</span>&nbsp;&nbsp;—&nbsp;&nbsp;Bilingual Notes&nbsp;&nbsp;—&nbsp;&nbsp;HTML Decks&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">Desktop Apps</span>&nbsp;&nbsp;—&nbsp;&nbsp;Print-ready PDFs&nbsp;&nbsp;—&nbsp;&nbsp;</span>
+    <span class="lzh">课件&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">互动小游戏</span>&nbsp;&nbsp;—&nbsp;&nbsp;双语笔记&nbsp;&nbsp;—&nbsp;&nbsp;HTML 演示&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">桌面应用</span>&nbsp;&nbsp;—&nbsp;&nbsp;可打印 PDF&nbsp;&nbsp;—&nbsp;&nbsp;课件&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">互动小游戏</span>&nbsp;&nbsp;—&nbsp;&nbsp;双语笔记&nbsp;&nbsp;—&nbsp;&nbsp;HTML 演示&nbsp;&nbsp;—&nbsp;&nbsp;<span class="accent">桌面应用</span>&nbsp;&nbsp;—&nbsp;&nbsp;可打印 PDF&nbsp;&nbsp;—&nbsp;&nbsp;</span>
   </div>
 </div>
 
-<!-- WORK -->
-<section id="work" class="max-w-5xl mx-auto px-6 py-20 md:py-28">
-  <div class="flex items-baseline justify-between mb-12">
-    <h2 class="serif-en tracking-tight" style="font-size: clamp(1.7rem,4vw,2.6rem); font-weight:600;">
+<!-- WORK LIST -->
+<section id="work" class="max-w-5xl mx-auto px-6 py-24 md:py-32">
+  <div class="flex items-baseline justify-between mb-10">
+    <h2 class="serif-en tracking-tight" style="font-size: clamp(1.8rem,4vw,3rem); font-weight:600;">
       <span class="len">Selected Work</span><span class="lzh serif-zh">作品精选</span>
     </h2>
     <div class="mono text-xs ink-mute">2026.05 — 2026.06</div>
   </div>
 
-  <div class="works">
-    <!-- 01 -->
-    <a class="work group" href="./works/use-ai-ppt/index.html" target="_blank">
-      <div class="frame"><img src="./works/shots/use-ai.png" alt="Use AI deck" loading="lazy" /></div>
-      <div class="flex items-baseline justify-between mt-4">
-        <div><span class="work-no">01</span>
-          <h3 class="work-title"><span class="len">Keeping Up with AI</span><span class="lzh serif-zh">用好 AI，跟上时代</span></h3>
-        </div>
-        <div class="work-meta">2026.06.02 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
-      </div>
+  <div class="work-list" id="worklist">
+    <a class="work-row" href="./works/use-ai-ppt/index.html" target="_blank" data-img="./works/shots/use-ai.png">
+      <img class="row-thumb" src="./works/shots/use-ai.png" alt="" loading="lazy" />
+      <div class="row-left"><span class="rownum">01</span>
+        <span class="rowtitle"><span class="len">Keeping Up with AI</span><span class="lzh serif-zh">用好 AI，跟上时代</span></span></div>
+      <div class="rowmeta">2026.06 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
     </a>
 
-    <!-- 02 -->
-    <a class="work group" href="./works/03-primes-composites.html" target="_blank">
-      <div class="frame"><img src="./works/shots/primes-ppt.png" alt="Primes and Composites slides" loading="lazy" /></div>
-      <div class="flex items-baseline justify-between mt-4">
-        <div><span class="work-no">02</span>
-          <h3 class="work-title"><span class="len">Primes &amp; Composites</span><span class="lzh serif-zh">质数与合数</span></h3>
-        </div>
-        <div class="work-meta">2026.05.27 · <span class="len">Maths Slides</span><span class="lzh">数学课件</span></div>
-      </div>
+    <a class="work-row" href="./works/03-primes-composites.html" target="_blank" data-img="./works/shots/primes-ppt.png">
+      <img class="row-thumb" src="./works/shots/primes-ppt.png" alt="" loading="lazy" />
+      <div class="row-left"><span class="rownum">02</span>
+        <span class="rowtitle"><span class="len">Primes &amp; Composites</span><span class="lzh serif-zh">质数与合数</span></span></div>
+      <div class="rowmeta">2026.05 · <span class="len">Maths Slides</span><span class="lzh">数学课件</span></div>
     </a>
 
-    <!-- 03 -->
-    <a class="work group" href="./works/angles-game.html" target="_blank">
-      <div class="frame"><img src="./works/shots/angles-game-m.png" alt="Angle Catcher game" loading="lazy" /></div>
-      <div class="flex items-baseline justify-between mt-4">
-        <div><span class="work-no">03</span>
-          <h3 class="work-title"><span class="len">Angle Catcher</span><span class="lzh serif-zh">角的类型大作战</span></h3>
-        </div>
-        <div class="work-meta">2026.06.12 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
-      </div>
+    <a class="work-row" href="./works/angles-game.html" target="_blank" data-img="./works/shots/angles-game-m.png">
+      <img class="row-thumb" src="./works/shots/angles-game-m.png" alt="" loading="lazy" />
+      <div class="row-left"><span class="rownum">03</span>
+        <span class="rowtitle"><span class="len">Angle Catcher</span><span class="lzh serif-zh">角的类型大作战</span></span></div>
+      <div class="rowmeta">2026.06 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
     </a>
 
-    <!-- 04 -->
-    <a class="work group" href="./works/03-primes-composites-note.html" target="_blank">
-      <div class="frame"><img src="./works/shots/primes-note.png" alt="Bilingual lesson note" loading="lazy" /></div>
-      <div class="flex items-baseline justify-between mt-4">
-        <div><span class="work-no">04</span>
-          <h3 class="work-title"><span class="len">Bilingual Lesson Notes</span><span class="lzh serif-zh">双语课件笔记</span></h3>
-        </div>
-        <div class="work-meta">2026.05.27 · <span class="len">Print-ready</span><span class="lzh">可打印</span></div>
-      </div>
+    <a class="work-row" href="./works/03-primes-composites-note.html" target="_blank" data-img="./works/shots/primes-note.png">
+      <img class="row-thumb" src="./works/shots/primes-note.png" alt="" loading="lazy" />
+      <div class="row-left"><span class="rownum">04</span>
+        <span class="rowtitle"><span class="len">Bilingual Lesson Notes</span><span class="lzh serif-zh">双语课件笔记</span></span></div>
+      <div class="rowmeta">2026.05 · <span class="len">Print-ready</span><span class="lzh">可打印</span></div>
     </a>
 
-    <!-- 05 -->
-    <a class="work group" href="./works/03-primes-composites-game.html" target="_blank">
-      <div class="frame"><img src="./works/shots/primes-game-m.png" alt="Prime Catcher game" loading="lazy" /></div>
-      <div class="flex items-baseline justify-between mt-4">
-        <div><span class="work-no">05</span>
-          <h3 class="work-title"><span class="len">Prime Catcher</span><span class="lzh serif-zh">质数大作战</span></h3>
-        </div>
-        <div class="work-meta">2026.05.27 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
-      </div>
+    <a class="work-row" href="./works/03-primes-composites-game.html" target="_blank" data-img="./works/shots/primes-game-m.png">
+      <img class="row-thumb" src="./works/shots/primes-game-m.png" alt="" loading="lazy" />
+      <div class="row-left"><span class="rownum">05</span>
+        <span class="rowtitle"><span class="len">Prime Catcher</span><span class="lzh serif-zh">质数大作战</span></span></div>
+      <div class="rowmeta">2026.05 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
     </a>
 
-    <!-- 06 -->
-    <div class="work">
-      <div class="frame"><img src="./works/kangapet-roo.png" alt="Desktop kangaroo pet" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" /></div>
-      <div class="flex items-baseline justify-between mt-4">
-        <div><span class="work-no">06</span>
-          <h3 class="work-title"><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></h3>
-        </div>
-        <div class="work-meta"><span class="soon"><span class="len">soon</span><span class="lzh">整理中</span></span> · <span class="len">Mac App</span><span class="lzh">桌面应用</span></div>
-      </div>
-    </div>
+    <a class="work-row" href="#contact" data-img="./works/kangapet-roo.png">
+      <img class="row-thumb" src="./works/kangapet-roo.png" alt="" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" />
+      <div class="row-left"><span class="rownum">06</span>
+        <span class="rowtitle"><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></span></div>
+      <div class="rowmeta"><span class="soon"><span class="len">soon</span><span class="lzh">整理中</span></span> · <span class="len">Mac App</span><span class="lzh">桌面应用</span></div>
+    </a>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="border-t border-[#d9d1c1]">
-  <div class="max-w-5xl mx-auto px-6 py-20 md:py-24">
-    <p class="serif-en tracking-tight mb-3" style="font-size: clamp(1.6rem,3.5vw,2.4rem); font-weight:600;">
+<section id="contact" class="border-t border-[#221f1a]">
+  <div class="max-w-5xl mx-auto px-6 py-20 md:py-28">
+    <p class="serif-en text-2xl md:text-3xl tracking-tight mb-3">
       <span class="len">Want to swap notes?</span><span class="lzh serif-zh">想聊聊？</span>
     </p>
     <p class="ink-soft max-w-md leading-relaxed mb-10">
@@ -216,37 +197,49 @@
       <span class="lzh serif-zh">准备移民澳洲，或已经在这边陪娃读书？欢迎来加我，互通有无。</span>
     </p>
     <div class="grid grid-cols-3 gap-4 max-w-lg">
-      <a href="#" class="border border-[#d9d1c1] p-4 hover:border-[#1b1916] transition">
-        <div class="kicker mb-1">RED · 小红书</div>
-        <div class="serif-en font-semibold">@TBA</div>
-      </a>
-      <a href="#" class="border border-[#d9d1c1] p-4 hover:border-[#1b1916] transition">
-        <div class="kicker mb-1">WeChat · 公众号</div>
-        <div class="serif-en font-semibold">@TBA</div>
-      </a>
-      <a href="#" class="border border-[#d9d1c1] p-4 hover:border-[#1b1916] transition">
-        <div class="kicker mb-1">Feishu · 飞书</div>
-        <div class="serif-en font-semibold"><span class="len">Scan</span><span class="lzh">扫码</span></div>
-      </a>
+      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition">
+        <div class="text-xs ink-mute mb-1">RED · 小红书</div><div class="font-semibold">@TBA</div></a>
+      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition">
+        <div class="text-xs ink-mute mb-1">WeChat · 公众号</div><div class="font-semibold">@TBA</div></a>
+      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition">
+        <div class="text-xs ink-mute mb-1">Feishu · 飞书</div><div class="font-semibold"><span class="len">Scan</span><span class="lzh">扫码</span></div></a>
+    </div>
+    <div class="mt-16 pt-6 border-t border-[#221f1a] flex items-center justify-between mono text-xs ink-mute">
+      <span>© 2026 Jessica · Learn in public · Made with Claude Code in Sydney</span>
+      <span>v3</span>
     </div>
   </div>
 </section>
 
-<!-- COLOPHON -->
-<footer class="border-t border-[#d9d1c1]">
-  <div class="max-w-5xl mx-auto px-6 py-8 flex items-center justify-between kicker">
-    <span>© 2026 Jessica · Made with Claude Code in Sydney</span>
-    <a href="./minimal.html" class="navlink"><span class="len">View: Minimal ↗</span><span class="lzh">看极简版 ↗</span></a>
-  </div>
-</footer>
+<img id="hoverPreview" src="" alt="" />
 
 <script>
   function toggleLang() {
     var zh = document.body.classList.toggle('lang-zh');
     document.documentElement.lang = zh ? 'zh-CN' : 'en';
-    document.title = zh ? 'Jessica · 一边陪读，一边用 AI 做东西'
-                        : 'Jessica · Learning, building with AI';
+    document.title = zh ? 'Jessica · 一边陪读，一边用 AI 做东西' : 'Jessica · Learning, building with AI';
   }
+  (function () {
+    var preview = document.getElementById('hoverPreview');
+    var list = document.getElementById('worklist');
+    var rows = document.querySelectorAll('.work-row');
+    rows.forEach(function (r) {
+      r.addEventListener('mouseenter', function () {
+        var src = r.getAttribute('data-img');
+        if (src) { preview.src = src; preview.style.opacity = '1'; }
+      });
+      r.addEventListener('mouseleave', function () { preview.style.opacity = '0'; });
+    });
+    if (list) {
+      list.addEventListener('mousemove', function (e) {
+        var w = 340, pad = 24;
+        var left = e.clientX + pad;
+        if (left + w > window.innerWidth - 12) left = e.clientX - w - pad;
+        preview.style.left = left + 'px';
+        preview.style.top = e.clientY + 'px';
+      });
+    }
+  })();
 </script>
 
 </body>
