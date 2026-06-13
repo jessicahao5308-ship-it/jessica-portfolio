@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>世界杯大冒险 · 2026</title>
+<meta name="description" content="带球躲过抢断者、闯关答题，认识 2026 世界杯球星、国旗和规则。单人/双人，电脑手机都能玩。">
+<meta property="og:title" content="⚽ 世界杯大冒险 · 2026">
+<meta property="og:description" content="带球躲过抢断者、闯关答题，认识 2026 世界杯球星、国旗和规则。单人/双人，电脑手机都能玩。">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: linear-gradient(160deg, #0b3d2e 0%, #07261d 100%);
+    color: #fff; display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh; padding: 16px; user-select: none;
+  }
+  h1 { font-size: 26px; letter-spacing: 1px; margin-bottom: 4px;
+       text-shadow: 0 2px 6px rgba(0,0,0,.4); }
+  .sub { font-size: 13px; color: #ffd95e; margin-bottom: 10px; }
+  #hud {
+    width: 760px; max-width: 100%; display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 6px; font-size: 14px; gap: 8px; flex-wrap: wrap;
+  }
+  #hud .box { background: rgba(0,0,0,.3); padding: 6px 12px; border-radius: 10px; }
+  #collect { min-height: 26px; font-size: 20px; letter-spacing: 2px; }
+  #wrap { position: relative; width: 760px; max-width: 100%; }
+  canvas { background: #1f7a4d; border-radius: 14px; display: block; width: 100%;
+           box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+  /* overlays */
+  .overlay {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    background: rgba(4,20,14,.92); border-radius: 14px; padding: 24px; gap: 14px;
+  }
+  .hidden { display: none !important; }
+  .overlay h2 { font-size: 26px; }
+  .overlay p { font-size: 15px; line-height: 1.7; max-width: 560px; color: #d9f5e6; }
+  .btn {
+    background: #ffd95e; color: #06281d; border: none; padding: 12px 28px;
+    font-size: 17px; font-weight: 700; border-radius: 30px; cursor: pointer;
+    transition: transform .1s; font-family: inherit;
+  }
+  .btn:hover { transform: scale(1.05); }
+  .btn.alt { background: #2bb673; color: #fff; }
+  /* quiz */
+  #quiz .qcard {
+    background: #fff; color: #143; border-radius: 16px; padding: 22px;
+    width: 540px; max-width: 92%; box-shadow: 0 12px 40px rgba(0,0,0,.5);
+  }
+  #quiz .qtag { display:inline-block; background:#2bb673; color:#fff; font-size:12px;
+    padding:3px 10px; border-radius:20px; margin-bottom:10px; }
+  #quiz .qtext { font-size: 19px; font-weight: 700; margin-bottom: 16px; line-height:1.5; }
+  #quiz .opts { display: grid; gap: 10px; }
+  #quiz .opt {
+    background: #eef7f1; border: 2px solid #d3e7da; color: #143; padding: 12px 14px;
+    border-radius: 12px; font-size: 16px; cursor: pointer; text-align: left;
+    font-family: inherit; transition: .12s;
+  }
+  #quiz .opt:hover { background: #d9f0e3; border-color:#2bb673; }
+  #quiz .opt.correct { background: #2bb673; color:#fff; border-color:#2bb673; }
+  #quiz .opt.wrong { background: #e5534b; color:#fff; border-color:#e5534b; }
+  #quiz .feedback { margin-top: 14px; font-size: 14px; line-height:1.6; min-height: 20px; }
+  .controls-note { margin-top: 10px; font-size: 12px; color: #9fcdb8; text-align:center; }
+  .lives { color: #ff8b8b; }
+  /* 工具栏：全屏 / 重新开始 */
+  #toolbar { width:760px; max-width:100%; display:flex; gap:8px; justify-content:center; margin-top:8px; }
+  .tool { background:rgba(0,0,0,.3); color:#ffd95e; border:1px solid rgba(255,217,94,.4);
+          padding:6px 14px; border-radius:8px; font-size:13px; cursor:pointer; font-family:inherit; }
+  .tool:hover { background:rgba(0,0,0,.5); }
+  /* 触屏方向键（仅触屏设备显示） */
+  #touchpad { position:absolute; left:0; right:0; bottom:10px; display:none;
+              justify-content:space-between; align-items:flex-end; padding:0 12px; pointer-events:none; }
+  #touchpad .dpad { display:grid; grid-template-columns:repeat(3,52px); grid-template-rows:repeat(2,52px); gap:5px; }
+  .tbtn { pointer-events:auto; background:rgba(0,0,0,.45); color:#fff; border:2px solid rgba(255,255,255,.4);
+          border-radius:12px; font-size:22px; display:flex; align-items:center; justify-content:center;
+          user-select:none; touch-action:none; }
+  .tbtn.on { background:rgba(255,217,94,.7); color:#06281d; }
+  .tbtn.sprint { pointer-events:auto; width:78px; height:78px; border-radius:50%;
+                 background:#ffd95e; color:#06281d; font-weight:700; font-size:15px; border:none; }
+  @media (hover:none) and (pointer:coarse){ #touchpad{ display:flex; } }
+</style>
+</head>
+<body>
+  <h1>⚽ 世界杯大冒险 · 2026 美加墨</h1>
+  <div class="sub">带球突破抢断者，跑完训练点，冲进球门夺冠！</div>
+
+  <div id="hud">
+    <div class="box">❤️ 生命 <span id="lives">3</span></div>
+    <div class="box">训练点 <span id="cones">0</span>/5</div>
+    <div class="box">⚡ 加速 <span id="sprintState">就绪</span></div>
+    <div class="box collect-box">已收集：<span id="collect"></span></div>
+  </div>
+
+  <div id="wrap">
+    <canvas id="game" width="760" height="520"></canvas>
+
+    <!-- 开始界面 -->
+    <div id="start" class="overlay">
+      <h2>🏆 准备好了吗？</h2>
+      <p>
+        你是一名小球员，要在球场上跑过 <b>5 个训练点</b>，每个训练点会问你一个关于
+        <b>世界杯、球星、国家或足球规则</b>的小问题，答对就点亮它！<br><br>
+        但小心红色的 <b>抢断者</b>，他会一直追你。被碰到会失去一条生命（共 3 条）。<br><br>
+        点亮全部 5 个训练点后，金色 <b>球门</b> 就会打开，冲进去就赢啦！
+      </p>
+      <p style="color:#ffd95e" id="ctrlInfo">
+        <b>单人</b>：方向键或 WASD 移动，空格加速，电脑控制抢断者<br>
+        <b>双人</b>：1P 球员用 WASD + 空格加速；2P 抢断者用 ↑↓←→ 方向键
+      </p>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+        <button class="btn" id="startBtn1">🧒 单人模式</button>
+        <button class="btn alt" id="startBtn2">👫 双人对战</button>
+      </div>
+    </div>
+
+    <!-- 答题界面 -->
+    <div id="quiz" class="overlay hidden">
+      <div class="qcard">
+        <span class="qtag" id="qtag">题目</span>
+        <div class="qtext" id="qtext"></div>
+        <div class="opts" id="opts"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </div>
+
+    <!-- 结束界面 -->
+    <div id="end" class="overlay hidden">
+      <h2 id="endTitle"></h2>
+      <p id="endMsg"></p>
+      <button class="btn" id="againBtn">再玩一次</button>
+    </div>
+
+    <!-- 触屏方向键（手机/平板） -->
+    <div id="touchpad">
+      <div class="dpad">
+        <span></span>
+        <div class="tbtn" data-k="w" style="grid-column:2;grid-row:1;">▲</div>
+        <span></span>
+        <div class="tbtn" data-k="a" style="grid-column:1;grid-row:2;">◀</div>
+        <div class="tbtn" data-k="s" style="grid-column:2;grid-row:2;">▼</div>
+        <div class="tbtn" data-k="d" style="grid-column:3;grid-row:2;">▶</div>
+      </div>
+      <div class="tbtn sprint" id="tb-sprint">⚡加速</div>
+    </div>
+  </div>
+
+  <div id="toolbar">
+    <button class="tool" id="fsBtn">⛶ 全屏</button>
+    <button class="tool" id="restartBtn">↻ 重新开始</button>
+  </div>
+
+  <div class="controls-note">电脑：方向键/WASD 移动 · 空格加速　|　手机/平板：用屏幕上的方向键和加速按钮 · 这是一个为 9-12 岁小朋友设计的学习小游戏</div>
+
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+// ---------- 题库（基于 2026 美加墨世界杯真实信息） ----------
+const QUESTIONS = [
+  // 球星 → 国家
+  { tag:"认识球星", q:"⚽ 38岁的梅西(Messi)第六次踏上世界杯，他效力于哪个国家队？",
+    opts:["🇦🇷 阿根廷","🇧🇷 巴西","🇵🇹 葡萄牙"], a:0,
+    fb:"对！梅西代表卫冕冠军阿根廷出战，这是他第六届世界杯。" },
+  { tag:"认识球星", q:"⚽ 姆巴佩(Mbappé)是哪个国家的当家球星？",
+    opts:["🇧🇪 比利时","🇫🇷 法国","🇪🇸 西班牙"], a:1,
+    fb:"没错！姆巴佩是法国队的头号射手，2022年还拿过金靴。" },
+  { tag:"认识球星", q:"⚽ 18岁的天才少年拉明·亚马尔(Lamine Yamal)代表哪国出战？",
+    opts:["🇪🇸 西班牙","🇮🇹 意大利","🇦🇷 阿根廷"], a:0,
+    fb:"对！亚马尔是西班牙的超级新星，以盘带和才华惊艳世界。" },
+  { tag:"认识球星", q:"⚽ 41岁的C罗(罗纳尔多)将第六次也是最后一次出征世界杯，他来自？",
+    opts:["🇧🇷 巴西","🇵🇹 葡萄牙","🇦🇷 阿根廷"], a:1,
+    fb:"对！C罗是葡萄牙队的传奇队长。" },
+  { tag:"认识球星", q:"⚽ 身高1米95、速度与力量惊人的射手哈兰德(Haaland)代表哪国？",
+    opts:["🇳🇴 挪威","🇸🇪 瑞典","🇳🇱 荷兰"], a:0,
+    fb:"对！哈兰德是挪威队的进球机器。" },
+  { tag:"认识球星", q:"⚽ 英格兰中场贝林厄姆(Bellingham)被看作未来金球奖的有力竞争者，他属于？",
+    opts:["🏴 英格兰","🇩🇪 德国","🇫🇷 法国"], a:0,
+    fb:"对！贝林厄姆是英格兰队的中场核心。" },
+
+  // 国家与国旗
+  { tag:"认识国旗", q:"🚩 这面国旗 🇧🇷 是哪个足球王国？",
+    opts:["🇦🇷 阿根廷","🇧🇷 巴西","🇵🇹 葡萄牙"], a:1,
+    fb:"对！绿黄相间的是巴西，五次夺得世界杯，是夺冠最多的国家。" },
+  { tag:"认识国旗", q:"🚩 这面国旗 🇯🇵 代表哪个亚洲球队？",
+    opts:["🇰🇷 韩国","🇯🇵 日本","🇨🇳 中国"], a:1,
+    fb:"对！白底红日的是日本队。" },
+  { tag:"认识国旗", q:"🚩 哪三个国家共同主办了 2026 年世界杯？",
+    opts:["🇺🇸美国 🇨🇦加拿大 🇲🇽墨西哥","🇧🇷巴西 🇦🇷阿根廷 🇨🇱智利","🇪🇸西班牙 🇫🇷法国 🇮🇹意大利"], a:0,
+    fb:"对！2026年世界杯首次由美国、加拿大、墨西哥三国合办。" },
+  { tag:"认识国旗", q:"🚩 这面国旗 🇪🇸 是哪个欧洲强队？",
+    opts:["🇪🇸 西班牙","🇮🇹 意大利","🇵🇹 葡萄牙"], a:0,
+    fb:"对！这是西班牙，亚马尔就在这支队伍里。" },
+
+  // 世界杯常识 2026
+  { tag:"世界杯知识", q:"🏆 2026 年世界杯历史上第一次扩军，共有多少支球队参赛？",
+    opts:["32 支","48 支","64 支"], a:1,
+    fb:"对！从过去的32支扩大到48支，分成12个小组。" },
+  { tag:"世界杯知识", q:"🏆 2026 世界杯的 48 支球队被分成几个小组？",
+    opts:["8 个","12 个","16 个"], a:1,
+    fb:"对！12个小组，每组4队。" },
+  { tag:"世界杯知识", q:"🏆 世界杯每隔几年举办一次？",
+    opts:["每年","每 2 年","每 4 年"], a:2,
+    fb:"对！世界杯每4年举办一届。" },
+
+  // 足球规则
+  { tag:"足球规则", q:"📏 一支球队比赛时场上(含守门员)有几名球员？",
+    opts:["9 人","11 人","13 人"], a:1,
+    fb:"对！每队场上11人，包括1名守门员。" },
+  { tag:"足球规则", q:"📏 一场正式足球比赛的常规时间是多久？",
+    opts:["60 分钟","90 分钟","120 分钟"], a:1,
+    fb:"对！上下半场各45分钟，共90分钟。" },
+  { tag:"足球规则", q:"📏 裁判向球员出示哪种牌，表示直接罚下场？",
+    opts:["黄牌","红牌","绿牌"], a:1,
+    fb:"对！红牌=罚出场；两张黄牌也会变成红牌。" },
+  { tag:"足球规则", q:"📏 球员只能用身体的哪个部位故意触球是不允许的？",
+    opts:["头","胸","手/手臂"], a:2,
+    fb:"对！除了守门员在禁区内，其他人故意用手触球算犯规(手球)。" },
+
+  // 竞技与团队精神
+  { tag:"竞技精神", q:"🤝 队友罚丢了点球，很难过，你应该怎么做？",
+    opts:["嘲笑他","上前鼓励他，一起继续努力","不再传球给他"], a:1,
+    fb:"对！足球是团队运动，鼓励队友比责怪更重要。" },
+  { tag:"竞技精神", q:"🤝 比赛输了，作为有体育精神的球员应该？",
+    opts:["和对手握手，尊重对手","生气摔东西","责怪裁判"], a:0,
+    fb:"对！胜不骄败不馁，尊重对手是体育精神的核心。" },
+  { tag:"竞技精神", q:"🤝 对方球员受伤倒地，球在你脚下，公平竞赛(Fair Play)会怎么做？",
+    opts:["继续进攻射门","把球踢出界，让对方接受治疗","假装没看见"], a:1,
+    fb:"对！把球踢出界让对手治疗，是足球场上著名的公平竞赛传统。" },
+];
+
+// ---------- 游戏状态 ----------
+let player, tackler, cones, goal, keys, lives, conesDone, running, paused;
+let sprintReady, sprintTimer, sprintCooldown, invuln;
+let mode = 'single'; // 'single' 或 '2p'
+let askedIdx = new Set();
+let collected = [];
+
+const STAR_ICONS = ["⭐","🎽","👟","🏅","🧤"]; // 完成训练点的奖励图标
+
+function rand(min,max){ return Math.random()*(max-min)+min; }
+
+function reset(){
+  player = { x: W/2, y: H-70, r: 14, base: 2.7 };
+  // 双人模式由真人操控抢断者，速度调高更有挑战；单人由电脑控制，稍慢以便上手
+  tackler = { x: W/2, y: 80, r: 16, base: mode==='2p' ? 2.7 : 2.25 };
+  // 训练点位置（避开起点和球门）
+  const spots = [
+    {x:120,y:150},{x:640,y:150},{x:120,y:330},{x:640,y:330},{x:W/2,y:250}
+  ];
+  cones = spots.map(s => ({x:s.x, y:s.y, done:false, r:16}));
+  goal = { x: W/2-70, y: 14, w: 140, h: 30, open:false };
+  keys = {};
+  lives = 3; conesDone = 0; collected = []; askedIdx = new Set();
+  sprintReady = true; sprintTimer = 0; sprintCooldown = 0; invuln = 0;
+  running = true; paused = false;
+  updateHUD();
+}
+
+function updateHUD(){
+  document.getElementById('lives').textContent = lives;
+  document.getElementById('cones').textContent = conesDone;
+  document.getElementById('collect').textContent = collected.join(" ");
+  const ss = document.getElementById('sprintState');
+  ss.textContent = sprintReady ? "就绪" : "冷却中…";
+  ss.style.color = sprintReady ? "#8ef0b8" : "#ffb37a";
+}
+
+// ---------- 输入 ----------
+document.addEventListener('keydown', e=>{
+  keys[e.key.toLowerCase()] = true;
+  if([" ","arrowup","arrowdown","arrowleft","arrowright"].includes(e.key.toLowerCase())) e.preventDefault();
+  if(e.key === " ") triggerSprint();
+});
+function triggerSprint(){
+  if(running && !paused && sprintReady){
+    sprintReady = false; sprintTimer = 1.2*60; sprintCooldown = 4*60; updateHUD();
+  }
+}
+document.addEventListener('keyup', e=>{ keys[e.key.toLowerCase()] = false; });
+
+// ---------- 答题 ----------
+function openQuiz(coneIndex){
+  paused = true;
+  // 选一道还没问过的题
+  let pool = QUESTIONS.map((_,i)=>i).filter(i=>!askedIdx.has(i));
+  if(pool.length===0){ askedIdx.clear(); pool = QUESTIONS.map((_,i)=>i); }
+  const qi = pool[Math.floor(Math.random()*pool.length)];
+  askedIdx.add(qi);
+  const Q = QUESTIONS[qi];
+  document.getElementById('qtag').textContent = Q.tag;
+  document.getElementById('qtext').textContent = Q.q;
+  const optsEl = document.getElementById('opts');
+  const fbEl = document.getElementById('feedback');
+  fbEl.textContent = ""; fbEl.style.color = "#143";
+  optsEl.innerHTML = "";
+  Q.opts.forEach((text,idx)=>{
+    const b = document.createElement('button');
+    b.className = 'opt'; b.textContent = text;
+    b.onclick = ()=> answer(idx, Q, coneIndex, optsEl, fbEl);
+    optsEl.appendChild(b);
+  });
+  document.getElementById('quiz').classList.remove('hidden');
+}
+
+function answer(idx, Q, coneIndex, optsEl, fbEl){
+  [...optsEl.children].forEach(b=>b.disabled=true);
+  if(idx === Q.a){
+    optsEl.children[idx].classList.add('correct');
+    fbEl.style.color = "#138a52";
+    fbEl.textContent = "✅ " + Q.fb;
+    cones[coneIndex].done = true;
+    conesDone++;
+    collected.push(STAR_ICONS[(conesDone-1)%STAR_ICONS.length]);
+    if(conesDone >= cones.length){ goal.open = true; }
+    updateHUD();
+    setTimeout(closeQuiz, 1500);
+  } else {
+    optsEl.children[idx].classList.add('wrong');
+    optsEl.children[Q.a].classList.add('correct');
+    fbEl.style.color = "#b3261e";
+    fbEl.textContent = "❌ 正确答案已用绿色标出。再想想，待会儿可以回到这个训练点重试！" ;
+    // 答错惩罚：抢断者短暂加速
+    tackler.boost = 2.0*60;
+    setTimeout(closeQuiz, 2200);
+  }
+}
+
+function closeQuiz(){
+  document.getElementById('quiz').classList.add('hidden');
+  // 把玩家轻轻推离训练点，避免立刻再次触发
+  player.y += 40; if(player.y>H-30) player.y = H-30;
+  paused = false;
+}
+
+// ---------- 主循环 ----------
+function update(){
+  if(!running || paused) return;
+
+  // 冲刺计时
+  let speed = player.base;
+  if(sprintTimer>0){ speed = player.base*1.7; sprintTimer--; }
+  if(!sprintReady && sprintCooldown>0){ sprintCooldown--; if(sprintCooldown<=0){ sprintReady=true; updateHUD(); } }
+
+  // 移动玩家：WASD 始终可用；单人模式下方向键也能控球员
+  let dx=0, dy=0;
+  if(keys['a'] || (mode==='single'&&keys['arrowleft'])) dx-=1;
+  if(keys['d'] || (mode==='single'&&keys['arrowright'])) dx+=1;
+  if(keys['w'] || (mode==='single'&&keys['arrowup'])) dy-=1;
+  if(keys['s'] || (mode==='single'&&keys['arrowdown'])) dy+=1;
+  if(dx||dy){ const m=Math.hypot(dx,dy); player.x+=dx/m*speed; player.y+=dy/m*speed; }
+  player.x = Math.max(player.r, Math.min(W-player.r, player.x));
+  player.y = Math.max(player.r, Math.min(H-player.r, player.y));
+
+  // 抢断者：单人由电脑追踪；双人由 2P 用方向键操控
+  let ts = tackler.base;
+  if(tackler.boost>0){ ts = tackler.base*1.5; tackler.boost--; }
+  if(mode==='2p'){
+    let ex=0, ey=0;
+    if(keys['arrowleft']) ex-=1;
+    if(keys['arrowright']) ex+=1;
+    if(keys['arrowup']) ey-=1;
+    if(keys['arrowdown']) ey+=1;
+    if(ex||ey){ const m=Math.hypot(ex,ey); tackler.x+=ex/m*ts; tackler.y+=ey/m*ts; }
+    tackler.x = Math.max(tackler.r, Math.min(W-tackler.r, tackler.x));
+    tackler.y = Math.max(tackler.r, Math.min(H-tackler.r, tackler.y));
+  } else {
+    const tdx = player.x-tackler.x, tdy = player.y-tackler.y, td = Math.hypot(tdx,tdy)||1;
+    tackler.x += tdx/td*ts; tackler.y += tdy/td*ts;
+  }
+
+  // 被抓判定
+  if(invuln>0) invuln--;
+  const caughtDist = Math.hypot(player.x-tackler.x, player.y-tackler.y);
+  if(invuln<=0 && caughtDist < player.r+tackler.r){
+    lives--; invuln = 90; updateHUD();
+    // 抢断者后退、玩家回到底线
+    tackler.x = W/2; tackler.y = 80;
+    player.x = W/2; player.y = H-70;
+    if(lives<=0){ endGame(false); return; }
+  }
+
+  // 触碰训练点
+  cones.forEach((c,i)=>{
+    if(!c.done){
+      if(Math.hypot(player.x-c.x, player.y-c.y) < player.r+c.r){ openQuiz(i); }
+    }
+  });
+
+  // 到达球门
+  if(goal.open && player.y < goal.y+goal.h+6 &&
+     player.x > goal.x-10 && player.x < goal.x+goal.w+10){
+    endGame(true);
+  }
+}
+
+// ---------- 绘制 ----------
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // 草皮条纹
+  for(let i=0;i<10;i++){
+    ctx.fillStyle = i%2 ? "#1f7a4d" : "#238651";
+    ctx.fillRect(0, i*H/10, W, H/10);
+  }
+  // 场地线
+  ctx.strokeStyle="rgba(255,255,255,.5)"; ctx.lineWidth=3;
+  ctx.strokeRect(12,12,W-24,H-24);
+  ctx.beginPath(); ctx.moveTo(12,H/2); ctx.lineTo(W-12,H/2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(W/2,H/2,55,0,Math.PI*2); ctx.stroke();
+
+  // 球门
+  ctx.fillStyle = goal.open ? "#ffd95e" : "rgba(255,255,255,.35)";
+  ctx.fillRect(goal.x, goal.y, goal.w, goal.h);
+  ctx.fillStyle = goal.open ? "#06281d" : "#fff";
+  ctx.font = "bold 16px sans-serif"; ctx.textAlign="center";
+  ctx.fillText(goal.open? "🥅 球门已开！冲！" : "🥅 球门(锁定)", W/2, goal.y+goal.h-9);
+
+  // 训练点
+  cones.forEach(c=>{
+    ctx.beginPath(); ctx.arc(c.x,c.y,c.r,0,Math.PI*2);
+    ctx.fillStyle = c.done ? "#ffd95e":"#ff7043"; ctx.fill();
+    ctx.font="18px sans-serif"; ctx.fillStyle="#fff";
+    ctx.fillText(c.done? "✅":"🚩", c.x, c.y+6);
+  });
+
+  // 抢断者
+  ctx.beginPath(); ctx.arc(tackler.x,tackler.y,tackler.r,0,Math.PI*2);
+  ctx.fillStyle="#e5392f"; ctx.fill();
+  ctx.font="20px sans-serif"; ctx.fillText("🛡️", tackler.x, tackler.y+7);
+
+  // 玩家(闪烁表示无敌时间)
+  if(!(invuln>0 && Math.floor(invuln/6)%2)){
+    ctx.beginPath(); ctx.arc(player.x,player.y,player.r,0,Math.PI*2);
+    ctx.fillStyle= sprintTimer>0 ? "#7af0a8" : "#42a5f5"; ctx.fill();
+    ctx.font="20px sans-serif"; ctx.fillText("⚽", player.x, player.y+7);
+  }
+}
+
+function loop(){ update(); draw(); requestAnimationFrame(loop); }
+
+// ---------- 结束 ----------
+function endGame(win){
+  running = false;
+  if(mode==='2p'){
+    document.getElementById('endTitle').textContent = win ? "⚽ 1P 球员获胜！" : "🛡️ 2P 抢断者获胜！";
+    document.getElementById('endMsg').innerHTML = win
+      ? `球员跑完了全部训练点、躲过抢断者冲进球门！<br>收集到的奖励：${collected.join(" ")}<br><br>换个角色再来一局，看看谁更厉害 💪`
+      : `抢断者成功夺回 3 条生命，守住了球门！<br>交换角色再战一局吧 🔁`;
+  } else {
+    document.getElementById('endTitle').textContent = win ? "🏆 你赢了！冠军是你！" : "😣 抢断者赢了这一回合";
+    document.getElementById('endMsg').innerHTML = win
+      ? `你跑完了全部训练点、躲过抢断者，还答对了好多关于球星、国家和足球的问题！<br>收集到的奖励：${collected.join(" ")}<br><br>真正的冠军，靠的是<b>努力、智慧和团队精神</b> 💪`
+      : `没关系，被抢断也是比赛的一部分。<br>足球的精神是<b>败不馁、再出发</b>——再来一局吧！`;
+  }
+  document.getElementById('end').classList.remove('hidden');
+}
+
+document.getElementById('startBtn1').onclick = ()=>{
+  mode='single';
+  document.getElementById('start').classList.add('hidden');
+  reset();
+};
+document.getElementById('startBtn2').onclick = ()=>{
+  mode='2p';
+  document.getElementById('start').classList.add('hidden');
+  reset();
+};
+document.getElementById('againBtn').onclick = ()=>{
+  document.getElementById('end').classList.add('hidden');
+  reset();
+};
+
+// ---------- 触屏方向键 ----------
+document.querySelectorAll('#touchpad .tbtn[data-k]').forEach(btn=>{
+  const k = btn.getAttribute('data-k');
+  const on = e=>{ e.preventDefault(); keys[k]=true; btn.classList.add('on'); };
+  const off = e=>{ e.preventDefault(); keys[k]=false; btn.classList.remove('on'); };
+  btn.addEventListener('pointerdown', on);
+  btn.addEventListener('pointerup', off);
+  btn.addEventListener('pointerleave', off);
+  btn.addEventListener('pointercancel', off);
+});
+const sb = document.getElementById('tb-sprint');
+sb.addEventListener('pointerdown', e=>{ e.preventDefault(); triggerSprint(); });
+
+// ---------- 全屏 / 重新开始 ----------
+document.getElementById('fsBtn').onclick = ()=>{
+  const el = document.getElementById('wrap');
+  if(!document.fullscreenElement){ (el.requestFullscreen||el.webkitRequestFullscreen).call(el); }
+  else { (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+};
+document.getElementById('restartBtn').onclick = ()=>{
+  document.getElementById('end').classList.add('hidden');
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('start').classList.add('hidden');
+  reset(); // 用当前模式重开
+};
+
+reset(); running=false; // 等待开始
+loop();
+</script>
+</body>
+</html>
