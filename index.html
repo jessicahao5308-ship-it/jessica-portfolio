@@ -4,6 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Jessica · Learning, building with AI</title>
+<meta name="description" content="A Sydney mum of two, learning in public and building with AI — turning everyday education problems into things you can open, play with, and actually use." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Jessica · Learning, building with AI" />
+<meta property="og:description" content="A Sydney mum of two, building courseware, games, notes and small apps with AI." />
+<meta property="og:image" content="https://jessicahao5308-ship-it.github.io/jessica-portfolio/works/shots/use-ai.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230c0b09'/%3E%3Ctext x='50' y='72' font-family='Georgia,serif' font-size='62' font-weight='700' fill='%23f0a93b' text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -35,7 +42,7 @@
   body.lang-zh .lzh { display: contents; }
 
   /* hero */
-  .hero { position: relative; min-height: 88vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden;
+  .hero { position: relative; min-height: 88dvh; display: flex; flex-direction: column; justify-content: center; overflow: hidden;
     background: radial-gradient(ellipse 90% 70% at 72% 8%, rgba(240,169,59,0.10), transparent 55%), var(--bg); }
   .hero-grid { position: absolute; inset: 0; pointer-events: none;
     background-image: linear-gradient(to right, rgba(236,230,216,0.022) 1px, transparent 1px), linear-gradient(to bottom, rgba(236,230,216,0.022) 1px, transparent 1px);
@@ -50,12 +57,20 @@
     border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; background: transparent; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
   .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* marquee */
-  .marquee { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; background: var(--bg-soft); }
-  .marquee-track { display: inline-block; padding: 14px 0; animation: scroll-x 28s linear infinite; }
-  .marquee-track span { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); }
-  .marquee-track .accent { color: var(--accent); }
-  @keyframes scroll-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  /* premium polish */
+  h1, h2, .rowtitle { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  /* fine grain overlay to break digital flatness */
+  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  /* keyboard focus ring */
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  /* pressed feedback */
+  .lang-btn:active, .work-row:active { transform: translateY(1px); }
+  /* scroll reveal */
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
   /* work list */
   .work-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px;
@@ -74,7 +89,7 @@
 
   /* floating hover preview (desktop) */
   #hoverPreview { position: fixed; top: 0; left: 0; width: 340px; max-width: 34vw; aspect-ratio: 16/10; object-fit: cover; object-position: top center;
-    border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 24px 60px rgba(0,0,0,0.6); opacity: 0; transform: translateY(-50%);
+    border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 24px 70px rgba(20,12,2,0.7); opacity: 0; transform: translateY(-50%);
     transition: opacity 0.25s ease; pointer-events: none; z-index: 60; background: var(--bg-soft); }
 
   @media (max-width: 760px) {
@@ -87,6 +102,7 @@
 </style>
 </head>
 <body>
+<div class="grain" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav class="sticky top-0 z-50 border-b border-[#221f1a]" style="background: rgba(12,11,9,0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
@@ -136,7 +152,7 @@
   </div>
 
   <div class="work-list" id="worklist">
-    <a class="work-row" href="./works/use-ai-ppt/index.html" target="_blank" data-img="./works/shots/use-ai.png">
+    <a class="work-row reveal" href="./works/use-ai-ppt/index.html" target="_blank" data-img="./works/shots/use-ai.png">
       <img class="row-thumb" src="./works/shots/use-ai.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">01</span>
         <div class="row-body">
@@ -146,7 +162,7 @@
       <div class="rowmeta">2026.06 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
     </a>
 
-    <a class="work-row" href="./works/03-primes-composites.html" target="_blank" data-img="./works/shots/primes-ppt.png">
+    <a class="work-row reveal" href="./works/03-primes-composites.html" target="_blank" data-img="./works/shots/primes-ppt.png">
       <img class="row-thumb" src="./works/shots/primes-ppt.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">02</span>
         <div class="row-body">
@@ -156,7 +172,7 @@
       <div class="rowmeta">2026.05 · <span class="len">Maths Slides</span><span class="lzh">数学课件</span></div>
     </a>
 
-    <a class="work-row" href="./works/angles-game.html" target="_blank" data-img="./works/shots/angles-game-m.png">
+    <a class="work-row reveal" href="./works/angles-game.html" target="_blank" data-img="./works/shots/angles-game-m.png">
       <img class="row-thumb" src="./works/shots/angles-game-m.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">03</span>
         <div class="row-body">
@@ -166,7 +182,7 @@
       <div class="rowmeta">2026.06 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
     </a>
 
-    <a class="work-row" href="./works/03-primes-composites-note.html" target="_blank" data-img="./works/shots/primes-note.png">
+    <a class="work-row reveal" href="./works/03-primes-composites-note.html" target="_blank" data-img="./works/shots/primes-note.png">
       <img class="row-thumb" src="./works/shots/primes-note.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">04</span>
         <div class="row-body">
@@ -176,7 +192,7 @@
       <div class="rowmeta">2026.05 · <span class="len">Print-ready</span><span class="lzh">可打印</span></div>
     </a>
 
-    <a class="work-row" href="./works/03-primes-composites-game.html" target="_blank" data-img="./works/shots/primes-game-m.png">
+    <a class="work-row reveal" href="./works/03-primes-composites-game.html" target="_blank" data-img="./works/shots/primes-game-m.png">
       <img class="row-thumb" src="./works/shots/primes-game-m.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">05</span>
         <div class="row-body">
@@ -186,7 +202,7 @@
       <div class="rowmeta">2026.05 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
     </a>
 
-    <a class="work-row" href="#contact" data-img="./works/kangapet-roo.png">
+    <a class="work-row reveal" href="#contact" data-img="./works/kangapet-roo.png">
       <img class="row-thumb" src="./works/kangapet-roo.png" alt="" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" />
       <div class="row-left"><span class="rownum">06</span>
         <div class="row-body">
@@ -251,6 +267,16 @@
         preview.style.top = e.clientY + 'px';
       });
     }
+    // staggered scroll reveal
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en, i) {
+        if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el, i) {
+      el.style.transitionDelay = (i % 6 * 60) + 'ms';
+      io.observe(el);
+    });
   })();
 </script>
 
