@@ -70,8 +70,8 @@
   .tool { background:rgba(0,0,0,.3); color:#ffd95e; border:1px solid rgba(255,217,94,.4);
           padding:6px 14px; border-radius:8px; font-size:13px; cursor:pointer; font-family:inherit; }
   .tool:hover { background:rgba(0,0,0,.5); }
-  /* 触屏方向键（仅触屏设备显示） */
-  #touchpad { position:absolute; left:0; right:0; bottom:10px; display:none;
+  /* 触屏方向键（仅触屏设备、且游戏进行中显示） */
+  #touchpad { position:absolute; left:0; right:0; bottom:10px; display:none; z-index:20;
               justify-content:space-between; align-items:flex-end; padding:0 12px; pointer-events:none; }
   #touchpad .dpad { display:grid; grid-template-columns:repeat(3,52px); grid-template-rows:repeat(2,52px); gap:5px; }
   .tbtn { pointer-events:auto; background:rgba(0,0,0,.45); color:#fff; border:2px solid rgba(255,255,255,.4);
@@ -80,7 +80,27 @@
   .tbtn.on { background:rgba(255,217,94,.7); color:#06281d; }
   .tbtn.sprint { pointer-events:auto; width:78px; height:78px; border-radius:50%;
                  background:#ffd95e; color:#06281d; font-weight:700; font-size:15px; border:none; }
-  @media (hover:none) and (pointer:coarse){ #touchpad{ display:flex; } }
+  @media (hover:none) and (pointer:coarse){ body.playing #touchpad{ display:flex; } }
+
+  /* ===== 手机/窄屏适配 ===== */
+  @media (max-width:760px){
+    body { padding:8px; }
+    h1 { font-size:17px; margin-bottom:2px; }
+    .sub { font-size:11px; margin-bottom:6px; }
+    #hud { font-size:11px; gap:5px; }
+    #hud .box { padding:4px 8px; border-radius:8px; }
+    #collect { font-size:15px; }
+    /* 开始/答题/结束界面在手机上铺满全屏，避免和小画面挤在一起 */
+    .overlay { position:fixed; inset:0; z-index:100; overflow-y:auto;
+               justify-content:flex-start; padding:22px 18px; gap:10px; }
+    .overlay h2 { font-size:20px; }
+    .overlay p { font-size:13px; line-height:1.5; max-width:none; }
+    .btn { padding:11px 24px; font-size:16px; }
+    #quiz .qcard { padding:16px; width:100%; }
+    #quiz .qtext { font-size:16px; margin-bottom:12px; }
+    #quiz .opt { font-size:15px; padding:11px 12px; }
+    #toolbar { width:100%; }
+  }
 </style>
 </head>
 <body>
@@ -246,7 +266,7 @@ function rand(min,max){ return Math.random()*(max-min)+min; }
 function reset(){
   player = { x: W/2, y: H-70, r: 14, base: 2.7 };
   // 双人模式由真人操控抢断者，速度调高更有挑战；单人由电脑控制，稍慢以便上手
-  tackler = { x: W/2, y: 80, r: 16, base: mode==='2p' ? 2.7 : 2.25 };
+  tackler = { x: W/2, y: 80, r: 16, base: mode==='2p' ? 2.7 : 2.1 };
   // 训练点位置（避开起点和球门）
   const spots = [
     {x:120,y:150},{x:640,y:150},{x:120,y:330},{x:640,y:330},{x:W/2,y:250}
@@ -255,7 +275,7 @@ function reset(){
   goal = { x: W/2-70, y: 14, w: 140, h: 30, open:false };
   keys = {};
   lives = 3; conesDone = 0; collected = []; askedIdx = new Set();
-  sprintReady = true; sprintTimer = 0; sprintCooldown = 0; invuln = 0;
+  sprintReady = true; sprintTimer = 0; sprintCooldown = 0; invuln = 150; // 开局2.5秒保护
   running = true; paused = false;
   updateHUD();
 }
@@ -439,7 +459,11 @@ function draw(){
   }
 }
 
-function loop(){ update(); draw(); requestAnimationFrame(loop); }
+function loop(){
+  update(); draw();
+  document.body.classList.toggle('playing', running && !paused); // 触屏键仅在游戏中显示
+  requestAnimationFrame(loop);
+}
 
 // ---------- 结束 ----------
 function endGame(win){
