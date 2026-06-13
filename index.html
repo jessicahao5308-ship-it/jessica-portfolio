@@ -58,15 +58,17 @@
   @keyframes scroll-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
   /* work list */
-  .work-row { display: flex; align-items: baseline; justify-content: space-between; gap: 18px;
-    padding: 26px 4px; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: padding-left 0.3s ease; }
+  .work-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px;
+    padding: 30px 4px; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: padding-left 0.3s ease; }
   .work-list .work-row:last-child { border-bottom: 1px solid var(--line); }
   .work-row:hover { padding-left: 14px; }
   .row-left { display: flex; align-items: baseline; gap: 18px; min-width: 0; }
-  .rownum { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--accent); flex: 0 0 auto; }
+  .rownum { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--accent); flex: 0 0 auto; padding-top: 6px; }
+  .row-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .rowtitle { font-family: "Playfair Display", serif; font-size: clamp(1.4rem, 3.2vw, 2.3rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; transition: color 0.2s; }
   .work-row:hover .rowtitle { color: var(--accent); }
-  .rowmeta { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-mute); white-space: nowrap; flex: 0 0 auto; }
+  .rowdesc { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink-soft); max-width: 48ch; }
+  .rowmeta { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-mute); white-space: nowrap; flex: 0 0 auto; padding-top: 8px; }
   .row-thumb { display: none; }
   .soon { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mute); border: 1px solid var(--line); border-radius: 999px; padding: 1px 6px; }
 
@@ -145,42 +147,60 @@
     <a class="work-row" href="./works/use-ai-ppt/index.html" target="_blank" data-img="./works/shots/use-ai.png">
       <img class="row-thumb" src="./works/shots/use-ai.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">01</span>
-        <span class="rowtitle"><span class="len">Keeping Up with AI</span><span class="lzh serif-zh">用好 AI，跟上时代</span></span></div>
+        <div class="row-body">
+          <span class="rowtitle"><span class="len">Keeping Up with AI</span><span class="lzh serif-zh">用好 AI，跟上时代</span></span>
+          <p class="rowdesc"><span class="len">A kraft-paper, magazine-style scrolling deck on putting AI to work in everyday life.</span><span class="lzh serif-zh">牛皮纸杂志感的横向滚动 Deck，讲怎么把 AI 真正用进日常。</span></p>
+        </div></div>
       <div class="rowmeta">2026.06 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
     </a>
 
     <a class="work-row" href="./works/03-primes-composites.html" target="_blank" data-img="./works/shots/primes-ppt.png">
       <img class="row-thumb" src="./works/shots/primes-ppt.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">02</span>
-        <span class="rowtitle"><span class="len">Primes &amp; Composites</span><span class="lzh serif-zh">质数与合数</span></span></div>
+        <div class="row-body">
+          <span class="rowtitle"><span class="len">Primes &amp; Composites</span><span class="lzh serif-zh">质数与合数</span></span>
+          <p class="rowdesc"><span class="len">One maths topic told four ways — read it, print it, watch it, play it.</span><span class="lzh serif-zh">同一个数学知识点，四种学法：读的、印的、讲的、玩的。</span></p>
+        </div></div>
       <div class="rowmeta">2026.05 · <span class="len">Maths Slides</span><span class="lzh">数学课件</span></div>
     </a>
 
     <a class="work-row" href="./works/angles-game.html" target="_blank" data-img="./works/shots/angles-game-m.png">
       <img class="row-thumb" src="./works/shots/angles-game-m.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">03</span>
-        <span class="rowtitle"><span class="len">Angle Catcher</span><span class="lzh serif-zh">角的类型大作战</span></span></div>
+        <div class="row-body">
+          <span class="rowtitle"><span class="len">Angle Catcher</span><span class="lzh serif-zh">角的类型大作战</span></span>
+          <p class="rowdesc"><span class="len">A mobile game for spotting acute, right, obtuse and reflex angles — wrong answers explained.</span><span class="lzh serif-zh">手机小游戏：判断锐角/直角/钝角/优角，答错即讲解。</span></p>
+        </div></div>
       <div class="rowmeta">2026.06 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
     </a>
 
     <a class="work-row" href="./works/03-primes-composites-note.html" target="_blank" data-img="./works/shots/primes-note.png">
       <img class="row-thumb" src="./works/shots/primes-note.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">04</span>
-        <span class="rowtitle"><span class="len">Bilingual Lesson Notes</span><span class="lzh serif-zh">双语课件笔记</span></span></div>
+        <div class="row-body">
+          <span class="rowtitle"><span class="len">Bilingual Lesson Notes</span><span class="lzh serif-zh">双语课件笔记</span></span>
+          <p class="rowdesc"><span class="len">Print-ready bilingual study notes built from Australian maths courseware.</span><span class="lzh serif-zh">用澳洲数学课件做成的、可直接打印的中英双语学习笔记。</span></p>
+        </div></div>
       <div class="rowmeta">2026.05 · <span class="len">Print-ready</span><span class="lzh">可打印</span></div>
     </a>
 
     <a class="work-row" href="./works/03-primes-composites-game.html" target="_blank" data-img="./works/shots/primes-game-m.png">
       <img class="row-thumb" src="./works/shots/primes-game-m.png" alt="" loading="lazy" />
       <div class="row-left"><span class="rownum">05</span>
-        <span class="rowtitle"><span class="len">Prime Catcher</span><span class="lzh serif-zh">质数大作战</span></span></div>
+        <div class="row-body">
+          <span class="rowtitle"><span class="len">Prime Catcher</span><span class="lzh serif-zh">质数大作战</span></span>
+          <p class="rowdesc"><span class="len">Catch the primes before they cross the line — drilling practice disguised as play.</span><span class="lzh serif-zh">在数字越线前接住质数——把刷题藏进游戏里。</span></p>
+        </div></div>
       <div class="rowmeta">2026.05 · <span class="len">Game</span><span class="lzh">互动游戏</span></div>
     </a>
 
     <a class="work-row" href="#contact" data-img="./works/kangapet-roo.png">
       <img class="row-thumb" src="./works/kangapet-roo.png" alt="" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" />
       <div class="row-left"><span class="rownum">06</span>
-        <span class="rowtitle"><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></span></div>
+        <div class="row-body">
+          <span class="rowtitle"><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></span>
+          <p class="rowdesc"><span class="len">A little desktop pet that keeps the kids company while they study.</span><span class="lzh serif-zh">一只陪娃写作业的桌面小袋鼠桌宠。</span></p>
+        </div></div>
       <div class="rowmeta"><span class="soon"><span class="len">soon</span><span class="lzh">整理中</span></span> · <span class="len">Mac App</span><span class="lzh">桌面应用</span></div>
     </a>
   </div>
