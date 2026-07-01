@@ -189,6 +189,15 @@
   .card { border: 1px solid var(--line); background: var(--paper-2); border-radius: 12px; transition: border-color .2s, transform .2s; }
   .card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
+  /* QR plates — scan to follow */
+  .qr-plate { width: 148px; }
+  .qr-box { position: relative; border: 1px solid var(--line-2); background: #fff; border-radius: 10px; padding: 9px; transition: border-color .2s; }
+  .qr-box:hover { border-color: var(--accent); }
+  .qr-box img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
+  .qr-slot { aspect-ratio: 1; border: 1px dashed var(--line-2); border-radius: 7px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; color: var(--ink-mute); background: var(--paper); padding: 8px; }
+  .qr-plate figcaption { margin-top: 9px; font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .06em; color: var(--ink-soft); }
+  .qr-plate figcaption b { color: var(--ink); font-weight: 600; }
+
   @media (max-width: 860px) {
     .sig-row { grid-template-columns: 34px 1fr auto; row-gap: 4px; }
     .sig-row .spark, .sig-row .sig-count { display: none; }
@@ -533,6 +542,32 @@
         <div class="text-xs ink-mute mb-1"><span class="len">source</span><span class="lzh">源码</span></div><div class="serif-en text-lg font-semibold accent"><span class="len">Open ↗</span><span class="lzh">开源 ↗</span></div>
         <div class="cross br"></div>
       </a>
+    </div>
+
+    <!-- QR: scan to follow -->
+    <div class="mt-10">
+      <div class="mono text-[10px] tracking-[0.14em] uppercase ink-mute mb-4 flex items-center gap-3">
+        <span style="width:26px;height:1px;background:var(--line-2);display:inline-block;"></span>
+        <span class="len">scan to follow</span><span class="lzh">扫码关注</span>
+      </div>
+      <div class="flex flex-wrap gap-6">
+        <figure class="qr-plate m-0">
+          <div class="qr-box">
+            <div class="cross tl"></div><div class="cross tr"></div><div class="cross bl"></div><div class="cross br"></div>
+            <img src="./works/qr-wechat.jpg" alt="WeChat official account QR" loading="lazy" />
+          </div>
+          <figcaption><b>公众号</b> · WeChat<br/><span class="len">scan to follow</span><span class="lzh">微信扫一扫</span></figcaption>
+        </figure>
+        <figure class="qr-plate m-0">
+          <div class="qr-box">
+            <div class="qr-slot">
+              <span class="mono" style="font-size:20px;color:var(--line-2);">⛶</span>
+              <span class="mono" style="font-size:9px;"><span class="len">QR coming</span><span class="lzh">二维码待补</span></span>
+            </div>
+          </div>
+          <figcaption><b>小红书</b> · RED<br/><span class="len">name card soon</span><span class="lzh">名片待补</span></figcaption>
+        </figure>
+      </div>
     </div>
     <div class="mt-16 pt-6 border-t border-[#d9cfbc] flex flex-wrap items-center justify-between gap-3 mono text-xs ink-mute">
       <span>© 2026 Jessica · Learn in public · Made with Claude Code in Sydney</span>
