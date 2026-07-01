@@ -41,10 +41,10 @@ jessica-portfolio/
 3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
 4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`（图标 + 账号 + 粉丝数 + sparkline `.spark` + LIVE/SOON 状态）。**三行全真 LIVE**：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）/ GitHub。公众号名暂借小红书同名，**待 Jessica 确认真实公众号名**
 5. **WORK（03）**：作品清单 `.work-list`，每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`
-6. **CONTACT（05）**：`Let's talk.` + 邮箱行 `mailto:jessicahao5308@gmail.com`（衬线斜体，Sac 式）+ 三张 `.card`（小红书关注 / 公众号读文 / GitHub 开源）
+6. **CONTACT（05）**：`Let's talk.` + 邮箱行 `mailto:jessicahao5308@gmail.com`（衬线斜体，Sac 式）+ 三张 `.card`（小红书关注 / 公众号读文 / GitHub 开源）+ **QR 扫码区**（`.qr-plate`）：公众号 `works/qr-wechat.jpg` + 小红书 `works/qr-xiaohongshu.jpg`（从名片 IMG_8056 裁 QR + 提对比度，`zxing-cpp` 验证可扫通）
 7. **双语**：`.len`（英文，默认）/ `.lzh`（中文），`body.lang-zh` 切换；`toggleLang()` 同步 `<title>`
 
-> **待办**：① ~~hero 头像~~ ✅；② ~~信号台真实账号 + LIVE~~ ✅（小红书/公众号/GitHub）；③ **确认真实公众号名**（现暂用「悉尼陪读妈妈 Jessica」）；④ 可选：公众号/飞书二维码卡（`扫码关注`比链更好涨粉）。
+> **待办**：① ~~hero 头像~~ ✅（真人海港照）；② ~~信号台真实账号 + LIVE~~ ✅；③ **确认真实公众号名**（现暂用「悉尼陪读妈妈 Jessica」）；④ ~~公众号/小红书二维码卡~~ ✅（均已上、验证可扫）。
 
 ## 作品呈现：两种行
 
