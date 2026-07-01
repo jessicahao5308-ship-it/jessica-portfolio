@@ -4,7 +4,9 @@
 
 个人作品集网站 ——「**悉尼陪读妈妈 Jessica · Learn in public, build in public**」对外橱窗 + 引流入口。
 
-- 暗色编辑风（off-black `#0c0b09` + 琥珀 accent `#f0a93b`），**单文件 `index.html`**，内联 CSS/JS。
+- **奶油纸 × 蓝图技术图 × 编辑风**（复刻 Sac 风格，2026-07 改版）：暖奶油纸 `--paper #f2ede3` + 橙锈红 accent `#e0602f` + 黑墨字 `#1b1813`，**单文件 `index.html`**，内联 CSS/JS。
+  - 签名装饰语言：十字准星角标 `.cross`、点阵/网格 `.bp-dots/.bp-grid`、mono 小标号 `.kicker`（`ABOUT — 01`）、超大衬线 `.serif-en`（Playfair 800）、水印数字 `.watermark`。
+  - 前身是暗色 off-black + 琥珀（v3，git 历史里）；如需回退可查 commit `99e52c9` 前。
 - ≠ Obsidian Vault（私人工作台、含孩子真实信息，永不公开）。两者**无自动同步**，全手动策展。
 
 ## 部署
@@ -29,13 +31,17 @@ jessica-portfolio/
 └── CLAUDE.md         ← 本文件
 ```
 
-## 网页结构（index.html，一屏到底）
+## 网页结构（index.html，单页多 section，每段带 `— 0N` 小标号）
 
-1. **NAV**：`Jessica.` + slogan `Learn in public · Build in public` + Work/Contact + `EN/中` 切换按钮
-2. **HERO**：大标题 *Learning & building with AI*（Playfair 衬线，琥珀斜体 AI）
-3. **WORK**：作品清单 `.work-list`，每行 `.work-row`（编号 + 标题 + 一句简介 + 可选形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview` 截图跟着光标；手机显示 `.row-thumb`
-4. **CONTACT**：小红书 / 公众号 / 飞书（现 `@TBA`，待真实账号 + 二维码）
-5. **双语**：`.len`（英文，默认）/ `.lzh`（中文），`body.lang-zh` 切换；`toggleLang()` 同步 `<title>`
+1. **NAV**：`Jessica.` + slogan + About/Signal/Work/Contact + `SYD · 2026` chip + `EN/中` 切换按钮
+2. **HERO**（`— 2026`）：超大衬线字标 `Jessica.` + 右侧**蓝图占位板 `.plate`**（`FIG.01 PORTRAIT / 头像待补`，**等 Jessica 给照片/插画替换**）+ 水印 `J` + 两个 CTA
+3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
+4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`（图标 + 账号 + 粉丝数 + sparkline `.spark` + LIVE/SOON 状态）。**GitHub 是真 LIVE**，小红书/公众号/飞书现 `@TBA` = SOON（有真账号后改 handle + 状态）
+5. **WORK（03）**：作品清单 `.work-list`，每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`
+6. **CONTACT（04）**：`Let's talk.` + 三张 `.card`（小红书 / 公众号 / GitHub）
+7. **双语**：`.len`（英文，默认）/ `.lzh`（中文），`body.lang-zh` 切换；`toggleLang()` 同步 `<title>`
+
+> **待办**：① hero 蓝图占位板换成真实照片或墨绘插画（Jessica 定）；② 信号台三个 `@TBA` 换真实账号 + 状态改 LIVE；③ 联系卡二维码。
 
 ## 作品呈现：两种行
 
@@ -80,4 +86,4 @@ jessica-portfolio/
 - Pages free 账号要求仓库 public。
 - Tailwind CDN 首次加载有轻微 FOUC。
 - iCloud / Obsidian 路径含中文 + 空格，命令里要加引号。
-- **无头截图**：hero 用 `min-height:88dvh`，截整页会被撑高；截作品区时先 `sed 's/88dvh/90px/'` 到临时文件再截。
+- **无头截图**：hero 已不用 `88dvh`（改为自然高度），可直接 `--window-size=1440,4200` 截整页再 `sips -c` 裁段。

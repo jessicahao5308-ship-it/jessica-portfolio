@@ -10,24 +10,27 @@
 <meta property="og:description" content="A Sydney mum of two, building courseware, games, notes and small apps with AI." />
 <meta property="og:image" content="https://jessicahao5308-ship-it.github.io/jessica-portfolio/works/shots/use-ai.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230c0b09'/%3E%3Ctext x='50' y='72' font-family='Georgia,serif' font-size='62' font-weight='700' fill='%23f0a93b' text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23f2ede3'/%3E%3Ctext x='50' y='73' font-family='Georgia,serif' font-size='64' font-weight='700' fill='%23181613' text-anchor='middle'%3EJ%3C/text%3E%3Ccircle cx='78' cy='30' r='9' fill='%23e0602f'/%3E%3C/svg%3E" />
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,500;1,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #0c0b09;
-    --bg-soft: #131210;
-    --ink: #ece6d8;
-    --ink-soft: #948b7c;
-    --ink-mute: #5a5448;
-    --accent: #f0a93b;
-    --line: #221f1a;
+    --paper: #f2ede3;       /* warm cream base */
+    --paper-2: #ece4d5;     /* deeper panel */
+    --paper-3: #e5dcc9;     /* card / inset */
+    --ink: #1b1813;         /* near-black ink */
+    --ink-soft: #6a6153;    /* muted body */
+    --ink-mute: #9d9385;    /* faint labels */
+    --accent: #e0602f;      /* orange-rust */
+    --accent-soft: #f4d9c6; /* tinted fill */
+    --line: #d9cfbc;        /* hairline */
+    --line-2: #c7bca4;      /* stronger hairline */
   }
   * { -webkit-font-smoothing: antialiased; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--bg); color: var(--ink);
+  body { margin: 0; background: var(--paper); color: var(--ink);
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
   .serif-en { font-family: "Playfair Display", serif; }
   .serif-zh { font-family: "Noto Serif SC", serif; }
@@ -41,70 +44,141 @@
   body.lang-zh .len { display: none; }
   body.lang-zh .lzh { display: contents; }
 
-  /* hero */
-  .hero { position: relative; min-height: 88dvh; display: flex; flex-direction: column; justify-content: center; overflow: hidden;
-    background: radial-gradient(ellipse 90% 70% at 72% 8%, rgba(240,169,59,0.10), transparent 55%), var(--bg); }
-  .hero-grid { position: absolute; inset: 0; pointer-events: none;
-    background-image: linear-gradient(to right, rgba(236,230,216,0.022) 1px, transparent 1px), linear-gradient(to bottom, rgba(236,230,216,0.022) 1px, transparent 1px);
-    background-size: 64px 64px; mask-image: radial-gradient(ellipse 80% 70% at 60% 30%, black 20%, transparent 78%); }
-  .pill { display: inline-flex; align-items: center; gap: 7px; background: rgba(240,169,59,0.08); color: var(--accent);
-    border: 1px solid rgba(240,169,59,0.22); padding: 5px 13px; border-radius: 999px; font-size: 12px; letter-spacing: 0.02em; }
-  .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); display: inline-block; }
+  /* ---- blueprint scaffolding ---- */
+  /* dotted-grid + hairline field used behind sections */
+  .blueprint { position: relative; }
+  .bp-grid { position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(27,24,19,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(27,24,19,0.045) 1px, transparent 1px);
+    background-size: 72px 72px; }
+  .bp-dots { position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image: radial-gradient(rgba(27,24,19,0.10) 1px, transparent 1.4px);
+    background-size: 24px 24px; }
+  /* crosshair registration marks at panel corners */
+  .cross { position: absolute; width: 13px; height: 13px; pointer-events: none; color: var(--accent); opacity: .85; z-index: 2; }
+  .cross::before, .cross::after { content: ""; position: absolute; background: currentColor; }
+  .cross::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+  .cross::after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
+  .cross.tl { top: -6px; left: -6px; } .cross.tr { top: -6px; right: -6px; }
+  .cross.bl { bottom: -6px; left: -6px; } .cross.br { bottom: -6px; right: -6px; }
 
-  .navlink { color: var(--ink-soft); transition: color 0.2s; }
-  .navlink:hover { color: var(--ink); }
-  .lang-btn { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--ink-soft);
-    border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; background: transparent; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
-  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+  /* section label: mono kicker with a rule — e.g. ABOUT — 01 */
+  .kicker { display: inline-flex; align-items: center; gap: 12px; font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
+  .kicker::before { content: ""; width: 26px; height: 1px; background: var(--accent); display: inline-block; }
+  .kicker .idx { color: var(--ink-mute); }
+
+  /* faint oversized watermark number */
+  .watermark { position: absolute; font-family: "Playfair Display", serif; font-weight: 800; font-style: italic;
+    color: rgba(27,24,19,0.045); line-height: 1; pointer-events: none; user-select: none; z-index: 0; letter-spacing: -0.02em; }
+
+  /* paper grain */
+  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.045; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
   /* premium polish */
   h1, h2, .rowtitle { text-wrap: balance; }
   p { text-wrap: pretty; }
-  /* fine grain overlay to break digital flatness */
-  .grain { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.05; mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  /* keyboard focus ring */
   a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-  /* pressed feedback */
-  .lang-btn:active, .work-row:active { transform: translateY(1px); }
-  /* scroll reveal */
   .reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
   .reveal.in { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
+  /* nav */
+  .navlink { color: var(--ink-soft); transition: color 0.2s; text-decoration: none; }
+  .navlink:hover { color: var(--accent); }
+  .lang-btn { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--ink-soft);
+    border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 10px; background: transparent; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .chip { display: inline-flex; align-items: center; gap: 7px; font-family: "IBM Plex Mono", monospace; font-size: 11px;
+    letter-spacing: 0.06em; color: var(--ink-soft); border: 1px solid var(--line-2); border-radius: 999px; padding: 4px 11px; }
+  .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--accent); display: inline-block; }
+  .dot.live { animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{ opacity: 1; } 50%{ opacity: .3; } }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; padding: 11px 20px; border-radius: 6px; text-decoration: none; transition: transform .15s, background .2s, border-color .2s, color .2s; }
+  .btn-primary { background: var(--accent); color: #fff7f0; }
+  .btn-primary:hover { background: #cf5324; }
+  .btn-ghost { border: 1px solid var(--line-2); color: var(--ink); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn:active { transform: translateY(1px); }
+
+  /* hero portrait — blueprint plate (placeholder for future photo/illustration) */
+  .plate { position: relative; aspect-ratio: 5/5.2; border: 1px solid var(--line-2); background:
+      repeating-linear-gradient(45deg, rgba(224,96,47,0.03) 0 10px, transparent 10px 20px), var(--paper-2);
+    overflow: hidden; }
+  .plate-grid { position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(27,24,19,0.13) 1px, transparent 1.4px); background-size: 22px 22px; }
+  .plate-ring { position: absolute; inset: 14%; border-radius: 999px; border: 1px dashed var(--line-2); }
+  .plate-anno { position: absolute; font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .08em; color: var(--ink-mute); }
+  .tick { position: absolute; background: var(--line-2); }
+
+  /* node diagram: 学 → 做 → 享 */
+  .nodes { display: flex; align-items: center; justify-content: space-between; gap: 8px; max-width: 460px; }
+  .node { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 0 0 auto; }
+  .node-badge { width: 62px; height: 62px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--paper);
+    display: flex; align-items: center; justify-content: center; font-family: "Noto Serif SC", serif; font-size: 24px; color: var(--ink);
+    box-shadow: inset 0 0 0 4px var(--paper); position: relative; }
+  .node-badge::after { content: ""; position: absolute; inset: -5px; border-radius: 999px; border: 1px solid var(--accent); opacity: .35; }
+  .node-cap { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); }
+  .node-link { flex: 1 1 auto; height: 1px; background: var(--line-2); position: relative; }
+  .node-link::after { content: ""; position: absolute; top: 50%; left: 50%; width: 5px; height: 5px; border-radius: 999px; background: var(--accent); transform: translate(-50%,-50%); }
+
+  /* signal board */
+  .signal { border: 1px solid var(--line); background: var(--paper-2); }
+  .sig-row { display: grid; grid-template-columns: 40px 1fr auto 96px 66px; align-items: center; gap: 16px;
+    padding: 15px 20px; border-top: 1px solid var(--line); }
+  .signal .sig-row:first-child { border-top: none; }
+  .sig-ico { width: 38px; height: 38px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px; color: #fff; }
+  .sig-handle { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--ink); }
+  .sig-plat { font-size: 11px; color: var(--ink-mute); margin-top: 2px; }
+  .sig-count { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--ink-soft); text-align: right; }
+  .spark { display: flex; align-items: flex-end; gap: 3px; height: 22px; }
+  .spark i { width: 4px; background: var(--accent); border-radius: 1px; opacity: .85; display: block; }
+  .spark.mute i { background: var(--line-2); opacity: 1; }
+  .sig-stat { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .08em; display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end; }
+  .sig-stat.live { color: var(--accent); }
+  .sig-stat.soon { color: var(--ink-mute); }
+
   /* work list */
   .work-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 28px;
-    padding: 30px 4px; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink); transition: padding-left 0.3s ease; }
-  .work-list .work-row:last-child { border-bottom: 1px solid var(--line); }
-  .work-row:hover { padding-left: 14px; }
+    padding: 30px 4px; border-top: 1px solid var(--line-2); text-decoration: none; color: var(--ink); transition: padding-left 0.3s ease, background 0.3s ease; position: relative; }
+  .work-list .work-row:last-child { border-bottom: 1px solid var(--line-2); }
+  .work-row:hover { padding-left: 16px; background: linear-gradient(90deg, rgba(224,96,47,0.05), transparent 60%); }
   .row-left { display: flex; align-items: baseline; gap: 18px; min-width: 0; }
-  .rownum { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--accent); flex: 0 0 auto; padding-top: 6px; }
+  .rownum { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--accent); flex: 0 0 auto; padding-top: 8px; }
   .row-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
   .rowtitle-link { text-decoration: none; color: inherit; display: inline-block; }
-  .rowtitle { font-family: "Playfair Display", serif; font-size: clamp(1.4rem, 3.2vw, 2.3rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; transition: color 0.2s; }
+  .rowtitle { font-family: "Playfair Display", serif; font-size: clamp(1.5rem, 3.4vw, 2.5rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.08; transition: color 0.2s; }
   .work-row:hover .rowtitle, .rowtitle-link:hover .rowtitle { color: var(--accent); }
   .rowdesc { margin: 0; font-size: 14px; line-height: 1.55; color: var(--ink-soft); max-width: 48ch; }
-  .rowmeta { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-mute); white-space: nowrap; flex: 0 0 auto; padding-top: 8px; text-align: right; }
+  .rowmeta { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-mute); white-space: nowrap; flex: 0 0 auto; padding-top: 10px; text-align: right; }
   .row-thumb { display: none; }
-  .soon { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-mute); border: 1px solid var(--line); border-radius: 999px; padding: 1px 6px; }
-  /* format chips inside a case node */
   .forms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
   .form { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-soft);
-    border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
-  .form:hover { border-color: var(--accent); color: var(--accent); }
-  .form.is-soon { opacity: 0.4; pointer-events: none; }
+    border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 12px; text-decoration: none; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+  .form:hover { border-color: var(--accent); color: var(--accent); background: var(--paper); }
 
-  /* floating hover preview (desktop) */
+  /* floating hover preview (desktop) — framed like a blueprint plate */
   #hoverPreview { position: fixed; top: 0; left: 0; width: 340px; max-width: 34vw; aspect-ratio: 16/10; object-fit: cover; object-position: top center;
-    border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 24px 70px rgba(20,12,2,0.7); opacity: 0; transform: translateY(-50%);
-    transition: opacity 0.25s ease; pointer-events: none; z-index: 60; background: var(--bg-soft); }
+    border: 1px solid var(--line-2); border-radius: 6px; box-shadow: 0 22px 60px rgba(70,45,15,0.22), 0 0 0 6px var(--paper);
+    opacity: 0; transform: translateY(-50%); transition: opacity 0.25s ease; pointer-events: none; z-index: 60; background: var(--paper-2); }
 
+  .card { border: 1px solid var(--line); background: var(--paper-2); border-radius: 12px; transition: border-color .2s, transform .2s; }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  @media (max-width: 860px) {
+    .sig-row { grid-template-columns: 34px 1fr auto; row-gap: 4px; }
+    .sig-row .spark, .sig-row .sig-count { display: none; }
+  }
   @media (max-width: 760px) {
     #hoverPreview { display: none !important; }
     .work-row { flex-direction: column; align-items: stretch; gap: 12px; }
     .work-row:hover { padding-left: 4px; }
-    .row-thumb { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; object-position: top center; border: 1px solid var(--line); border-radius: 8px; }
+    .row-thumb { display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; object-position: top center; border: 1px solid var(--line-2); border-radius: 8px; }
     .rowmeta { align-self: flex-start; }
+    .nodes { max-width: 100%; }
   }
 </style>
 </head>
@@ -112,134 +186,285 @@
 <div class="grain" aria-hidden="true"></div>
 
 <!-- NAV -->
-<nav class="sticky top-0 z-50 border-b border-[#221f1a]" style="background: rgba(12,11,9,0.72); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
-  <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+<nav class="sticky top-0 z-50 border-b border-[#d9cfbc]" style="background: rgba(242,237,227,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
     <a href="#" class="flex items-baseline gap-3">
-      <span class="text-base font-semibold tracking-tight">Jessica<span class="accent">.</span></span>
-      <span class="mono text-[10px] tracking-[0.18em] uppercase ink-mute hidden sm:inline">Learn in public · Build in public</span>
+      <span class="serif-en text-xl font-bold tracking-tight">Jessica<span class="accent">.</span></span>
+      <span class="mono text-[10px] tracking-[0.18em] uppercase ink-mute hidden md:inline">Learn in public · Build in public</span>
     </a>
     <div class="flex items-center gap-5 text-sm">
+      <a href="#about" class="navlink hidden sm:inline"><span class="len">About</span><span class="lzh">关于</span></a>
+      <a href="#signal" class="navlink hidden sm:inline"><span class="len">Signal</span><span class="lzh">信号台</span></a>
       <a href="#work" class="navlink"><span class="len">Work</span><span class="lzh">作品</span></a>
       <a href="#contact" class="navlink"><span class="len">Contact</span><span class="lzh">联系</span></a>
+      <span class="chip hidden md:inline-flex"><span class="dot"></span>SYD · 2026</span>
       <button class="lang-btn" onclick="toggleLang()"><span class="len">中文</span><span class="lzh">EN</span></button>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
-<header class="hero">
-  <div class="hero-grid"></div>
-  <div class="relative max-w-5xl mx-auto px-6 w-full">
-    <div class="pill mb-8"><span class="dot"></span>
-      <span class="len">Sydney · Mum of two · Self-taught with AI</span>
-      <span class="lzh">悉尼 · 两娃妈妈 · 自学 AI</span>
+<header class="blueprint overflow-hidden border-b border-[#d9cfbc]">
+  <div class="bp-grid"></div>
+  <span class="watermark" style="right:-2%; top:2%; font-size: clamp(9rem, 22vw, 20rem);">J</span>
+  <div class="relative max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 grid md:grid-cols-[1.15fr_0.85fr] gap-10 md:gap-14 items-center">
+    <!-- left: wordmark -->
+    <div class="relative">
+      <div class="kicker mb-6"><span>Portfolio</span><span class="idx">— 2026</span></div>
+      <h1 class="serif-en leading-[0.92] tracking-tight" style="font-size: clamp(4rem, 13vw, 9.5rem); font-weight: 800;">
+        Jessica<span class="accent">.</span>
+      </h1>
+      <div class="mono text-xs tracking-[0.14em] uppercase ink-soft mt-4 flex items-center gap-2">
+        <span class="dot"></span>
+        <span class="len">Sydney mum · learn &amp; build in public</span>
+        <span class="lzh">悉尼陪读妈妈 · 公开学 · 公开做</span>
+      </div>
+      <p class="mt-7 max-w-md text-[15px] leading-relaxed ink-soft">
+        <span class="len">Turning everyday education problems into things you can open, play with, and actually use — notes, courseware, small games and desktop toys, all built with AI.</span>
+        <span class="lzh serif-zh">把日常陪读里的真实问题，做成能打开、能玩、能用的东西——双语笔记、互动课件、小游戏、桌面小玩具，全部用 AI 做出来。</span>
+      </p>
+      <div class="flex flex-wrap items-center gap-3 mt-9">
+        <a href="#work" class="btn btn-primary"><span class="len">See the work</span><span class="lzh">查看作品</span> <span>→</span></a>
+        <a href="#contact" class="btn btn-ghost"><span class="len">Get in touch</span><span class="lzh">联系我</span> <span>↗</span></a>
+      </div>
     </div>
-    <h1 class="leading-[1.04] tracking-tight mb-8" style="font-size: clamp(2.6rem, 7vw, 5.5rem); font-weight: 600;">
-      <span class="len serif-en">Learning &amp; building<br/><span class="italic accent">with AI</span>.</span>
-      <span class="lzh serif-zh" style="font-weight:600;">一边陪读，<br/>一边用 <span class="accent">AI</span> 做东西。</span>
-    </h1>
-    <p class="ink-soft max-w-xl text-lg leading-relaxed">
-      <span class="len">A Sydney mum of two — turning everyday education problems into things you can open, play with, and actually use.</span>
-      <span class="lzh serif-zh">悉尼两娃陪读妈妈，把日常教育里的真实问题，做成能打开、能玩、能用的东西。</span>
-    </p>
-    <a href="#work" class="inline-flex items-center gap-2 mt-12 text-sm ink-soft hover:text-[#f0a93b] transition group">
-      <span class="len">See the work</span><span class="lzh">看作品</span>
-      <span class="group-hover:translate-y-0.5 transition">↓</span>
-    </a>
+    <!-- right: blueprint portrait plate -->
+    <div class="relative">
+      <div class="cross tl"></div><div class="cross tr"></div><div class="cross bl"></div><div class="cross br"></div>
+      <div class="plate">
+        <div class="plate-grid"></div>
+        <div class="plate-ring"></div>
+        <!-- corner ticks -->
+        <div class="tick" style="left:0; top:0; width:26px; height:1px;"></div>
+        <div class="tick" style="left:0; top:0; width:1px; height:26px;"></div>
+        <div class="tick" style="right:0; bottom:0; width:26px; height:1px;"></div>
+        <div class="tick" style="right:0; bottom:0; width:1px; height:26px;"></div>
+        <div class="plate-anno" style="left:14px; top:12px;">FIG.01 — PORTRAIT</div>
+        <div class="plate-anno" style="right:14px; top:12px;">Ø / SYD</div>
+        <div class="plate-anno" style="left:14px; bottom:12px;"><span class="len">to be added</span><span class="lzh">头像待补</span></div>
+        <div class="plate-anno" style="right:14px; bottom:12px;">400 × 420</div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6">
+          <div class="serif-en italic ink-mute" style="font-size: clamp(2.4rem,6vw,3.6rem); font-weight:600;">J.</div>
+          <div class="mono text-[10px] tracking-[0.18em] uppercase ink-mute">
+            <span class="len">illustration slot</span><span class="lzh">插画位 · 待替换</span>
+          </div>
+        </div>
+      </div>
+      <div class="mono text-[10px] ink-mute mt-3 flex justify-between">
+        <span>PLATE — 01</span><span class="accent">learn · build · share</span>
+      </div>
+    </div>
   </div>
 </header>
 
-<!-- WORK LIST -->
-<section id="work" class="max-w-5xl mx-auto px-6 py-24 md:py-32">
-  <div class="flex items-baseline justify-between mb-10">
-    <h2 class="serif-en tracking-tight" style="font-size: clamp(1.8rem,4vw,3rem); font-weight:600;">
-      <span class="len">Selected Work</span><span class="lzh serif-zh">作品精选</span>
-    </h2>
-    <div class="mono text-xs ink-mute">2026.05 — 2026.06</div>
+<!-- ABOUT + NODE DIAGRAM -->
+<section id="about" class="blueprint border-b border-[#d9cfbc]">
+  <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-[1fr_0.9fr] gap-12 md:gap-16 items-center">
+    <div class="reveal">
+      <div class="kicker mb-6"><span>About</span><span class="idx">— 01</span></div>
+      <h2 class="serif-en tracking-tight leading-[1.02]" style="font-size: clamp(2.2rem,5vw,3.6rem); font-weight:700;">
+        <span class="len">About me</span><span class="lzh serif-zh">关于我</span>
+      </h2>
+      <p class="mt-6 max-w-lg leading-relaxed ink-soft text-[15px]">
+        <span class="len">A Sydney mum of two, English major turned self-taught builder. I sit next to my kids while they study, notice where the material breaks down, and rebuild it with AI into something clearer — then share the clean version with Chinese-speaking families finding their feet in Australia.</span>
+        <span class="lzh serif-zh">悉尼两娃妈妈，英语专业出身、自学用 AI 做东西。我陪着孩子写作业，发现哪里卡住，就用 AI 把它重做成更清楚的版本——再把脱敏后的成品，分享给同样在澳洲落脚的中文家庭。</span>
+      </p>
+      <div class="mono text-[11px] ink-mute mt-8 flex flex-wrap gap-x-6 gap-y-2">
+        <span>◦ <span class="len">English major</span><span class="lzh">英语专业</span></span>
+        <span>◦ <span class="len">9 yrs in trade</span><span class="lzh">9 年外贸</span></span>
+        <span>◦ <span class="len">building with Claude Code</span><span class="lzh">用 Claude Code 做</span></span>
+      </div>
+    </div>
+    <!-- node diagram -->
+    <div class="reveal">
+      <div class="mono text-[10px] tracking-[0.16em] uppercase ink-mute mb-6 text-center"><span class="len">the loop</span><span class="lzh">我的闭环</span></div>
+      <div class="nodes mx-auto">
+        <div class="node">
+          <div class="node-badge">学</div>
+          <span class="node-cap">Learn</span>
+        </div>
+        <div class="node-link"></div>
+        <div class="node">
+          <div class="node-badge">做</div>
+          <span class="node-cap">Build</span>
+        </div>
+        <div class="node-link"></div>
+        <div class="node">
+          <div class="node-badge">享</div>
+          <span class="node-cap">Share</span>
+        </div>
+      </div>
+      <p class="text-center mono text-[11px] ink-soft mt-6 max-w-xs mx-auto leading-relaxed">
+        <span class="len">learn in public → build the fix → share it back</span>
+        <span class="lzh">公开地学 → 把问题做成解法 → 再分享回去</span>
+      </p>
+    </div>
   </div>
+</section>
 
-  <div class="work-list" id="worklist">
-    <!-- 01 · single -->
-    <div class="work-row reveal" data-img="./works/shots/use-ai.png">
-      <img class="row-thumb" src="./works/shots/use-ai.png" alt="Use AI deck" loading="lazy" />
-      <div class="row-left"><span class="rownum">01</span>
-        <div class="row-body">
-          <a class="rowtitle-link" href="./works/use-ai-ppt/index.html" target="_blank"><span class="rowtitle"><span class="len">Keeping Up with AI</span><span class="lzh serif-zh">用好 AI，跟上时代</span></span></a>
-          <p class="rowdesc"><span class="len">A kraft-paper, magazine-style scrolling deck on putting AI to work in everyday life.</span><span class="lzh serif-zh">牛皮纸杂志感的横向滚动 Deck，讲怎么把 AI 真正用进日常。</span></p>
-        </div></div>
-      <div class="rowmeta">2026.06 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
+<!-- SIGNAL BOARD -->
+<section id="signal" class="blueprint border-b border-[#d9cfbc]">
+  <div class="bp-dots" style="opacity:.5;"></div>
+  <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+      <div>
+        <div class="kicker mb-4"><span>Signal</span><span class="idx">— 02</span></div>
+        <h2 class="serif-en tracking-tight" style="font-size: clamp(2rem,4.5vw,3.2rem); font-weight:700;">
+          <span class="len">Where to find me</span><span class="lzh serif-zh">全平台信号台</span>
+        </h2>
+      </div>
+      <p class="mono text-[11px] ink-mute max-w-xs">
+        <span class="len">Channels going live as I ship. Follow the ones lit up.</span>
+        <span class="lzh">随着我持续发布逐个点亮，亮着的可以先关注。</span>
+      </p>
     </div>
 
-    <!-- 02 · case: Primes & Composites (4 forms) -->
-    <div class="work-row reveal" data-img="./works/shots/primes-ppt.png">
-      <img class="row-thumb" src="./works/shots/primes-ppt.png" alt="Primes and Composites" loading="lazy" />
-      <div class="row-left"><span class="rownum">02</span>
-        <div class="row-body">
-          <a class="rowtitle-link" href="./works/03-primes-composites.html" target="_blank"><span class="rowtitle"><span class="len">Primes &amp; Composites</span><span class="lzh serif-zh">质数与合数</span></span></a>
-          <p class="rowdesc"><span class="len">One Year 6 maths lesson, made four ways — bilingual notes, a printable, a scrolling deck, and a game.</span><span class="lzh serif-zh">一节 Year 6 数学课，做成四种形式：双语笔记、打印版、滚动课件、互动游戏。</span></p>
-          <div class="forms">
-            <a class="form" href="./works/03-primes-composites-note.html" target="_blank">📖 <span class="len">Notes</span><span class="lzh">双语笔记</span></a>
-            <a class="form" href="./works/03-primes-composites.pdf" target="_blank">🖨️ <span class="len">Print PDF</span><span class="lzh">打印 PDF</span></a>
-            <a class="form" href="./works/03-primes-composites.html" target="_blank">🎞️ <span class="len">Deck</span><span class="lzh">滚动课件</span></a>
-            <a class="form" href="./works/03-primes-composites-game.html" target="_blank">🎯 <span class="len">Game</span><span class="lzh">互动游戏</span></a>
-          </div>
-        </div></div>
-      <div class="rowmeta">2026.05 · <span class="len">Courseware · 4 forms</span><span class="lzh">课件 · 4 形式</span></div>
+    <div class="signal rounded-xl overflow-hidden reveal">
+      <!-- GitHub — LIVE (real) -->
+      <a class="sig-row" href="https://github.com/jessicahao5308-ship-it/jessica-portfolio" target="_blank" style="text-decoration:none;color:inherit;">
+        <span class="sig-ico" style="background:#1b1813;">GH</span>
+        <span><span class="sig-handle">@jessicahao5308-ship-it</span><span class="sig-plat block">GitHub · <span class="len">open source</span><span class="lzh">开源</span></span></span>
+        <span class="sig-count">public</span>
+        <span class="spark"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:85%"></i><i style="height:100%"></i></span>
+        <span class="sig-stat live"><span class="dot live"></span>LIVE</span>
+      </a>
+      <!-- RED / 小红书 -->
+      <div class="sig-row">
+        <span class="sig-ico" style="background:#ff2e4d;">RED</span>
+        <span><span class="sig-handle">@TBA</span><span class="sig-plat block">RED · 小红书</span></span>
+        <span class="sig-count">—</span>
+        <span class="spark mute"><i style="height:30%"></i><i style="height:45%"></i><i style="height:38%"></i><i style="height:52%"></i><i style="height:44%"></i><i style="height:60%"></i><i style="height:50%"></i></span>
+        <span class="sig-stat soon">◦ SOON</span>
+      </div>
+      <!-- WeChat / 公众号 -->
+      <div class="sig-row">
+        <span class="sig-ico" style="background:#07c160;">WX</span>
+        <span><span class="sig-handle">@TBA</span><span class="sig-plat block">WeChat · 公众号</span></span>
+        <span class="sig-count">—</span>
+        <span class="spark mute"><i style="height:35%"></i><i style="height:40%"></i><i style="height:33%"></i><i style="height:48%"></i><i style="height:42%"></i><i style="height:55%"></i><i style="height:46%"></i></span>
+        <span class="sig-stat soon">◦ SOON</span>
+      </div>
+      <!-- Feishu / 飞书 -->
+      <div class="sig-row">
+        <span class="sig-ico" style="background:#3370ff;">飞</span>
+        <span><span class="sig-handle"><span class="len">scan to add</span><span class="lzh">扫码添加</span></span><span class="sig-plat block">Feishu · 飞书</span></span>
+        <span class="sig-count">—</span>
+        <span class="spark mute"><i style="height:28%"></i><i style="height:38%"></i><i style="height:32%"></i><i style="height:44%"></i><i style="height:36%"></i><i style="height:50%"></i><i style="height:42%"></i></span>
+        <span class="sig-stat soon">◦ SOON</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK LIST -->
+<section id="work" class="blueprint">
+  <span class="watermark" style="left:-1%; bottom:-4%; font-size: clamp(7rem,16vw,14rem);">works</span>
+  <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <div class="kicker mb-4"><span>Work</span><span class="idx">— 03</span></div>
+        <h2 class="serif-en tracking-tight" style="font-size: clamp(2.2rem,5vw,3.6rem); font-weight:700;">
+          <span class="len">Selected Work</span><span class="lzh serif-zh">作品精选</span>
+        </h2>
+      </div>
+      <div class="mono text-xs ink-mute">2026.05 — 2026.06</div>
     </div>
 
-    <!-- 03 · case: Angle Types (3 forms) -->
-    <div class="work-row reveal" data-img="./works/shots/angles-game-m.png">
-      <img class="row-thumb" src="./works/shots/angles-game-m.png" alt="Angle Types" loading="lazy" />
-      <div class="row-left"><span class="rownum">03</span>
-        <div class="row-body">
-          <a class="rowtitle-link" href="./works/angles-game.html" target="_blank"><span class="rowtitle"><span class="len">Angle Types</span><span class="lzh serif-zh">角的类型</span></span></a>
-          <p class="rowdesc"><span class="len">Acute, right, obtuse and reflex angles — as bilingual notes, a printable, and a game.</span><span class="lzh serif-zh">锐角 / 直角 / 钝角 / 优角——做成双语笔记、打印版、互动游戏。</span></p>
-          <div class="forms">
-            <a class="form" href="./works/angles-note.html" target="_blank">📖 <span class="len">Notes</span><span class="lzh">双语笔记</span></a>
-            <a class="form" href="./works/angles.pdf" target="_blank">🖨️ <span class="len">Print PDF</span><span class="lzh">打印 PDF</span></a>
-            <a class="form" href="./works/angles-game.html" target="_blank">🎯 <span class="len">Game</span><span class="lzh">互动游戏</span></a>
-          </div>
-        </div></div>
-      <div class="rowmeta">2026.06 · <span class="len">Courseware · 3 forms</span><span class="lzh">课件 · 3 形式</span></div>
-    </div>
+    <div class="work-list" id="worklist">
+      <!-- 01 · single -->
+      <div class="work-row reveal" data-img="./works/shots/use-ai.png">
+        <img class="row-thumb" src="./works/shots/use-ai.png" alt="Use AI deck" loading="lazy" />
+        <div class="row-left"><span class="rownum">01</span>
+          <div class="row-body">
+            <a class="rowtitle-link" href="./works/use-ai-ppt/index.html" target="_blank"><span class="rowtitle"><span class="len">Keeping Up with AI</span><span class="lzh serif-zh">用好 AI，跟上时代</span></span></a>
+            <p class="rowdesc"><span class="len">A kraft-paper, magazine-style scrolling deck on putting AI to work in everyday life.</span><span class="lzh serif-zh">牛皮纸杂志感的横向滚动 Deck，讲怎么把 AI 真正用进日常。</span></p>
+          </div></div>
+        <div class="rowmeta">2026.06 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
+      </div>
 
-    <!-- 04 · single (download) -->
-    <div class="work-row reveal" data-img="./works/kangapet-roo.png">
-      <img class="row-thumb" src="./works/kangapet-roo.png" alt="Desktop kangaroo" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" />
-      <div class="row-left"><span class="rownum">04</span>
-        <div class="row-body">
-          <a class="rowtitle-link" href="./works/KangaPet-0.1.0-AppleSilicon.dmg" download><span class="rowtitle"><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></span></a>
-          <p class="rowdesc"><span class="len">A little desktop pet that keeps the kids company while they study. Apple Silicon Mac — on first launch, right-click the app and choose Open.</span><span class="lzh serif-zh">一只陪娃写作业的桌面小袋鼠桌宠。仅 Apple 芯片 Mac，首次打开请右键点 App 选「打开」。</span></p>
-          <div class="forms">
-            <a class="form" href="./works/KangaPet-0.1.0-AppleSilicon.dmg" download>⬇ <span class="len">Download .dmg</span><span class="lzh">下载 .dmg</span></a>
-          </div>
-        </div></div>
-      <div class="rowmeta">2026.06 · <span class="len">Mac App · v0.1</span><span class="lzh">桌面应用 · v0.1</span></div>
+      <!-- 02 · case: Primes & Composites (4 forms) -->
+      <div class="work-row reveal" data-img="./works/shots/primes-ppt.png">
+        <img class="row-thumb" src="./works/shots/primes-ppt.png" alt="Primes and Composites" loading="lazy" />
+        <div class="row-left"><span class="rownum">02</span>
+          <div class="row-body">
+            <a class="rowtitle-link" href="./works/03-primes-composites.html" target="_blank"><span class="rowtitle"><span class="len">Primes &amp; Composites</span><span class="lzh serif-zh">质数与合数</span></span></a>
+            <p class="rowdesc"><span class="len">One Year 6 maths lesson, made four ways — bilingual notes, a printable, a scrolling deck, and a game.</span><span class="lzh serif-zh">一节 Year 6 数学课，做成四种形式：双语笔记、打印版、滚动课件、互动游戏。</span></p>
+            <div class="forms">
+              <a class="form" href="./works/03-primes-composites-note.html" target="_blank">📖 <span class="len">Notes</span><span class="lzh">双语笔记</span></a>
+              <a class="form" href="./works/03-primes-composites.pdf" target="_blank">🖨️ <span class="len">Print PDF</span><span class="lzh">打印 PDF</span></a>
+              <a class="form" href="./works/03-primes-composites.html" target="_blank">🎞️ <span class="len">Deck</span><span class="lzh">滚动课件</span></a>
+              <a class="form" href="./works/03-primes-composites-game.html" target="_blank">🎯 <span class="len">Game</span><span class="lzh">互动游戏</span></a>
+            </div>
+          </div></div>
+        <div class="rowmeta">2026.05 · <span class="len">Courseware · 4 forms</span><span class="lzh">课件 · 4 形式</span></div>
+      </div>
+
+      <!-- 03 · case: Angle Types (3 forms) -->
+      <div class="work-row reveal" data-img="./works/shots/angles-game-m.png">
+        <img class="row-thumb" src="./works/shots/angles-game-m.png" alt="Angle Types" loading="lazy" />
+        <div class="row-left"><span class="rownum">03</span>
+          <div class="row-body">
+            <a class="rowtitle-link" href="./works/angles-game.html" target="_blank"><span class="rowtitle"><span class="len">Angle Types</span><span class="lzh serif-zh">角的类型</span></span></a>
+            <p class="rowdesc"><span class="len">Acute, right, obtuse and reflex angles — as bilingual notes, a printable, and a game.</span><span class="lzh serif-zh">锐角 / 直角 / 钝角 / 优角——做成双语笔记、打印版、互动游戏。</span></p>
+            <div class="forms">
+              <a class="form" href="./works/angles-note.html" target="_blank">📖 <span class="len">Notes</span><span class="lzh">双语笔记</span></a>
+              <a class="form" href="./works/angles.pdf" target="_blank">🖨️ <span class="len">Print PDF</span><span class="lzh">打印 PDF</span></a>
+              <a class="form" href="./works/angles-game.html" target="_blank">🎯 <span class="len">Game</span><span class="lzh">互动游戏</span></a>
+            </div>
+          </div></div>
+        <div class="rowmeta">2026.06 · <span class="len">Courseware · 3 forms</span><span class="lzh">课件 · 3 形式</span></div>
+      </div>
+
+      <!-- 04 · single (download) -->
+      <div class="work-row reveal" data-img="./works/kangapet-roo.png">
+        <img class="row-thumb" src="./works/kangapet-roo.png" alt="Desktop kangaroo" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" />
+        <div class="row-left"><span class="rownum">04</span>
+          <div class="row-body">
+            <a class="rowtitle-link" href="./works/KangaPet-0.1.0-AppleSilicon.dmg" download><span class="rowtitle"><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></span></a>
+            <p class="rowdesc"><span class="len">A little desktop pet that keeps the kids company while they study. Apple Silicon Mac — on first launch, right-click the app and choose Open.</span><span class="lzh serif-zh">一只陪娃写作业的桌面小袋鼠桌宠。仅 Apple 芯片 Mac，首次打开请右键点 App 选「打开」。</span></p>
+            <div class="forms">
+              <a class="form" href="./works/KangaPet-0.1.0-AppleSilicon.dmg" download>⬇ <span class="len">Download .dmg</span><span class="lzh">下载 .dmg</span></a>
+            </div>
+          </div></div>
+        <div class="rowmeta">2026.06 · <span class="len">Mac App · v0.1</span><span class="lzh">桌面应用 · v0.1</span></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="border-t border-[#221f1a]">
-  <div class="max-w-5xl mx-auto px-6 py-20 md:py-28">
-    <p class="serif-en text-2xl md:text-3xl tracking-tight mb-3">
-      <span class="len">Want to swap notes?</span><span class="lzh serif-zh">想聊聊？</span>
+<section id="contact" class="blueprint border-t border-[#d9cfbc]" style="background: var(--paper-2);">
+  <div class="bp-dots" style="opacity:.4;"></div>
+  <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
+    <div class="cross tl" style="top:22px;left:22px;"></div>
+    <div class="kicker mb-5"><span>Contact</span><span class="idx">— 04</span></div>
+    <p class="serif-en tracking-tight mb-4" style="font-size: clamp(2.6rem,7vw,5rem); font-weight:700;">
+      <span class="len">Let's talk<span class="accent">.</span></span><span class="lzh serif-zh">聊聊<span class="accent">。</span></span>
     </p>
-    <p class="ink-soft max-w-md leading-relaxed mb-10">
+    <p class="ink-soft max-w-md leading-relaxed mb-10 text-[15px]">
       <span class="len">Moving to Australia, or already raising kids here? Come say hi — let's share what we've each figured out.</span>
       <span class="lzh serif-zh">准备移民澳洲，或已经在这边陪娃读书？欢迎来加我，互通有无。</span>
     </p>
-    <div class="grid grid-cols-3 gap-4 max-w-lg">
-      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition">
-        <div class="text-xs ink-mute mb-1">RED · 小红书</div><div class="font-semibold">@TBA</div></a>
-      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition">
-        <div class="text-xs ink-mute mb-1">WeChat · 公众号</div><div class="font-semibold">@TBA</div></a>
-      <a href="#" class="border border-[#221f1a] rounded-xl p-4 hover:border-[#f0a93b] transition">
-        <div class="text-xs ink-mute mb-1">Feishu · 飞书</div><div class="font-semibold"><span class="len">Scan</span><span class="lzh">扫码</span></div></a>
+    <div class="grid sm:grid-cols-3 gap-4 max-w-2xl">
+      <a href="#" class="card p-5 relative overflow-hidden">
+        <div class="mono text-[10px] ink-mute mb-2">01 / RED</div>
+        <div class="text-xs ink-mute mb-1">小红书</div><div class="serif-en text-lg font-semibold">@TBA</div>
+        <div class="cross br"></div>
+      </a>
+      <a href="#" class="card p-5 relative overflow-hidden">
+        <div class="mono text-[10px] ink-mute mb-2">02 / WeChat</div>
+        <div class="text-xs ink-mute mb-1">公众号</div><div class="serif-en text-lg font-semibold">@TBA</div>
+        <div class="cross br"></div>
+      </a>
+      <a href="https://github.com/jessicahao5308-ship-it/jessica-portfolio" target="_blank" class="card p-5 relative overflow-hidden">
+        <div class="mono text-[10px] ink-mute mb-2">03 / GitHub</div>
+        <div class="text-xs ink-mute mb-1"><span class="len">source</span><span class="lzh">源码</span></div><div class="serif-en text-lg font-semibold accent"><span class="len">Open ↗</span><span class="lzh">开源 ↗</span></div>
+        <div class="cross br"></div>
+      </a>
     </div>
-    <div class="mt-16 pt-6 border-t border-[#221f1a] flex items-center justify-between mono text-xs ink-mute">
+    <div class="mt-16 pt-6 border-t border-[#d9cfbc] flex flex-wrap items-center justify-between gap-3 mono text-xs ink-mute">
       <span>© 2026 Jessica · Learn in public · Made with Claude Code in Sydney</span>
-      <span>v3</span>
+      <span>v4 · blueprint</span>
     </div>
   </div>
 </section>
@@ -272,9 +497,8 @@
         preview.style.top = e.clientY + 'px';
       });
     }
-    // staggered scroll reveal
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en, i) {
+      entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
