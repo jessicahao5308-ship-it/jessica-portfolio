@@ -34,9 +34,10 @@ jessica-portfolio/
 ## 网页结构（index.html，单页多 section，每段带 `— 0N` 小标号）
 
 1. **NAV**：`Jessica.` + slogan + About/Signal/Work/Contact + `SYD · 2026` chip + `EN/中` 切换按钮
-2. **HERO**（`— 2026`）：超大衬线字标 `Jessica.` + 右侧**蓝图肖像板 `.plate`**（`works/portrait.png` = Jessica 本人照片做的**橙墨双色调 + 半调网点 risograph 肖像**，`mix-blend-mode:multiply` 融进纸纹，四周留 FIG.01 技术标注）+ 水印 `J` + 两个 CTA
-   - **肖像资产**：`works/portrait.png`(默认=v2 riso 网点明显) / `portrait-v1.png`(细网点更亮) / `portrait-v3.png`(无网点平滑)。换版只改 `<img src>`。
-   - **怎么做的**：源照 `~/Downloads/a2d888…jpg` → `rembg`(u2net_human_seg) 抠图 → Pillow 双色调 LUT(墨黑/橙/奶油) + 自写半调网点。脚本 `/tmp/portrait/final.py`(临时，未入库；重做时 `uv run --with pillow`)。**本机无 AI 文生图后端**，走的是图像处理不是重画。
+2. **HERO**（`— 2026`）：超大衬线字标 `Jessica.` + 右侧**蓝图肖像板 `.plate`**（竖幅 3/4）+ 水印 `J` + 两个 CTA
+   - **当前用**：`works/portrait-real.png` = Jessica 本人真实照片（悉尼海港大桥背景），裁掉海墙杂物 + 轻度暖调调和奶油纸（Pillow：desat 0.9 / 暖白平衡 / 7% cream wash）。四周白色技术标注 FIG.01/SYD·HARBOUR/33.85°S。
+   - **备选资产**（riso 插画版，之前那张咖啡馆照做的）：`portrait.png`(v2 网点) / `portrait-v1.png` / `portrait-v3.png`。换真人↔插画只改 hero `<img src>`（插画版记得加回 `mix-blend-mode:multiply`）。
+   - **真人照处理**：源 HEIC `~/Downloads/8e44…HEIC` → `sips` 转 jpg + 裁切(取景框掉杂物，保留大桥) → Pillow 暖调。riso 版另走 `rembg` 抠图 + 双色调 LUT + 半调。**本机无 AI 文生图**，都是图像处理。
 3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
 4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`（图标 + 账号 + 粉丝数 + sparkline `.spark` + LIVE/SOON 状态）。**三行全真 LIVE**：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）/ GitHub。公众号名暂借小红书同名，**待 Jessica 确认真实公众号名**
 5. **WORK（03）**：作品清单 `.work-list`，每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`
