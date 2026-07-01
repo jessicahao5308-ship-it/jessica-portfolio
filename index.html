@@ -189,6 +189,30 @@
   .card { border: 1px solid var(--line); background: var(--paper-2); border-radius: 12px; transition: border-color .2s, transform .2s; }
   .card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
+  /* keyword marquee (Sac-style) */
+  .marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .marquee-track { display: inline-flex; white-space: nowrap; will-change: transform; animation: marq 34s linear infinite; }
+  .marquee-track span { font-family: "Playfair Display", serif; font-style: italic; font-size: 15px; color: var(--ink-mute); padding: 12px 0; }
+  .marquee-track .sep { font-family: "IBM Plex Mono", monospace; font-style: normal; color: var(--accent); opacity: .6; padding: 0 22px; }
+  @keyframes marq { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+
+  /* horizontal contact bar (Sac-style) */
+  .contact-bar { display: flex; flex-wrap: wrap; border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); }
+  .cbar-cell { flex: 1 1 200px; padding: 26px 24px; border-left: 1px solid var(--line); display: flex; align-items: center; gap: 12px; min-width: 0; text-decoration: none; color: var(--ink); transition: background .2s; }
+  .cbar-cell:first-child { border-left: none; }
+  a.cbar-cell:hover { background: linear-gradient(90deg, rgba(224,96,47,0.05), transparent); }
+  .cbar-lab { font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-mute); }
+  .cbar-val { font-family: "Playfair Display", serif; font-size: 17px; }
+  .cbar-arrow { margin-left: auto; color: var(--accent); flex: 0 0 auto; }
+  .cbar-qr { flex: 0 0 auto; gap: 14px; }
+  .qr-mini { width: 76px; height: 76px; border: 1px solid var(--line-2); border-radius: 8px; padding: 5px; background: #fff; }
+  .qr-mini img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  @media (max-width: 760px) {
+    .cbar-cell { flex: 1 1 100%; border-left: none; border-top: 1px solid var(--line); }
+    .contact-bar > .cbar-cell:first-child { border-top: none; }
+  }
+
   @media (max-width: 860px) {
     .sig-row { grid-template-columns: 34px 1fr auto; row-gap: 4px; }
     .sig-row .spark, .sig-row .sig-count { display: none; }
@@ -511,28 +535,39 @@
       <span class="len">Moving to Australia, or already raising kids here? Come say hi — let's share what we've each figured out.</span>
       <span class="lzh serif-zh">准备移民澳洲，或已经在这边陪娃读书？欢迎来加我，互通有无。</span>
     </p>
-    <!-- email line (Sac-style) -->
-    <a href="mailto:jessicahao5308@gmail.com" class="inline-flex items-baseline gap-3 group mb-10">
-      <span class="mono text-[10px] tracking-[0.14em] uppercase ink-mute">Email</span>
-      <span class="serif-en text-xl md:text-2xl border-b border-[#c7bca4] group-hover:border-[#e0602f] group-hover:text-[#e0602f] transition" style="font-style:italic;">jessicahao5308@gmail.com</span>
-      <span class="group-hover:translate-x-0.5 transition accent">→</span>
-    </a>
-    <div class="grid sm:grid-cols-3 gap-4 max-w-2xl">
-      <a href="https://www.xiaohongshu.com/user/profile/65dd909b0000000005008bee" target="_blank" rel="noopener" class="card p-5 relative overflow-hidden">
-        <div class="mono text-[10px] ink-mute mb-2">01 / RED</div>
-        <div class="text-xs ink-mute mb-1">小红书 · 1K+</div><div class="serif-en text-lg font-semibold accent"><span class="len">Follow ↗</span><span class="lzh">关注 ↗</span></div>
-        <div class="cross br"></div>
+    <!-- availability -->
+    <p class="mono text-[11px] tracking-[0.12em] uppercase accent flex items-center gap-2 mb-9">
+      <span class="dot live"></span><span class="len">open to collaborate</span><span class="lzh">当前开放合作</span>
+    </p>
+
+    <!-- keyword marquee (Sac-style) -->
+    <div class="marquee mb-10">
+      <div class="marquee-track" aria-hidden="true">
+        <span>build in public<span class="sep">·</span>陪读<span class="sep">·</span>AI 实践<span class="sep">·</span>悉尼妈妈<span class="sep">·</span>课件<span class="sep">·</span>learn in public<span class="sep">·</span>互动课件<span class="sep">·</span>分享<span class="sep">·</span></span>
+        <span>build in public<span class="sep">·</span>陪读<span class="sep">·</span>AI 实践<span class="sep">·</span>悉尼妈妈<span class="sep">·</span>课件<span class="sep">·</span>learn in public<span class="sep">·</span>互动课件<span class="sep">·</span>分享<span class="sep">·</span></span>
+      </div>
+    </div>
+
+    <!-- contact bar (Sac-style horizontal row) -->
+    <div class="contact-bar">
+      <a class="cbar-cell" href="mailto:jessicahao5308@gmail.com">
+        <span class="min-w-0"><span class="cbar-lab block mb-1">Email</span><span class="cbar-val block truncate" style="font-size:15px; font-style:italic;">jessicahao5308@gmail.com</span></span>
+        <span class="cbar-arrow">→</span>
       </a>
-      <a href="https://mp.weixin.qq.com/s/3j8mzrvyKJOPqDLjK1TwdA" target="_blank" rel="noopener" class="card p-5 relative overflow-hidden">
-        <div class="mono text-[10px] ink-mute mb-2">02 / WeChat</div>
-        <div class="text-xs ink-mute mb-1">公众号</div><div class="serif-en text-lg font-semibold accent"><span class="len">Read ↗</span><span class="lzh">读一篇 ↗</span></div>
-        <div class="cross br"></div>
+      <a class="cbar-cell" href="https://www.xiaohongshu.com/user/profile/65dd909b0000000005008bee" target="_blank" rel="noopener">
+        <span class="sig-ico" style="background:#ff2e4d; width:30px; height:30px; font-size:11px; border-radius:7px; flex:0 0 auto;">RED</span>
+        <span class="min-w-0"><span class="cbar-lab block mb-1">小红书 · 1K+</span><span class="cbar-val block truncate" style="font-size:15px;">悉尼陪读妈妈 Jessica</span></span>
+        <span class="cbar-arrow">→</span>
       </a>
-      <a href="https://github.com/jessicahao5308-ship-it/jessica-portfolio" target="_blank" rel="noopener" class="card p-5 relative overflow-hidden">
-        <div class="mono text-[10px] ink-mute mb-2">03 / GitHub</div>
-        <div class="text-xs ink-mute mb-1"><span class="len">source</span><span class="lzh">源码</span></div><div class="serif-en text-lg font-semibold accent"><span class="len">Open ↗</span><span class="lzh">开源 ↗</span></div>
-        <div class="cross br"></div>
+      <a class="cbar-cell" href="https://github.com/jessicahao5308-ship-it/jessica-portfolio" target="_blank" rel="noopener">
+        <span class="sig-ico" style="background:#1b1813; width:30px; height:30px; font-size:11px; border-radius:7px; flex:0 0 auto;">GH</span>
+        <span class="min-w-0"><span class="cbar-lab block mb-1">GitHub</span><span class="cbar-val block" style="font-size:15px;"><span class="len">source</span><span class="lzh">开源</span></span></span>
+        <span class="cbar-arrow">↗</span>
       </a>
+      <div class="cbar-cell cbar-qr">
+        <div class="qr-mini"><img src="./works/qr-wechat-personal.jpg" alt="WeChat add-friend QR" loading="lazy" /></div>
+        <span><span class="cbar-lab block mb-1">微信 / WeChat</span><span class="text-xs ink-soft"><span class="len">scan to add me</span><span class="lzh">扫码加我</span></span></span>
+      </div>
     </div>
 
     <div class="mt-16 pt-6 border-t border-[#d9cfbc] flex flex-wrap items-center justify-between gap-3 mono text-xs ink-mute">

@@ -41,8 +41,9 @@ jessica-portfolio/
 3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
 4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`（图标 + 账号 + 粉丝数 + sparkline `.spark` + LIVE/SOON 状态）。**三行全真 LIVE**：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）/ GitHub。公众号名暂借小红书同名，**待 Jessica 确认真实公众号名**
 5. **WORK（03）**：作品清单 `.work-list`，每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`
-6. **CONTACT（05）**：`Let's talk.` + 邮箱行 `mailto:jessicahao5308@gmail.com`（衬线斜体，Sac 式）+ 三张 `.card` 直链主页（小红书 profile / 公众号最新文章 / GitHub 仓库）
-   - **二维码不放网站**（Jessica 觉得突兀）。二维码资产存 Obsidian `04_Resources/品牌资产_二维码/`（公众号 + 小红书 QR + 小红书名片 + 索引卡 `二维码.md`），做商品图/私域引流时从那取。
+6. **CONTACT（05）· Sac 式横排联系行**：`Let's talk.` + `● 开放合作` + **关键词跑马灯 `.marquee`**（build in public·陪读·AI 实践…）+ **横排 `.contact-bar`**：EMAIL｜小红书（悉尼陪读妈妈 Jessica）｜GitHub｜**微信个人码 `.qr-mini`**（`works/qr-wechat-personal.jpg`，绿码，扫码加我）。
+   - **联系区放微信、不放公众号**（Jessica 定，仿 Sac WeChat QR 格）。这是唯一放在站上的二维码（小，融进行里，不突兀）。
+   - 其余二维码资产存 Obsidian `04_Resources/品牌资产_二维码/`（微信/公众号/小红书 QR + 各自名片 + 索引卡 `二维码.md`），商品图/私域引流从那取。
 7. **双语**：`.len`（英文，默认）/ `.lzh`（中文），`body.lang-zh` 切换；`toggleLang()` 同步 `<title>`
 
 > **待办**：① ~~hero 头像~~ ✅（真人海港照）；② ~~信号台真实账号 + LIVE~~ ✅；③ **确认真实公众号名**（现暂用「悉尼陪读妈妈 Jessica」）；④ ~~公众号/小红书二维码卡~~ ✅（均已上、验证可扫）。
