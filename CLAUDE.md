@@ -16,7 +16,9 @@
 | GitHub | [jessicahao5308-ship-it/jessica-portfolio](https://github.com/jessicahao5308-ship-it/jessica-portfolio) · **必须 public**（否则 Pages 部署失败）|
 | 网址 | **https://jessicainsydney.com**（自定义主域，2026-07 上）· 旧址 jessicahao5308-ship-it.github.io/jessica-portfolio 仍会跳转 |
 | 域名 | 主域 `jessicainsydney.com`，DNS 在 **Cloudflare**。仓库根 `CNAME` 文件 = `jessicainsydney.com`。Cloudflare 两条 **灰云(DNS only)** CNAME：`@` 和 `www` → `jessicahao5308-ship-it.github.io`。`learn.` 子域是 quickshare，别动。|
-| 机制 | push `main` → GitHub Pages 自动构建（1–2 分钟生效）|
+| 机制 | push `main` → GitHub Pages 自动构建（1–2 分钟生效）· **HTTPS 已开启并强制**（Let's Encrypt 证书，自动续期）|
+
+> ⚠️ **HTTPS 证书坑（2026-07 踩过）**：若先设自定义域名（push CNAME）、后加 DNS，GitHub 不会自动签证书，`https_certificate.state` 一直 null。解法：**摘掉再装回**——`git rm CNAME` push（等 built）→ 重新 `printf 'jessicainsydney.com' > CNAME` push，证书秒签。之后 `gh api -X PUT repos/…/pages -F https_enforced=true`（注意 `-F` 传布尔，`-f` 会当字符串报 422）。
 
 **本项目 `commit + push` 是默认动作**（它就是部署链路），不用每次问。
 
