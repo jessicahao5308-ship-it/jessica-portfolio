@@ -14,7 +14,8 @@
 | 项 | 值 |
 |---|---|
 | GitHub | [jessicahao5308-ship-it/jessica-portfolio](https://github.com/jessicahao5308-ship-it/jessica-portfolio) · **必须 public**（否则 Pages 部署失败）|
-| 网址 | https://jessicahao5308-ship-it.github.io/jessica-portfolio/ |
+| 网址 | **https://jessicainsydney.com**（自定义主域，2026-07 上）· 旧址 jessicahao5308-ship-it.github.io/jessica-portfolio 仍会跳转 |
+| 域名 | 主域 `jessicainsydney.com`，DNS 在 **Cloudflare**。仓库根 `CNAME` 文件 = `jessicainsydney.com`。Cloudflare 两条 **灰云(DNS only)** CNAME：`@` 和 `www` → `jessicahao5308-ship-it.github.io`。`learn.` 子域是 quickshare，别动。|
 | 机制 | push `main` → GitHub Pages 自动构建（1–2 分钟生效）|
 
 **本项目 `commit + push` 是默认动作**（它就是部署链路），不用每次问。
