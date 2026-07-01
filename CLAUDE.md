@@ -34,14 +34,16 @@ jessica-portfolio/
 ## 网页结构（index.html，单页多 section，每段带 `— 0N` 小标号）
 
 1. **NAV**：`Jessica.` + slogan + About/Signal/Work/Contact + `SYD · 2026` chip + `EN/中` 切换按钮
-2. **HERO**（`— 2026`）：超大衬线字标 `Jessica.` + 右侧**蓝图占位板 `.plate`**（`FIG.01 PORTRAIT / 头像待补`，**等 Jessica 给照片/插画替换**）+ 水印 `J` + 两个 CTA
+2. **HERO**（`— 2026`）：超大衬线字标 `Jessica.` + 右侧**蓝图肖像板 `.plate`**（`works/portrait.png` = Jessica 本人照片做的**橙墨双色调 + 半调网点 risograph 肖像**，`mix-blend-mode:multiply` 融进纸纹，四周留 FIG.01 技术标注）+ 水印 `J` + 两个 CTA
+   - **肖像资产**：`works/portrait.png`(默认=v2 riso 网点明显) / `portrait-v1.png`(细网点更亮) / `portrait-v3.png`(无网点平滑)。换版只改 `<img src>`。
+   - **怎么做的**：源照 `~/Downloads/a2d888…jpg` → `rembg`(u2net_human_seg) 抠图 → Pillow 双色调 LUT(墨黑/橙/奶油) + 自写半调网点。脚本 `/tmp/portrait/final.py`(临时，未入库；重做时 `uv run --with pillow`)。**本机无 AI 文生图后端**，走的是图像处理不是重画。
 3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
 4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`（图标 + 账号 + 粉丝数 + sparkline `.spark` + LIVE/SOON 状态）。**GitHub 是真 LIVE**，小红书/公众号/飞书现 `@TBA` = SOON（有真账号后改 handle + 状态）
 5. **WORK（03）**：作品清单 `.work-list`，每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`
 6. **CONTACT（04）**：`Let's talk.` + 三张 `.card`（小红书 / 公众号 / GitHub）
 7. **双语**：`.len`（英文，默认）/ `.lzh`（中文），`body.lang-zh` 切换；`toggleLang()` 同步 `<title>`
 
-> **待办**：① hero 蓝图占位板换成真实照片或墨绘插画（Jessica 定）；② 信号台三个 `@TBA` 换真实账号 + 状态改 LIVE；③ 联系卡二维码。
+> **待办**：① ~~hero 头像~~ ✅ 已上 risograph 肖像；② 信号台三个 `@TBA` 换真实账号 + 状态改 LIVE；③ 联系卡二维码。
 
 ## 作品呈现：两种行
 
