@@ -38,12 +38,12 @@ jessica-portfolio/
    - **肖像资产**：`works/portrait.png`(默认=v2 riso 网点明显) / `portrait-v1.png`(细网点更亮) / `portrait-v3.png`(无网点平滑)。换版只改 `<img src>`。
    - **怎么做的**：源照 `~/Downloads/a2d888…jpg` → `rembg`(u2net_human_seg) 抠图 → Pillow 双色调 LUT(墨黑/橙/奶油) + 自写半调网点。脚本 `/tmp/portrait/final.py`(临时，未入库；重做时 `uv run --with pillow`)。**本机无 AI 文生图后端**，走的是图像处理不是重画。
 3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
-4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`（图标 + 账号 + 粉丝数 + sparkline `.spark` + LIVE/SOON 状态）。**GitHub 是真 LIVE**，小红书/公众号/飞书现 `@TBA` = SOON（有真账号后改 handle + 状态）
+4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`（图标 + 账号 + 粉丝数 + sparkline `.spark` + LIVE/SOON 状态）。**三行全真 LIVE**：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）/ GitHub。公众号名暂借小红书同名，**待 Jessica 确认真实公众号名**
 5. **WORK（03）**：作品清单 `.work-list`，每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`
-6. **CONTACT（04）**：`Let's talk.` + 三张 `.card`（小红书 / 公众号 / GitHub）
+6. **CONTACT（05）**：`Let's talk.` + 邮箱行 `mailto:jessicahao5308@gmail.com`（衬线斜体，Sac 式）+ 三张 `.card`（小红书关注 / 公众号读文 / GitHub 开源）
 7. **双语**：`.len`（英文，默认）/ `.lzh`（中文），`body.lang-zh` 切换；`toggleLang()` 同步 `<title>`
 
-> **待办**：① ~~hero 头像~~ ✅ 已上 risograph 肖像；② 信号台三个 `@TBA` 换真实账号 + 状态改 LIVE；③ 联系卡二维码。
+> **待办**：① ~~hero 头像~~ ✅；② ~~信号台真实账号 + LIVE~~ ✅（小红书/公众号/GitHub）；③ **确认真实公众号名**（现暂用「悉尼陪读妈妈 Jessica」）；④ 可选：公众号/飞书二维码卡（`扫码关注`比链更好涨粉）。
 
 ## 作品呈现：两种行
 
