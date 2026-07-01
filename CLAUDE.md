@@ -39,9 +39,9 @@ jessica-portfolio/
    - **备选资产**（riso 插画版，之前那张咖啡馆照做的）：`portrait.png`(v2 网点) / `portrait-v1.png` / `portrait-v3.png`。换真人↔插画只改 hero `<img src>`（插画版记得加回 `mix-blend-mode:multiply`）。
    - **真人照处理**：源 HEIC `~/Downloads/8e44…HEIC` → `sips` 转 jpg + 裁切(取景框掉杂物，保留大桥) → Pillow 暖调。riso 版另走 `rembg` 抠图 + 双色调 LUT + 半调。**本机无 AI 文生图**，都是图像处理。
 3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
-4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`（图标 + 账号 + 粉丝数 + sparkline `.spark` + LIVE/SOON 状态）。**三行全真 LIVE**：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）/ GitHub。公众号名暂借小红书同名，**待 Jessica 确认真实公众号名**
+4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`。现两行 LIVE：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）。公众号名暂借小红书同名，**待确认**。**GitHub 已全站移除**（仓库里存档 Obsidian 笔记涉隐私，见红线）。
 5. **WORK（03）**：作品清单 `.work-list`，每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`
-6. **CONTACT（05）· Sac 式横排联系行**：`Let's talk.` + `● 开放合作` + **关键词跑马灯 `.marquee`**（build in public·陪读·AI 实践…）+ **横排 `.contact-bar`**：EMAIL｜小红书（悉尼陪读妈妈 Jessica）｜GitHub｜**微信个人码 `.qr-mini`**（`works/qr-wechat-personal.jpg`，绿码，扫码加我）。
+6. **CONTACT（05）· Sac 式横排联系行**：`Let's talk.` + `● 开放合作` + **关键词跑马灯 `.marquee`**（build in public·陪读·AI 实践…）+ **横排 `.contact-bar`**：EMAIL｜小红书（悉尼陪读妈妈 Jessica）｜**微信个人码 `.qr-mini`**（`works/qr-wechat-personal.jpg`，绿码，扫码加我）。
    - **联系区放微信、不放公众号**（Jessica 定，仿 Sac WeChat QR 格）。这是唯一放在站上的二维码（小，融进行里，不突兀）。
    - 其余二维码资产存 Obsidian `04_Resources/品牌资产_二维码/`（微信/公众号/小红书 QR + 各自名片 + 索引卡 `二维码.md`），商品图/私域引流从那取。
 7. **双语**：`.len`（英文，默认）/ `.lzh`（中文），`body.lang-zh` 切换；`toggleLang()` 同步 `<title>`
@@ -74,6 +74,7 @@ jessica-portfolio/
 ## 🔒 红线（不可妥协）
 
 - **隐私**：绝不放孩子真名（Yumo/Yuhan/予墨/予涵）、学校名（Chatswood/IEC）、Obsidian 私人笔记原文、具体学习日期/用时。**不自动同步 Obsidian**。
+- **不在站上链 GitHub**（2026-07 移除）：她的 GitHub 里有存档的 Obsidian 笔记（涉隐私，后面可能才开放）。别把 github.com 链接加回站上（signal/contact/build 都不放）。站点本身仍靠 GitHub Pages 托管（`github.io` 是托管域名，不是引流到 repo，OK）。⚠️ **若那个笔记存档 repo 是 public，需提醒她设为 private**（可能含孩子真实信息）。
 - **版权**：网站现**公开可下载** MathsOnline 衍生的双语 PDF（质数、角的类型）。这些是她去隐私+品牌化的"可分发版"，是否公开由她判断；**新增可下载课件/PDF 时主动提示一句版权**。
 - 加任何对外作品前确认：「这个要发出去吗？要不要先脱敏？」她说 yes 才发。
 
