@@ -73,6 +73,27 @@
   .watermark { position: absolute; font-family: "Playfair Display", serif; font-weight: 800; font-style: italic;
     color: rgba(27,24,19,0.045); line-height: 1; pointer-events: none; user-select: none; z-index: 0; letter-spacing: -0.02em; }
 
+  /* page frame corners — technical-drawing viewport brackets */
+  .frame-corner { position: fixed; width: 20px; height: 20px; z-index: 40; pointer-events: none; }
+  .frame-corner.tl { top: 74px; left: 14px; border-top: 1px solid var(--line-2); border-left: 1px solid var(--line-2); }
+  .frame-corner.tr { top: 74px; right: 14px; border-top: 1px solid var(--line-2); border-right: 1px solid var(--line-2); }
+  .frame-corner.bl { bottom: 14px; left: 14px; border-bottom: 1px solid var(--line-2); border-left: 1px solid var(--line-2); }
+  .frame-corner.br { bottom: 14px; right: 14px; border-bottom: 1px solid var(--line-2); border-right: 1px solid var(--line-2); }
+  .frame-corner::after { content: ""; position: absolute; width: 4px; height: 4px; background: var(--accent); opacity: .7; }
+  .frame-corner.tl::after { top: -2px; left: -2px; } .frame-corner.tr::after { top: -2px; right: -2px; }
+  .frame-corner.bl::after { bottom: -2px; left: -2px; } .frame-corner.br::after { bottom: -2px; right: -2px; }
+
+  /* terminal — build in public */
+  .terminal { border: 1px solid var(--line-2); border-radius: 11px; background: #1b1813; color: #e9e2d4; overflow: hidden;
+    box-shadow: 0 26px 64px rgba(70,45,15,0.20), 0 0 0 7px var(--paper); font-family: "IBM Plex Mono", monospace; }
+  .term-bar { display: flex; align-items: center; gap: 7px; padding: 11px 15px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .term-dot { width: 11px; height: 11px; border-radius: 999px; }
+  .term-title { margin-left: 8px; font-size: 11px; color: #8f8672; letter-spacing: .06em; }
+  .term-body { padding: 18px 18px 22px; font-size: 12.5px; line-height: 1.95; }
+  .term-body .t { color: #8f8672; } .term-body .g { color: #cdd99a; } .term-body .o { color: var(--accent); } .term-body .w { color: #efe8da; }
+  .term-prog { height: 7px; border-radius: 999px; background: rgba(255,255,255,0.10); margin-top: 12px; overflow: hidden; }
+  .term-prog i { display: block; height: 100%; width: 60%; background: var(--accent); }
+
   /* paper grain */
   .grain { position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.045; mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -184,6 +205,10 @@
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
+<div class="frame-corner tl" aria-hidden="true"></div>
+<div class="frame-corner tr" aria-hidden="true"></div>
+<div class="frame-corner bl" aria-hidden="true"></div>
+<div class="frame-corner br" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav class="sticky top-0 z-50 border-b border-[#d9cfbc]" style="background: rgba(242,237,227,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
@@ -194,7 +219,8 @@
     </a>
     <div class="flex items-center gap-5 text-sm">
       <a href="#about" class="navlink hidden sm:inline"><span class="len">About</span><span class="lzh">关于</span></a>
-      <a href="#signal" class="navlink hidden sm:inline"><span class="len">Signal</span><span class="lzh">信号台</span></a>
+      <a href="#signal" class="navlink hidden md:inline"><span class="len">Signal</span><span class="lzh">信号台</span></a>
+      <a href="#build" class="navlink hidden sm:inline"><span class="len">Build</span><span class="lzh">建造</span></a>
       <a href="#work" class="navlink"><span class="len">Work</span><span class="lzh">作品</span></a>
       <a href="#contact" class="navlink"><span class="len">Contact</span><span class="lzh">联系</span></a>
       <span class="chip hidden md:inline-flex"><span class="dot"></span>SYD · 2026</span>
@@ -243,6 +269,13 @@
         <div class="plate-anno" style="right:14px; top:12px;">Ø / SYD</div>
         <div class="plate-anno" style="left:14px; bottom:12px;"><span class="len">to be added</span><span class="lzh">头像待补</span></div>
         <div class="plate-anno" style="right:14px; bottom:12px;">400 × 420</div>
+        <!-- dense measurement annotations (left rail) -->
+        <div class="plate-anno" style="left:14px; top:34%; line-height:1.7; opacity:.8;">R — 1<br/>H · 420<br/>W · 400<br/>+ 12°</div>
+        <!-- right rail ticks -->
+        <div class="plate-anno" style="right:14px; top:38%; line-height:1.7; opacity:.8; text-align:right;">v0.1<br/>ink+02<br/>orange</div>
+        <div class="tick" style="left:8%; top:0; width:1px; height:14px;"></div>
+        <div class="tick" style="left:50%; top:0; width:1px; height:20px; background:var(--accent); opacity:.5;"></div>
+        <div class="tick" style="left:92%; top:0; width:1px; height:14px;"></div>
         <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6">
           <div class="serif-en italic ink-mute" style="font-size: clamp(2.4rem,6vw,3.6rem); font-weight:600;">J.</div>
           <div class="mono text-[10px] tracking-[0.18em] uppercase ink-mute">
@@ -320,6 +353,13 @@
     </div>
 
     <div class="signal rounded-xl overflow-hidden reveal">
+      <!-- board header strip -->
+      <div class="flex items-center justify-between px-5 py-3 border-b border-[#d9cfbc]" style="background:var(--paper-3);">
+        <span class="mono text-[11px] tracking-[0.14em] ink-soft"><span class="len">ALL-PLATFORM SIGNAL</span><span class="lzh">全平台信号台</span></span>
+        <span class="mono text-[10px] tracking-[0.12em] ink-mute flex items-center gap-3">
+          <span class="accent">● LIVE</span><span>◦ SOON</span>
+        </span>
+      </div>
       <!-- GitHub — LIVE (real) -->
       <a class="sig-row" href="https://github.com/jessicahao5308-ship-it/jessica-portfolio" target="_blank" style="text-decoration:none;color:inherit;">
         <span class="sig-ico" style="background:#1b1813;">GH</span>
@@ -356,13 +396,58 @@
   </div>
 </section>
 
+<!-- BUILD — in public (terminal) -->
+<section id="build" class="blueprint border-b border-[#d9cfbc]">
+  <div class="bp-grid" style="opacity:.6;"></div>
+  <span class="watermark" style="right:-1%; bottom:-6%; font-size: clamp(6rem,15vw,13rem);">build</span>
+  <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-[0.85fr_1.15fr] gap-12 md:gap-16 items-center">
+    <div class="reveal">
+      <div class="kicker mb-5"><span>Build</span><span class="idx">— 03</span></div>
+      <h2 class="serif-en tracking-tight leading-[0.95]" style="font-size: clamp(2.6rem,6vw,4.4rem); font-weight:800;">Build<span class="accent">.</span></h2>
+      <p class="mono text-[11px] tracking-[0.12em] uppercase accent mt-4 flex items-center gap-2">
+        <span class="dot live"></span><span class="len">building in public</span><span class="lzh">公开建造中</span>
+      </p>
+      <p class="mt-6 max-w-sm leading-relaxed ink-soft text-[15px]">
+        <span class="len">Everything here is made with Claude Code, in the open — this very site included. No team, no code background, just a mum shipping small useful things and writing down how.</span>
+        <span class="lzh serif-zh">这里的东西都用 Claude Code 公开做出来——包括这个网站本身。没团队、没代码背景，就是一个妈妈，一边做点有用的小东西，一边把过程写下来。</span>
+      </p>
+      <a href="https://github.com/jessicahao5308-ship-it/jessica-portfolio" target="_blank" class="inline-flex items-center gap-2 mt-8 text-sm navlink">
+        <span class="len">Follow along on GitHub</span><span class="lzh">在 GitHub 蹲一个</span> <span>→</span>
+      </a>
+    </div>
+    <!-- terminal -->
+    <div class="reveal">
+      <div class="cross tl"></div><div class="cross tr"></div><div class="cross bl"></div><div class="cross br"></div>
+      <div class="terminal">
+        <div class="term-bar">
+          <span class="term-dot" style="background:#ff5f57;"></span>
+          <span class="term-dot" style="background:#febc2e;"></span>
+          <span class="term-dot" style="background:#28c840;"></span>
+          <span class="term-title">jessica@sydney — build --in-public</span>
+        </div>
+        <div class="term-body">
+          <div><span class="o">$</span> <span class="w">jessica build --in-public</span></div>
+          <div><span class="t">[06:42:01]</span> <span class="g">mounting</span> Claude Code workspace</div>
+          <div><span class="t">[06:42:03]</span> <span class="g">loading</span> bilingual courseware · notes · decks</div>
+          <div><span class="t">[06:42:06]</span> <span class="g">rendering</span> games &amp; desktop toys</div>
+          <div><span class="t">[06:42:09]</span> <span class="g">sanding</span> off private data <span class="t">// privacy first</span></div>
+          <div><span class="t">[06:42:12]</span> <span class="g">publishing</span> to GitHub Pages</div>
+          <div><span class="t">[06:42:15]</span> <span class="g">sharing</span> back to 中文 families →</div>
+          <div class="mt-2"><span class="o">v4.0</span> — <span class="w">shipping…</span> <span class="o">60%</span></div>
+          <div class="term-prog"><i></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- WORK LIST -->
 <section id="work" class="blueprint">
   <span class="watermark" style="left:-1%; bottom:-4%; font-size: clamp(7rem,16vw,14rem);">works</span>
   <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
     <div class="flex items-end justify-between mb-10">
       <div>
-        <div class="kicker mb-4"><span>Work</span><span class="idx">— 03</span></div>
+        <div class="kicker mb-4"><span>Work</span><span class="idx">— 04</span></div>
         <h2 class="serif-en tracking-tight" style="font-size: clamp(2.2rem,5vw,3.6rem); font-weight:700;">
           <span class="len">Selected Work</span><span class="lzh serif-zh">作品精选</span>
         </h2>
@@ -437,7 +522,7 @@
   <div class="bp-dots" style="opacity:.4;"></div>
   <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
     <div class="cross tl" style="top:22px;left:22px;"></div>
-    <div class="kicker mb-5"><span>Contact</span><span class="idx">— 04</span></div>
+    <div class="kicker mb-5"><span>Contact</span><span class="idx">— 05</span></div>
     <p class="serif-en tracking-tight mb-4" style="font-size: clamp(2.6rem,7vw,5rem); font-weight:700;">
       <span class="len">Let's talk<span class="accent">.</span></span><span class="lzh serif-zh">聊聊<span class="accent">。</span></span>
     </p>
