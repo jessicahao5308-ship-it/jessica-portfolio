@@ -181,6 +181,9 @@
   .form { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-soft);
     border: 1px solid var(--line-2); border-radius: 999px; padding: 5px 12px; text-decoration: none; transition: border-color 0.2s, color 0.2s, background 0.2s; }
   .form:hover { border-color: var(--accent); color: var(--accent); background: var(--paper); }
+  /* category heading inside the work list */
+  .group-head { margin: 46px 0 2px; }
+  .group-head:first-of-type { margin-top: 4px; }
 
   /* floating hover preview (desktop) — framed like a blueprint plate */
   #hoverPreview { position: fixed; top: 0; left: 0; width: 340px; max-width: 34vw; aspect-ratio: 16/10; object-fit: cover; object-position: top center;
@@ -450,58 +453,17 @@
           <span class="len">Selected Work</span><span class="lzh serif-zh">作品精选</span>
         </h2>
       </div>
-      <div class="mono text-xs ink-mute">2026.05 — 2026.06</div>
+      <div class="mono text-xs ink-mute">2026.05 — 2026.07</div>
     </div>
 
     <div class="work-list" id="worklist">
-      <!-- 01 · free resource: Maritime Museum bilingual field guide (3-page PDF, newest) -->
-      <div class="work-row reveal" data-img="./works/shots/maritime-cover.jpg">
-        <img class="row-thumb" src="./works/shots/maritime-cover.jpg" alt="Maritime Museum bilingual explorer booklet" loading="lazy" />
-        <div class="row-left"><span class="rownum">01</span>
-          <div class="row-body">
-            <a class="rowtitle-link" href="./works/maritime-museum-explorer.pdf" target="_blank"><span class="rowtitle"><span class="len">Maritime Museum Explorer</span><span class="lzh serif-zh">海事博物馆 · 双语研学手册</span></span></a>
-            <p class="rowdesc"><span class="len">A bilingual scavenger-hunt booklet for a day at the maritime museum — six ship stops, key words to collect, and a sketch page. Made for kids 8–12. Free to download, printable.</span><span class="lzh serif-zh">逛海事博物馆用的双语寻宝研学手册——6 个船只打卡站、边逛边收集核心词、还有写生页，适合 8–12 岁。免费下载，可打印。</span></p>
-            <div class="forms">
-              <a class="form" href="./works/maritime-explorer.jpg" target="_blank">📖 <span class="len">Preview 3 pages</span><span class="lzh">预览 3 页</span></a>
-              <a class="form" href="./works/maritime-museum-explorer.pdf" download>⬇ <span class="len">Free PDF</span><span class="lzh">免费 PDF</span></a>
-            </div>
-          </div></div>
-        <div class="rowmeta">2026.07 · <span class="len">Free · Bilingual Field Guide</span><span class="lzh">免费 · 双语研学手册</span></div>
-      </div>
+      <!-- ══ GROUP: Maths Courseware ══ -->
+      <div class="group-head"><span class="kicker"><span class="len">Maths Courseware</span><span class="lzh">数学课件</span></span></div>
 
-      <!-- 02 · free resource: Wings of Fire bilingual reading pack (6-page PDF) -->
-      <div class="work-row reveal" data-img="./works/shots/wings-cover.jpg">
-        <img class="row-thumb" src="./works/shots/wings-cover.jpg" alt="Wings of Fire bilingual reading pack" loading="lazy" />
-        <div class="row-left"><span class="rownum">02</span>
-          <div class="row-body">
-            <a class="rowtitle-link" href="./works/wings-of-fire-starter-pack.pdf" target="_blank"><span class="rowtitle"><span class="len">Wings of Fire — Reading Starter Pack</span><span class="lzh serif-zh">火翼飞龙 · 双语阅读入门包</span></span></a>
-            <p class="rowdesc"><span class="len">A hand-painted, bilingual pack that helps kids dare to open their first English original novel — a dragon-tribe map, key vocabulary, and a story path. Free to download, 6 pages, printable.</span><span class="lzh serif-zh">帮孩子「敢读第一本」英文原版的双语入门包——龙族关系图、核心词汇、剧情脉络，手绘水彩绘本风。免费下载，6 页，可打印。</span></p>
-            <div class="forms">
-              <a class="form" href="./works/wings-preview.jpg" target="_blank">📖 <span class="len">Preview 6 pages</span><span class="lzh">预览 6 页</span></a>
-              <a class="form" href="./works/wings-of-fire-starter-pack.pdf" download>⬇ <span class="len">Free PDF</span><span class="lzh">免费 PDF</span></a>
-            </div>
-          </div></div>
-        <div class="rowmeta">2026.07 · <span class="len">Free · Bilingual Pack</span><span class="lzh">免费 · 双语阅读包</span></div>
-      </div>
-
-      <!-- 03 · single (download) -->
-      <div class="work-row reveal" data-img="./works/kangapet-roo.png">
-        <img class="row-thumb" src="./works/kangapet-roo.png" alt="Desktop kangaroo" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" />
-        <div class="row-left"><span class="rownum">03</span>
-          <div class="row-body">
-            <a class="rowtitle-link" href="./works/KangaPet-0.1.0-AppleSilicon.dmg" download><span class="rowtitle"><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></span></a>
-            <p class="rowdesc"><span class="len">A little desktop pet that keeps the kids company while they study. Apple Silicon Mac — on first launch, right-click the app and choose Open.</span><span class="lzh serif-zh">一只陪娃写作业的桌面小袋鼠桌宠。仅 Apple 芯片 Mac，首次打开请右键点 App 选「打开」。</span></p>
-            <div class="forms">
-              <a class="form" href="./works/KangaPet-0.1.0-AppleSilicon.dmg" download>⬇ <span class="len">Download .dmg</span><span class="lzh">下载 .dmg</span></a>
-            </div>
-          </div></div>
-        <div class="rowmeta">2026.06 · <span class="len">Mac App · v0.1</span><span class="lzh">桌面应用 · v0.1</span></div>
-      </div>
-
-      <!-- 04 · case: Angle Types (3 forms) -->
+      <!-- 01 · case: Angle Types (3 forms) -->
       <div class="work-row reveal" data-img="./works/shots/angles-game-m.png">
         <img class="row-thumb" src="./works/shots/angles-game-m.png" alt="Angle Types" loading="lazy" />
-        <div class="row-left"><span class="rownum">04</span>
+        <div class="row-left"><span class="rownum">01</span>
           <div class="row-body">
             <a class="rowtitle-link" href="./works/angles-game.html" target="_blank"><span class="rowtitle"><span class="len">Angle Types</span><span class="lzh serif-zh">角的类型</span></span></a>
             <p class="rowdesc"><span class="len">Acute, right, obtuse and reflex angles — as bilingual notes, a printable, and a game.</span><span class="lzh serif-zh">锐角 / 直角 / 钝角 / 优角——做成双语笔记、打印版、互动游戏。</span></p>
@@ -514,21 +476,10 @@
         <div class="rowmeta">2026.06 · <span class="len">Courseware · 3 forms</span><span class="lzh">课件 · 3 形式</span></div>
       </div>
 
-      <!-- 05 · single -->
-      <div class="work-row reveal" data-img="./works/shots/use-ai.png">
-        <img class="row-thumb" src="./works/shots/use-ai.png" alt="Use AI deck" loading="lazy" />
-        <div class="row-left"><span class="rownum">05</span>
-          <div class="row-body">
-            <a class="rowtitle-link" href="./works/use-ai-ppt/index.html" target="_blank"><span class="rowtitle"><span class="len">Keeping Up with AI</span><span class="lzh serif-zh">用好 AI，跟上时代</span></span></a>
-            <p class="rowdesc"><span class="len">A kraft-paper, magazine-style scrolling deck on putting AI to work in everyday life.</span><span class="lzh serif-zh">牛皮纸杂志感的横向滚动 Deck，讲怎么把 AI 真正用进日常。</span></p>
-          </div></div>
-        <div class="rowmeta">2026.06 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
-      </div>
-
-      <!-- 06 · case: Primes & Composites (4 forms) -->
+      <!-- 02 · case: Primes & Composites (4 forms) -->
       <div class="work-row reveal" data-img="./works/shots/primes-ppt.png">
         <img class="row-thumb" src="./works/shots/primes-ppt.png" alt="Primes and Composites" loading="lazy" />
-        <div class="row-left"><span class="rownum">06</span>
+        <div class="row-left"><span class="rownum">02</span>
           <div class="row-body">
             <a class="rowtitle-link" href="./works/03-primes-composites.html" target="_blank"><span class="rowtitle"><span class="len">Primes &amp; Composites</span><span class="lzh serif-zh">质数与合数</span></span></a>
             <p class="rowdesc"><span class="len">One Year 6 maths lesson, made four ways — bilingual notes, a printable, a scrolling deck, and a game.</span><span class="lzh serif-zh">一节 Year 6 数学课，做成四种形式：双语笔记、打印版、滚动课件、互动游戏。</span></p>
@@ -540,6 +491,67 @@
             </div>
           </div></div>
         <div class="rowmeta">2026.05 · <span class="len">Courseware · 4 forms</span><span class="lzh">课件 · 4 形式</span></div>
+      </div>
+
+      <!-- ══ GROUP: Bilingual Guides & Reading ══ -->
+      <div class="group-head"><span class="kicker"><span class="len">Bilingual Guides &amp; Reading</span><span class="lzh">双语研学 · 阅读</span></span></div>
+
+      <!-- 03 · free resource: Maritime Museum bilingual field guide (3-page PDF) -->
+      <div class="work-row reveal" data-img="./works/shots/maritime-cover.jpg">
+        <img class="row-thumb" src="./works/shots/maritime-cover.jpg" alt="Maritime Museum bilingual explorer booklet" loading="lazy" />
+        <div class="row-left"><span class="rownum">03</span>
+          <div class="row-body">
+            <a class="rowtitle-link" href="./works/maritime-museum-explorer.pdf" target="_blank"><span class="rowtitle"><span class="len">Maritime Museum Explorer</span><span class="lzh serif-zh">海事博物馆 · 双语研学手册</span></span></a>
+            <p class="rowdesc"><span class="len">A bilingual scavenger-hunt booklet for a day at the maritime museum — six ship stops, key words to collect, and a sketch page. Made for kids 8–12. Free to download, printable.</span><span class="lzh serif-zh">逛海事博物馆用的双语寻宝研学手册——6 个船只打卡站、边逛边收集核心词、还有写生页，适合 8–12 岁。免费下载，可打印。</span></p>
+            <div class="forms">
+              <a class="form" href="./works/maritime-explorer.jpg" target="_blank">📖 <span class="len">Preview 3 pages</span><span class="lzh">预览 3 页</span></a>
+              <a class="form" href="./works/maritime-museum-explorer.pdf" download>⬇ <span class="len">Free PDF</span><span class="lzh">免费 PDF</span></a>
+            </div>
+          </div></div>
+        <div class="rowmeta">2026.07 · <span class="len">Free · Bilingual Field Guide</span><span class="lzh">免费 · 双语研学手册</span></div>
+      </div>
+
+      <!-- 04 · free resource: Wings of Fire bilingual reading pack (6-page PDF) -->
+      <div class="work-row reveal" data-img="./works/shots/wings-cover.jpg">
+        <img class="row-thumb" src="./works/shots/wings-cover.jpg" alt="Wings of Fire bilingual reading pack" loading="lazy" />
+        <div class="row-left"><span class="rownum">04</span>
+          <div class="row-body">
+            <a class="rowtitle-link" href="./works/wings-of-fire-starter-pack.pdf" target="_blank"><span class="rowtitle"><span class="len">Wings of Fire — Reading Starter Pack</span><span class="lzh serif-zh">火翼飞龙 · 双语阅读入门包</span></span></a>
+            <p class="rowdesc"><span class="len">A hand-painted, bilingual pack that helps kids dare to open their first English original novel — a dragon-tribe map, key vocabulary, and a story path. Free to download, 6 pages, printable.</span><span class="lzh serif-zh">帮孩子「敢读第一本」英文原版的双语入门包——龙族关系图、核心词汇、剧情脉络，手绘水彩绘本风。免费下载，6 页，可打印。</span></p>
+            <div class="forms">
+              <a class="form" href="./works/wings-preview.jpg" target="_blank">📖 <span class="len">Preview 6 pages</span><span class="lzh">预览 6 页</span></a>
+              <a class="form" href="./works/wings-of-fire-starter-pack.pdf" download>⬇ <span class="len">Free PDF</span><span class="lzh">免费 PDF</span></a>
+            </div>
+          </div></div>
+        <div class="rowmeta">2026.07 · <span class="len">Free · Bilingual Pack</span><span class="lzh">免费 · 双语阅读包</span></div>
+      </div>
+
+      <!-- ══ GROUP: Tools & More ══ -->
+      <div class="group-head"><span class="kicker"><span class="len">Tools &amp; More</span><span class="lzh">工具 · 其他</span></span></div>
+
+      <!-- 05 · single (download) -->
+      <div class="work-row reveal" data-img="./works/kangapet-roo.png">
+        <img class="row-thumb" src="./works/kangapet-roo.png" alt="Desktop kangaroo" loading="lazy" style="background:linear-gradient(160deg,#f5f0e6,#e7dfcd);" />
+        <div class="row-left"><span class="rownum">05</span>
+          <div class="row-body">
+            <a class="rowtitle-link" href="./works/KangaPet-0.1.0-AppleSilicon.dmg" download><span class="rowtitle"><span class="len">Desktop Kangaroo</span><span class="lzh serif-zh">桌面袋鼠桌宠</span></span></a>
+            <p class="rowdesc"><span class="len">A little desktop pet that keeps the kids company while they study. Apple Silicon Mac — on first launch, right-click the app and choose Open.</span><span class="lzh serif-zh">一只陪娃写作业的桌面小袋鼠桌宠。仅 Apple 芯片 Mac，首次打开请右键点 App 选「打开」。</span></p>
+            <div class="forms">
+              <a class="form" href="./works/KangaPet-0.1.0-AppleSilicon.dmg" download>⬇ <span class="len">Download .dmg</span><span class="lzh">下载 .dmg</span></a>
+            </div>
+          </div></div>
+        <div class="rowmeta">2026.06 · <span class="len">Mac App · v0.1</span><span class="lzh">桌面应用 · v0.1</span></div>
+      </div>
+
+      <!-- 06 · single -->
+      <div class="work-row reveal" data-img="./works/shots/use-ai.png">
+        <img class="row-thumb" src="./works/shots/use-ai.png" alt="Use AI deck" loading="lazy" />
+        <div class="row-left"><span class="rownum">06</span>
+          <div class="row-body">
+            <a class="rowtitle-link" href="./works/use-ai-ppt/index.html" target="_blank"><span class="rowtitle"><span class="len">Keeping Up with AI</span><span class="lzh serif-zh">用好 AI，跟上时代</span></span></a>
+            <p class="rowdesc"><span class="len">A kraft-paper, magazine-style scrolling deck on putting AI to work in everyday life.</span><span class="lzh serif-zh">牛皮纸杂志感的横向滚动 Deck，讲怎么把 AI 真正用进日常。</span></p>
+          </div></div>
+        <div class="rowmeta">2026.06 · <span class="len">HTML Deck</span><span class="lzh">HTML 演示</span></div>
       </div>
     </div>
   </div>
