@@ -343,6 +343,41 @@ function noise(o){
   g.gain.exponentialRampToValueAtTime(0.0002,t+d);
   s.start(t); s.stop(t+d+0.05);
 }
+/* 弓弦专用音色：锯齿音源 + 琴体共振峰（并联带通）+ 起弓摩擦噪音 + 渐入揉弦。
+   小提琴/大提琴"像不像"，关键不在波形而在琴体共振峰和音头，所以单独做一条链。 */
+function bowed(f,at,d,o){
+  o=o||{};
+  const c=ac(), t=c.currentTime+at, a=o.a||.08, rel=o.r||.16;
+  const sus=t+Math.max(a+.02,d), end=sus+rel, v=o.v||.12;
+  const out=c.createGain(); out.connect(MASTER);
+  out.gain.setValueAtTime(.0001,t);
+  out.gain.exponentialRampToValueAtTime(v,t+a);          // 起弓：不是瞬间出声
+  out.gain.setValueAtTime(v,sus);
+  out.gain.exponentialRampToValueAtTime(.0001,end);      // 收弓
+  // 音源：两个微失谐锯齿——单把琴的音高也不是绝对稳的
+  const src=c.createGain(); src.gain.value=.5;
+  const oscs=[];
+  [-(o.detune||5),(o.detune||5)].forEach(dt=>{
+    const s=c.createOscillator(); s.type="sawtooth"; s.frequency.value=f; s.detune.value=dt;
+    s.connect(src); oscs.push(s); });
+  // 揉弦渐入：真实演奏是拉稳了才加揉弦，一上来就抖会很电子
+  const lfo=c.createOscillator(), lg=c.createGain();
+  lfo.frequency.value=o.vibR||5.6;
+  lg.gain.setValueAtTime(.0001,t);
+  lg.gain.exponentialRampToValueAtTime(Math.max(f*(o.vib||.011),.5),t+Math.min(d*.7,.5));
+  lfo.connect(lg); oscs.forEach(s=>lg.connect(s.frequency));
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=o.lpf||6500; lp.Q.value=.5;
+  src.connect(lp);
+  const direct=c.createGain(); direct.gain.value=o.dry||.4; lp.connect(direct); direct.connect(out);
+  // 共振峰：小提琴 ≈ 空气腔 300 / 主体 460 / bridge hill 2600
+  (o.formants||[[300,1.6,.55],[460,2.2,.65],[2600,1.1,.75]]).forEach(fm=>{
+    const bp=c.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=fm[0]; bp.Q.value=fm[1];
+    const gn=c.createGain(); gn.gain.value=fm[2];
+    lp.connect(bp); bp.connect(gn); gn.connect(out); });
+  noise({at,d:.1,bp:o.scratchF||2600,q:.9,v:o.scratch==null?.022:o.scratch}); // 音头那一点弓毛摩擦声
+  oscs.forEach(s=>{s.start(t);s.stop(end+.05);});
+  lfo.start(t); lfo.stop(end+.05);
+}
 function kick(at){tone({f:150,bend:48,bendT:.12,at,d:.16,type:"sine",v:.5,a:.004,decay:.02});}
 function snare(at){noise({at,d:.14,bp:1800,q:.9,v:.3});tone({f:190,at,d:.1,type:"triangle",v:.15,a:.004,decay:.05});}
 function hat(at){noise({at,d:.05,hp:7500,v:.12});}
@@ -367,12 +402,14 @@ const PHRASES = {
     tone({f:f*0.94,bend:f,bendT:.08,at,d,type:"sawtooth",v:.17,a:.02,lpf:2500,q:1.2,vib:i===2?8:3,vibAt:.3,vibR:5.5});
     tone({f:f*0.94,bend:f,bendT:.08,at,d,type:"square",v:.05,a:.02,bpf:1400,q:1.5});});
     noise({at:0,d:1.5,bp:1800,q:1,v:.01}); },
-  violin(){ [[76,0,.4],[78,.38,.4],[79,.76,1.2]].forEach(([n,at,d])=>
-    tone({f:m(n),at,d,type:"sawtooth",v:.13,a:.09,lpf:4500,q:.7,vib:7,vibAt:.15,vibR:6}));
-    noise({at:0,d:1.9,bp:5000,q:.6,v:.008,a:.15}); },
-  cello(){ [[48,0,.55],[50,.5,.55],[52,1,1.1]].forEach(([n,at,d])=>{
-    tone({f:m(n),at,d,type:"sawtooth",v:.17,a:.1,lpf:1300,q:.8,vib:5,vibAt:.25,vibR:5});
-    tone({f:m(n)*2,at,d,type:"sine",v:.03,a:.1});}); },
+  violin(){ // A4→D5→E5→F#5，最后一个长音带揉弦（小提琴最好认的抒情句）
+    [[69,0,.34],[74,.32,.3],[76,.6,.28],[78,.86,1.15]].forEach((p,i)=>
+      bowed(m(p[0]),p[1],p[2],{v:.12,a:i===3?.1:.06,vib:.012,vibR:5.8,
+        formants:[[300,1.6,.55],[460,2.2,.65],[2600,1.1,.75]]})); },
+  cello(){ // 低八度、共振峰下移、揉弦更慢更宽 —— 同一条弓弦链，换琴体
+    [[45,0,.5],[48,.46,.44],[52,.86,1.25]].forEach((p,i)=>
+      bowed(m(p[0]),p[1],p[2],{v:.15,a:i===2?.12:.08,vib:.009,vibR:4.8,lpf:4200,dry:.45,
+        scratchF:1200,scratch:.03,formants:[[105,2.4,.5],[210,2,.7],[1150,1.2,.7]]})); },
   guitar(){ const ch=[40,47,52,56,59,64];
     ch.forEach((n,i)=>pluck(m(n),i*.05,{d:1.2,v:.13,bright:7}));
     ch.forEach((n,i)=>pluck(m(n),.85+i*.03,{d:1.4,v:.11,bright:6})); },
