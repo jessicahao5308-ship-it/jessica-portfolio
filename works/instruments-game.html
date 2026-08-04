@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Instrument Explorer · 乐器小达人</title>
+<!--
+  ============================================================
+  课件互动游戏 · 乐器认知五合一（单文件 HTML，数据驱动）
+  本游戏：乐器四大家族（Wind / Strings / Brass / Percussion）
+  玩法：学习卡（单词发音参考 TTS + 合成音色试听）/ 看图选词 /
+        听声辨乐器（Web Audio 合成，无外部音频）/ 听单词选图 / 家族分类
+  知识点按澳洲小学 Year 2-3 音乐课乐器主题重新设计，未照搬任何
+  学校资料原文/排版。去隐私，署名「悉尼陪读妈妈Jessica」。
+  ============================================================
+-->
+<style>
+  :root{
+    --theme:#e0602f; --theme-dark:#b44a20; --paper:#f7f1e4; --tint:#fdf8ee;
+    --line:#e4d8bf; --ink:#221b12; --grey:#8a7f6d; --good:#2e9e6b; --bad:#d84f5f; --gold:#f4b740;
+    --wind:#4a7fb5; --strings:#c15b7e; --brass:#c98f2e; --perc:#3f9e7c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{min-height:100%;}
+  body{font-family:"Hiragino Sans GB","Microsoft YaHei","PingFang SC",Arial,sans-serif;color:var(--ink);
+    background:linear-gradient(160deg,#f2e4cf,#f7f1e4 45%,#efe6d2);
+    display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:12px 10px;
+    user-select:none;-webkit-user-select:none;}
+  .app{width:100%;max-width:480px;background:#fffdf7;border-radius:22px;
+    box-shadow:0 10px 36px rgba(122,84,42,.18);overflow:hidden;display:flex;flex-direction:column;position:relative;}
+  header{background:var(--theme);color:#fff;padding:13px 16px 12px;text-align:center;position:relative;}
+  header .eyebrow{font-size:10.5px;opacity:.85;letter-spacing:.08em;font-weight:700;font-family:ui-monospace,Menlo,monospace;}
+  header h1{font-size:20px;font-weight:800;margin-top:2px;}
+  header .sub{font-size:11.5px;opacity:.92;margin-top:1px;}
+  .backbtn{position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.18);
+    border:none;color:#fff;border-radius:12px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:none;}
+  body.ingame .backbtn{display:block;}
+  main{padding:14px 14px 8px;min-height:430px;display:flex;flex-direction:column;}
+  .screen{display:none;flex:1;flex-direction:column;}
+  .screen.on{display:flex;}
+  /* ── 模式选择 ── */
+  .hello{font-size:13.5px;line-height:1.7;color:var(--grey);text-align:center;margin:2px 0 12px;}
+  .modes{display:flex;flex-direction:column;gap:10px;}
+  .mode-btn{display:flex;align-items:center;gap:13px;border:2px solid var(--line);background:var(--tint);
+    border-radius:16px;padding:12px 14px;cursor:pointer;font-family:inherit;text-align:left;transition:transform .06s;}
+  .mode-btn:active{transform:scale(.97);}
+  .mode-btn .mi{font-size:27px;width:38px;text-align:center;flex:0 0 auto;}
+  .mode-btn .mt{font-size:15px;font-weight:800;}
+  .mode-btn .mt small{font-weight:700;color:var(--theme);margin-left:4px;font-size:11px;}
+  .mode-btn .md{font-size:11.5px;color:var(--grey);margin-top:2px;line-height:1.45;}
+  .fam-strip{display:flex;justify-content:center;gap:6px;margin:14px 0 2px;flex-wrap:wrap;}
+  .fam-pill{font-size:10.5px;font-weight:700;color:#fff;border-radius:20px;padding:4px 10px;}
+  /* ── 学习卡 ── */
+  .filters{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:11px;}
+  .fchip{font-size:11.5px;font-weight:700;border:1.5px solid var(--line);background:#fff;color:var(--grey);
+    border-radius:20px;padding:5px 12px;cursor:pointer;font-family:inherit;}
+  .fchip.on{color:#fff;border-color:transparent;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;overflow-y:auto;max-height:56vh;padding:2px;}
+  .gcard{border:2px solid var(--line);background:#fff;border-radius:14px;padding:9px 4px 7px;text-align:center;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:3px;transition:transform .06s;position:relative;}
+  .gcard:active{transform:scale(.94);}
+  .gcard svg{width:46px;height:46px;}
+  .gcard .ge{font-size:11.5px;font-weight:800;line-height:1.15;}
+  .gcard .gz{font-size:10px;color:var(--grey);}
+  .gcard .dot{position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:50%;}
+  /* 详情弹层 */
+  .sheet-bg{position:absolute;inset:0;background:rgba(34,27,18,.45);z-index:30;display:none;align-items:flex-end;}
+  .sheet-bg.on{display:flex;}
+  .sheet{background:#fffdf7;width:100%;border-radius:22px 22px 0 0;padding:20px 18px 22px;text-align:center;
+    animation:up .22s ease;}
+  @keyframes up{from{transform:translateY(40%);opacity:.4}to{transform:none;opacity:1}}
+  .sheet svg{width:92px;height:92px;}
+  .sheet .se{font-size:25px;font-weight:800;margin-top:4px;}
+  .sheet .sp{font-size:13px;color:var(--theme-dark);font-family:ui-monospace,Menlo,monospace;margin-top:2px;}
+  .sheet .sz{font-size:15px;color:var(--grey);margin-top:2px;font-weight:600;}
+  .sheet .sf{margin-top:7px;}
+  .sheet .actions{display:flex;gap:10px;margin-top:14px;}
+  .abtn{flex:1;border:none;border-radius:14px;padding:13px 4px;font-size:14.5px;font-weight:800;cursor:pointer;
+    font-family:inherit;color:#fff;box-shadow:0 4px 0 rgba(0,0,0,.15);touch-action:manipulation;}
+  .abtn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15);}
+  .abtn.say{background:var(--theme);}
+  .abtn.hear{background:var(--perc);}
+  .sheet .close{margin-top:12px;background:none;border:none;color:var(--grey);font-size:12.5px;cursor:pointer;font-family:inherit;font-weight:700;}
+  /* ── 答题 ── */
+  .hud{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--grey);
+    font-weight:700;margin-bottom:10px;}
+  .hud b{color:var(--theme-dark);font-size:14px;}
+  .pbar{flex:1;height:7px;background:var(--line);border-radius:6px;margin:0 12px;overflow:hidden;}
+  .pbar i{display:block;height:100%;background:var(--theme);border-radius:6px;transition:width .3s;width:0;}
+  .prompt{background:var(--tint);border:2px solid var(--line);border-radius:18px;padding:14px 12px;text-align:center;margin-bottom:12px;}
+  .prompt .q{font-size:13px;color:var(--grey);font-weight:700;margin-bottom:8px;line-height:1.5;}
+  .prompt .big-icon svg{width:96px;height:96px;}
+  .prompt .big-word{font-size:27px;font-weight:800;letter-spacing:.01em;}
+  .bigplay{border:none;border-radius:50%;width:84px;height:84px;font-size:36px;cursor:pointer;color:#fff;
+    background:radial-gradient(circle at 32% 28%,#f08a5c,var(--theme));box-shadow:0 6px 0 var(--theme-dark);
+    touch-action:manipulation;transition:transform .06s;}
+  .bigplay:active{transform:translateY(4px);box-shadow:0 2px 0 var(--theme-dark);}
+  .bigplay.small{width:58px;height:58px;font-size:24px;}
+  .replay-hint{font-size:10.5px;color:var(--grey);margin-top:6px;}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .opts.words{grid-template-columns:1fr 1fr;}
+  .opt{border:2px solid var(--line);background:#fff;border-radius:14px;padding:11px 6px;text-align:center;cursor:pointer;
+    font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .06s;min-height:52px;justify-content:center;}
+  .opt:active{transform:scale(.96);}
+  .opt svg{width:52px;height:52px;}
+  .opt .oe{font-size:14px;font-weight:800;line-height:1.2;}
+  .opt.fam-opt{color:#fff;border:none;padding:15px 6px;}
+  .opt.fam-opt .oe{font-size:15px;}
+  .opt.fam-opt .oz{font-size:11px;opacity:.92;font-weight:700;}
+  .opt.correct{border-color:var(--good);background:#eafaf2;box-shadow:0 0 0 2px var(--good);}
+  .opt.wrong{border-color:var(--bad);background:#fdeef0;animation:shake .3s;}
+  .opt.dim{opacity:.45;pointer-events:none;}
+  .opt.locked{pointer-events:none;}
+  @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .reveal-bar{margin-top:11px;background:#fff;border:2px solid var(--line);border-radius:14px;padding:10px 12px;
+    display:none;align-items:center;gap:10px;text-align:left;}
+  .reveal-bar.on{display:flex;}
+  .reveal-bar .rw{flex:1;}
+  .reveal-bar .re{font-size:15px;font-weight:800;}
+  .reveal-bar .rp{font-size:11px;color:var(--theme-dark);font-family:ui-monospace,Menlo,monospace;}
+  .reveal-bar .rz{font-size:11.5px;color:var(--grey);font-weight:600;}
+  .sbtn{border:none;border-radius:11px;padding:9px 11px;font-size:15px;cursor:pointer;color:#fff;background:var(--theme);
+    box-shadow:0 3px 0 var(--theme-dark);touch-action:manipulation;flex:0 0 auto;}
+  .sbtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--theme-dark);}
+  .nextbtn{margin-top:11px;border:none;border-radius:14px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;
+    color:#fff;background:var(--ink);font-family:inherit;display:none;box-shadow:0 4px 0 #000;}
+  .nextbtn.on{display:block;}
+  .nextbtn:active{transform:translateY(3px);box-shadow:0 1px 0 #000;}
+  /* ── 结算 ── */
+  .endwrap{text-align:center;padding-top:14px;}
+  .stars{font-size:44px;letter-spacing:6px;margin:6px 0 2px;}
+  .bigscore{font-size:42px;font-weight:800;color:var(--theme);}
+  .endmsg{font-size:14px;line-height:1.8;color:var(--grey);font-weight:600;margin:8px 0 16px;}
+  .endbtns{display:flex;flex-direction:column;gap:9px;max-width:280px;margin:0 auto;}
+  .pbtn{border:none;border-radius:15px;padding:14px;font-size:15.5px;font-weight:800;cursor:pointer;font-family:inherit;
+    color:#fff;background:var(--theme);box-shadow:0 5px 0 var(--theme-dark);touch-action:manipulation;}
+  .pbtn.alt{background:#fff;color:var(--theme-dark);border:2px solid var(--line);box-shadow:0 5px 0 var(--line);}
+  .pbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--theme-dark);}
+  footer{font-size:10px;color:#a89d88;text-align:center;padding:8px 12px 12px;border-top:1px solid var(--line);line-height:1.6;}
+  footer b{color:var(--theme);}
+  canvas.confetti{position:absolute;inset:0;pointer-events:none;z-index:40;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <button class="backbtn" id="backBtn">‹ 返回</button>
+    <div class="eyebrow">MUSIC · YEAR 2 &amp; 3 · INSTRUMENT FAMILIES</div>
+    <h1>Instrument Explorer 🎵</h1>
+    <div class="sub">乐器小达人 · 认一认 · 听一听 · 分一分</div>
+  </header>
+  <main>
+    <!-- 模式选择 -->
+    <section class="screen on" id="scr-home">
+      <p class="hello">25 种乐器、4 大家族。先去「学习卡」听单词发音和乐器声音，<br>再来闯关吧！🎧 建议开声音玩～</p>
+      <div class="modes">
+        <button class="mode-btn" data-mode="learn"><span class="mi">📖</span><span><span class="mt">学习卡 <small>Flashcards</small></span><br><span class="md">每种乐器：英文 + 发音参考 + 中文 + 真·听声音</span></span></button>
+        <button class="mode-btn" data-mode="word"><span class="mi">🔤</span><span><span class="mt">看图选词 <small>Match the Word</small></span><br><span class="md">看乐器图，选出正确的英文名</span></span></button>
+        <button class="mode-btn" data-mode="sound"><span class="mi">🎧</span><span><span class="mt">听声辨乐器 <small>Name that Sound</small></span><br><span class="md">听一段声音，猜是哪种乐器在演奏</span></span></button>
+        <button class="mode-btn" data-mode="listen"><span class="mi">🔊</span><span><span class="mt">听单词选图 <small>Listen &amp; Point</small></span><br><span class="md">听英文单词读音，点出对应乐器</span></span></button>
+        <button class="mode-btn" data-mode="family"><span class="mi">🗂️</span><span><span class="mt">家族分类 <small>Instrument Families</small></span><br><span class="md">Wind / Strings / Brass / Percussion，它属于谁？</span></span></button>
+      </div>
+      <div class="fam-strip">
+        <span class="fam-pill" style="background:var(--wind)">Wind 木管</span>
+        <span class="fam-pill" style="background:var(--strings)">Strings 弦乐</span>
+        <span class="fam-pill" style="background:var(--brass)">Brass 铜管</span>
+        <span class="fam-pill" style="background:var(--perc)">Percussion 打击乐</span>
+      </div>
+    </section>
+    <!-- 学习卡 -->
+    <section class="screen" id="scr-learn">
+      <div class="filters" id="famFilters"></div>
+      <div class="grid" id="learnGrid"></div>
+    </section>
+    <!-- 答题（四种模式共用） -->
+    <section class="screen" id="scr-quiz">
+      <div class="hud"><span>第 <b id="qNow">1</b>/<span id="qTotal">8</span> 题</span><span class="pbar"><i id="pfill"></i></span><span>⭐ <b id="qScore">0</b></span></div>
+      <div class="prompt" id="promptBox"></div>
+      <div class="opts" id="optBox"></div>
+      <div class="reveal-bar" id="revealBar"></div>
+      <button class="nextbtn" id="nextBtn">下一题 ▸</button>
+    </section>
+    <!-- 结算 -->
+    <section class="screen" id="scr-end">
+      <div class="endwrap">
+        <div class="stars" id="endStars"></div>
+        <div class="bigscore"><span id="endScore">0</span><span style="font-size:20px;color:var(--grey)"> / <span id="endTotal">8</span></span></div>
+        <p class="endmsg" id="endMsg"></p>
+        <div class="endbtns">
+          <button class="pbtn" id="againBtn">再玩一次 ▶</button>
+          <button class="pbtn alt" id="homeBtn">换个玩法</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>按澳洲小学 Year 2-3 音乐课「乐器四大家族」主题整理 · 仅供学习参考 · 整理 <b>悉尼陪读妈妈Jessica</b><br>乐器声音为网页合成音色（Web Audio），帮助建立音色印象，和真实乐器会有差别哦</footer>
+</div>
+<script id="data">
+/* ================== 数据段：25 种乐器 · 4 大家族 ================== */
+const FAMILIES = {
+  wind:    { en:"Wind",       zh:"木管乐",  color:"var(--wind)",    hex:"#4a7fb5" },
+  strings: { en:"Strings",    zh:"弦乐",    color:"var(--strings)", hex:"#c15b7e" },
+  brass:   { en:"Brass",      zh:"铜管乐",  color:"var(--brass)",   hex:"#c98f2e" },
+  perc:    { en:"Percussion", zh:"打击乐",  color:"var(--perc)",    hex:"#3f9e7c" }
+};
+/* SVG 小工具 */
+function S(inner){return '<svg viewBox="0 0 64 64" fill="none" stroke="#2a2118" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>';}
+/* 键钮一排小圆 */
+function keys(cx,cy,n,gap,r){let s="";for(let i=0;i<n;i++)s+='<circle cx="'+(cx+i*gap)+'" cy="'+cy+'" r="'+(r||2.4)+'"/>';return s;}
+/* 琴条乐器（马林巴/木琴/钟琴/颤音琴）生成器 */
+function bars(n,fill,opt){
+  opt=opt||{}; let s="", x=10, topY=20, w=(44-(n-1)*1.5)/n;
+  for(let i=0;i<n;i++){ let h=26-i*2.2;
+    s+='<rect x="'+(x).toFixed(1)+'" y="'+topY+'" width="'+w.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2" fill="'+fill+'"/>';
+    if(opt.tubes) s+='<line x1="'+(x+w/2).toFixed(1)+'" y1="'+(topY+h+2).toFixed(1)+'" x2="'+(x+w/2).toFixed(1)+'" y2="'+(topY+h+8).toFixed(1)+'" stroke-width="3.4"/>';
+    x+=w+1.5;
+  }
+  if(opt.frame) s='<rect x="6" y="16" width="52" height="34" rx="4"/>'+s;
+  if(opt.legs) s+='<line x1="14" y1="52" x2="10" y2="60"/><line x1="50" y1="52" x2="54" y2="60"/>';
+  if(opt.mallets) s+='<line x1="40" y1="60" x2="54" y2="46"/><circle cx="55.5" cy="44.5" r="3" fill="#c15b7e"/><line x1="24" y1="60" x2="10" y2="46"/><circle cx="8.5" cy="44.5" r="3" fill="#c15b7e"/>';
+  return s;
+}
+const WOOD="#e3b476", METAL="#ccd6de";
+/* id · 英文 · 发音参考 · 中文 · 家族 · 图标 */
+const INSTRUMENTS = [
+  // ── Wind 木管 ──
+  { id:"flute", en:"flute", say:"flute", pron:"FLOOT", zh:"长笛", fam:"wind",
+    icon:S('<rect x="5" y="27" width="54" height="10" rx="5"/><circle cx="14" cy="32" r="2.2" fill="#2a2118"/>'+keys(32,32,4,8)) },
+  { id:"piccolo", en:"piccolo", say:"piccolo", pron:"PIK-uh-loh", zh:"短笛", fam:"wind",
+    icon:S('<rect x="14" y="28" width="36" height="9" rx="4.5"/><circle cx="21" cy="32.5" r="1.9" fill="#2a2118"/>'+keys(32,32.5,3,7,2)+'<path d="M8 18l2 3M14 14l1 3M20 16l1 3" stroke-width="1.8"/>') },
+  { id:"oboe", en:"oboe", say:"oboe", pron:"OH-boh", zh:"双簧管", fam:"wind",
+    icon:S('<path d="M31 12l-1-8M33 12l1-8" stroke-width="1.8"/><path d="M29 12h6l3 30H26z"/><path d="M26 42l-4 12h20l-4-12"/>'+'<circle cx="32" cy="22" r="2"/><circle cx="32.5" cy="30" r="2"/><circle cx="33" cy="38" r="2"/>') },
+  { id:"clarinet", en:"clarinet", say:"clarinet", pron:"klair-uh-NET", zh:"单簧管", fam:"wind",
+    icon:S('<path d="M29 10l3-6 3 6"/><rect x="28" y="10" width="8" height="34" rx="3"/><path d="M25 44c-1 7 3 11 7 11s8-4 7-11z"/>'+'<circle cx="32" cy="20" r="2"/><circle cx="32" cy="28" r="2"/><circle cx="32" cy="36" r="2"/>') },
+  { id:"bassoon", en:"bassoon", say:"bassoon", pron:"buh-SOON", zh:"巴松管", fam:"wind",
+    icon:S('<rect x="23" y="10" width="8" height="42" rx="3.5"/><rect x="34" y="16" width="8" height="36" rx="3.5"/><path d="M23 52c0 5 19 5 19 0"/><path d="M30 16c-7-3-9-7-16-7"/><circle cx="27" cy="28" r="1.8"/><circle cx="38" cy="32" r="1.8"/><circle cx="27" cy="38" r="1.8"/>') },
+  { id:"saxophone", en:"saxophone", say:"saxophone", pron:"SAK-suh-fohn", zh:"萨克斯", fam:"wind",
+    icon:S('<path d="M40 6c-3 0-5 2-5 5v22c0 9-3 13-9 13-6 0-9-4-8-9"/><path d="M17 37c-4 11 4 18 11 18 10 0 15-7 15-19"/><path d="M40 6l6 3"/><circle cx="36" cy="18" r="2"/><circle cx="36" cy="26" r="2"/><circle cx="35" cy="34" r="2"/>') },
+  // ── Strings 弦乐 ──
+  { id:"violin", en:"violin", say:"violin", pron:"vy-uh-LIN", zh:"小提琴", fam:"strings",
+    icon:S('<line x1="10" y1="8" x2="50" y2="56" stroke-width="1.8"/><path d="M32 24c-6 0-8 4-8 8 0 3 2.5 4 2.5 8 0 5 2.5 8 5.5 8s5.5-3 5.5-8c0-4 2.5-5 2.5-8 0-4-2-8-8-8z" fill="#fffdf7"/><line x1="32" y1="24" x2="32" y2="8"/><circle cx="32" cy="6.5" r="2.2"/><path d="M28 36v4M36 36v4" stroke-width="1.6"/>') },
+  { id:"cello", en:"cello", say:"cello", pron:"CHEL-oh", zh:"大提琴", fam:"strings",
+    icon:S('<path d="M32 18c-8 0-11 6-11 11 0 4 3.5 5.5 3.5 10 0 7 3.5 11 7.5 11s7.5-4 7.5-11c0-4.5 3.5-6 3.5-10 0-5-3-11-11-11z" fill="#fffdf7"/><line x1="32" y1="18" x2="32" y2="5"/><circle cx="32" cy="4.5" r="2"/><line x1="32" y1="50" x2="32" y2="60"/><path d="M27 32v5M37 32v5" stroke-width="1.6"/>') },
+  { id:"guitar", en:"guitar", say:"guitar", pron:"gih-TAR", zh:"吉他", fam:"strings",
+    icon:S('<path d="M30 30c-4-1-9 1-11 5-3 5-2 9 0 12 2 4 7 6 12 5 5-1 8-5 8-9 0-5-4-7-4-10z" transform="rotate(3 32 40)" fill="#fffdf7"/><circle cx="30" cy="42" r="4"/><line x1="34" y1="30" x2="50" y2="8"/><rect x="48" y="4" width="7" height="8" rx="2" transform="rotate(35 51 8)"/>') },
+  { id:"sitar", en:"sitar", say:"sitar", pron:"sih-TAR", zh:"西塔琴", fam:"strings",
+    icon:S('<circle cx="32" cy="47" r="10" fill="#fffdf7"/><rect x="28.5" y="4" width="7" height="34" rx="3"/><line x1="26" y1="9" x2="22" y2="9"/><line x1="38" y1="13" x2="42" y2="13"/><line x1="26" y1="17" x2="22" y2="17"/><line x1="31" y1="12" x2="31" y2="52" stroke-width="1.2"/><line x1="34" y1="12" x2="34" y2="52" stroke-width="1.2"/>') },
+  { id:"guzheng", en:"guzheng", say:"goo jung", pron:"GOO-jung · 古筝", zh:"古筝", fam:"strings",
+    icon:S('<path d="M8 42l12-14h38l-8 16z" fill="#fffdf7"/><line x1="17" y1="34" x2="52" y2="34" stroke-width="1.2"/><line x1="14" y1="38" x2="49" y2="38" stroke-width="1.2"/><line x1="11" y1="42" x2="46" y2="42" stroke-width="1.2"/><path d="M24 33l2 3M34 37l2 3" stroke-width="1.6"/><line x1="14" y1="44" x2="14" y2="52"/><line x1="46" y1="46" x2="46" y2="54"/>') },
+  { id:"harp", en:"harp", say:"harp", pron:"HARP", zh:"竖琴", fam:"strings",
+    icon:S('<path d="M18 56V22c6-12 22-16 28-8v42"/><path d="M18 22c10-4 22-4 28-8" stroke-width="1.8"/><line x1="24" y1="19" x2="24" y2="56" stroke-width="1.2"/><line x1="30" y1="17" x2="30" y2="56" stroke-width="1.2"/><line x1="36" y1="15" x2="36" y2="56" stroke-width="1.2"/><line x1="42" y1="14" x2="42" y2="56" stroke-width="1.2"/><line x1="14" y1="58" x2="50" y2="58"/>') },
+  // ── Brass 铜管 ──
+  { id:"frenchhorn", en:"french horn", say:"french horn", pron:"FRENCH · HORN", zh:"圆号", fam:"brass",
+    icon:S('<circle cx="30" cy="36" r="16"/><circle cx="30" cy="36" r="8.5"/><path d="M44 28c5-3 10 0 12 6"/><path d="M14 24c4-6 10-8 16-8" stroke-width="1.8"/><circle cx="30" cy="27.5" r="1.6" fill="#2a2118"/><circle cx="35" cy="30" r="1.6" fill="#2a2118"/>') },
+  { id:"trumpet", en:"trumpet", say:"trumpet", pron:"TRUM-pit", zh:"小号", fam:"brass",
+    icon:S('<path d="M6 32h30"/><path d="M6 29v6" stroke-width="1.8"/><path d="M38 24c9 1 14 6 16 8-2 2-7 7-16 8z"/><line x1="20" y1="26" x2="20" y2="32"/><line x1="26" y1="26" x2="26" y2="32"/><line x1="32" y1="26" x2="32" y2="32"/><path d="M18 24h4M24 24h4M30 24h4" stroke-width="3"/><path d="M14 38c8 3 16 3 22 0" stroke-width="1.8"/>') },
+  { id:"trombone", en:"trombone", say:"trombone", pron:"trom-BOHN", zh:"长号", fam:"brass",
+    icon:S('<path d="M6 28h34"/><path d="M6 36h30"/><path d="M40 28c0-4 6-4 6 0v6"/><path d="M46 34v-2c0-3 4-4 6-1"/><path d="M46 20c6 2 10 6 12 8-2 2-6 6-12 8z"/><path d="M6 25v6" stroke-width="1.8"/><line x1="24" y1="25" x2="24" y2="39" stroke-width="1.8"/>') },
+  { id:"tuba", en:"tuba", say:"tuba", pron:"TYOO-buh", zh:"大号", fam:"brass",
+    icon:S('<path d="M18 18c-6 2-8 8-4 12" stroke-width="1.8"/><path d="M20 12c-6 8-8 20-2 30 4 7 16 9 24 4 7-4 9-13 5-19"/><path d="M20 12c3-5 12-6 16-2"/><path d="M36 10c2 6 4 14 8 18" stroke-width="1.8"/><circle cx="30" cy="34" r="2" fill="#2a2118"/><circle cx="36" cy="36" r="2" fill="#2a2118"/><circle cx="42" cy="34" r="2" fill="#2a2118"/>') },
+  { id:"euphonium", en:"euphonium", say:"euphonium", pron:"yoo-FOH-nee-um", zh:"上低音号", fam:"brass",
+    icon:S('<path d="M24 16c-5 8-6 18-1 26 4 6 13 8 19 3 6-4 7-12 3-17"/><path d="M24 16c2-4 9-5 12-2"/><path d="M36 14c2 5 3 11 6 14" stroke-width="1.8"/><circle cx="31" cy="32" r="1.8" fill="#2a2118"/><circle cx="36" cy="33" r="1.8" fill="#2a2118"/><path d="M20 50h20" stroke-width="1.8"/>') },
+  // ── Percussion 打击乐 ──
+  { id:"drums", en:"drums", say:"drums", pron:"DRUMZ", zh:"架子鼓", fam:"perc",
+    icon:S('<circle cx="32" cy="42" r="12" fill="#fffdf7"/><rect x="12" y="24" width="13" height="9" rx="2" fill="#fffdf7"/><rect x="39" y="24" width="13" height="9" rx="2" fill="#fffdf7"/><ellipse cx="14" cy="12" rx="9" ry="2.6"/><line x1="14" y1="14" x2="14" y2="24"/><ellipse cx="50" cy="12" rx="9" ry="2.6"/><line x1="50" y1="14" x2="50" y2="24"/><line x1="32" y1="54" x2="26" y2="60"/><line x1="32" y1="54" x2="38" y2="60"/>') },
+  { id:"piano", en:"piano", say:"piano", pron:"pee-AN-oh", zh:"钢琴", fam:"perc",
+    icon:S('<path d="M12 46V20h8v-8h18c10 0 14 7 14 14v20z" fill="#fffdf7"/><line x1="12" y1="38" x2="52" y2="38"/><path d="M18 38v8M26 38v8M34 38v8M42 38v8" stroke-width="1.4"/><line x1="16" y1="46" x2="16" y2="56"/><line x1="48" y1="46" x2="48" y2="56"/>') },
+  { id:"keyboard", en:"keyboard", say:"keyboard", pron:"KEE-bord", zh:"电子琴", fam:"perc",
+    icon:S('<rect x="6" y="22" width="52" height="18" rx="3" fill="#fffdf7"/><line x1="6" y1="28" x2="58" y2="28" stroke-width="1.6"/><path d="M14 28v12M22 28v12M30 28v12M38 28v12M46 28v12" stroke-width="1.4"/><path d="M17 28v6M25 28v6M35 28v6M43 28v6" stroke-width="3"/><circle cx="12" cy="25" r="1.2" fill="#2a2118"/><circle cx="17" cy="25" r="1.2" fill="#2a2118"/><line x1="14" y1="40" x2="10" y2="56"/><line x1="50" y1="40" x2="54" y2="56"/>') },
+  { id:"marimba", en:"marimba", say:"marimba", pron:"muh-RIM-buh", zh:"马林巴", fam:"perc",
+    icon:S(bars(7,WOOD,{tubes:true,legs:true,mallets:true})) },
+  { id:"xylophone", en:"xylophone", say:"xylophone", pron:"ZY-luh-fohn", zh:"木琴", fam:"perc",
+    icon:S(bars(6,WOOD,{mallets:true})) },
+  { id:"glockenspiel", en:"glockenspiel", say:"glockenspiel", pron:"GLOK-un-shpeel", zh:"钟琴", fam:"perc",
+    icon:S(bars(6,METAL,{frame:true})) },
+  { id:"vibraphone", en:"vibraphone", say:"vibraphone", pron:"VY-bruh-fohn", zh:"颤音琴", fam:"perc",
+    icon:S(bars(6,METAL,{tubes:true,legs:true})) },
+  { id:"cymbals", en:"cymbals", say:"cymbals", pron:"SIM-bulz", zh:"镲（钹）", fam:"perc",
+    icon:S('<ellipse cx="26" cy="28" rx="17" ry="6" fill="#fffdf7"/><path d="M26 22v-4"/><ellipse cx="38" cy="40" rx="17" ry="6" fill="#fffdf7"/><path d="M38 34v-4"/><path d="M8 14l3 3M14 8l2 4M56 52l-3-3M50 58l-2-4" stroke-width="1.8"/>') }
+];
+const BYID = {}; INSTRUMENTS.forEach(x=>BYID[x.id]=x);
+</script>
+<script id="synth">
+/* ================== 合成音色引擎（Web Audio，无外部音频文件） ================== */
+let AC=null, MASTER=null;
+function ac(){
+  if(!AC){
+    AC=new (window.AudioContext||window.webkitAudioContext)();
+    MASTER=AC.createDynamicsCompressor();
+    MASTER.threshold.value=-16; MASTER.knee.value=18; MASTER.ratio.value=9;
+    const g=AC.createGain(); g.gain.value=0.9; MASTER.connect(g); g.connect(AC.destination);
+  }
+  if(AC.state==="suspended") AC.resume();
+  return AC;
+}
+function m(n){ return 440*Math.pow(2,(n-69)/12); } // midi → Hz
+function tone(o){
+  const c=ac(), t=c.currentTime+(o.at||0);
+  const osc=c.createOscillator(); osc.type=o.type||"sine";
+  osc.frequency.setValueAtTime(o.f,t);
+  if(o.bend) osc.frequency.exponentialRampToValueAtTime(o.bend,t+(o.bendT||o.d||0.3));
+  let node=osc;
+  if(o.lpf){const f=c.createBiquadFilter();f.type="lowpass";f.frequency.value=o.lpf;f.Q.value=o.q||0.7;node.connect(f);node=f;}
+  if(o.bpf){const f=c.createBiquadFilter();f.type="bandpass";f.frequency.value=o.bpf;f.Q.value=o.q||3;node.connect(f);node=f;}
+  const g=c.createGain(); node.connect(g); g.connect(MASTER);
+  const v=o.v||0.15, a=o.a==null?0.03:o.a, d=o.d||0.4, rel=o.r==null?0.08:o.r, end=t+d+rel;
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(v,t+a);
+  if(o.decay) g.gain.exponentialRampToValueAtTime(Math.max(v*o.decay,0.0002),t+d);
+  else g.gain.setValueAtTime(v,t+Math.max(a,d-rel));
+  g.gain.exponentialRampToValueAtTime(0.0001,end);
+  if(o.vib){const l=c.createOscillator(),lg=c.createGain();l.frequency.value=o.vibR||5.5;lg.gain.value=o.vib;
+    l.connect(lg);lg.connect(osc.frequency);l.start(t+(o.vibAt||0));l.stop(end+0.05);}
+  if(o.trem){const l=c.createOscillator(),lg=c.createGain();l.frequency.value=o.tremR||4.5;lg.gain.value=v*o.trem;
+    l.connect(lg);lg.connect(g.gain);l.start(t);l.stop(end+0.05);}
+  osc.start(t); osc.stop(end+0.06);
+}
+function strike(f,at,o){ o=o||{};
+  (o.parts||[[1,1],[3,0.3]]).forEach(p=>tone({f:f*p[0],at,d:(o.d||0.7)*(p[2]||1),v:(o.v||0.16)*p[1],a:0.004,decay:0.02,r:0.12,type:o.type||"sine",trem:o.trem,tremR:o.tremR}));
+}
+function pluck(f,at,o){ o=o||{};
+  const c=ac(), t=c.currentTime+at, d=o.d||0.8;
+  const osc=c.createOscillator(); osc.type=o.type||"sawtooth"; osc.frequency.value=f;
+  const fl=c.createBiquadFilter(); fl.type="lowpass"; fl.Q.value=o.q||1;
+  fl.frequency.setValueAtTime(Math.min(f*(o.bright||6),12000),t);
+  fl.frequency.exponentialRampToValueAtTime(Math.max(f*1.3,80),t+d*0.6);
+  const g=c.createGain(); osc.connect(fl); fl.connect(g); g.connect(MASTER);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(o.v||0.2,t+0.006);
+  g.gain.exponentialRampToValueAtTime(0.0002,t+d);
+  osc.start(t); osc.stop(t+d+0.05);
+}
+let NB=null;
+function noise(o){
+  const c=ac(), t=c.currentTime+(o.at||0);
+  if(!NB){const len=c.sampleRate*1.2,b=c.createBuffer(1,len,c.sampleRate),ch=b.getChannelData(0);
+    for(let i=0;i<len;i++)ch[i]=Math.random()*2-1; NB=b;}
+  const s=c.createBufferSource(); s.buffer=NB; s.loop=true;
+  const f=c.createBiquadFilter(); f.type=o.hp?"highpass":(o.bp?"bandpass":"lowpass");
+  f.frequency.value=o.hp||o.bp||o.lp||3000; f.Q.value=o.q||0.8;
+  const g=c.createGain(); s.connect(f); f.connect(g); g.connect(MASTER);
+  const v=o.v||0.15, a=o.a||0.003, d=o.d||0.2;
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(v,t+a);
+  g.gain.exponentialRampToValueAtTime(0.0002,t+d);
+  s.start(t); s.stop(t+d+0.05);
+}
+/* 弓弦专用音色：锯齿音源 + 琴体共振峰（并联带通）+ 起弓摩擦噪音 + 渐入揉弦。
+   小提琴/大提琴"像不像"，关键不在波形而在琴体共振峰和音头，所以单独做一条链。 */
+function bowed(f,at,d,o){
+  o=o||{};
+  const c=ac(), t=c.currentTime+at, a=o.a||.08, rel=o.r||.16;
+  const sus=t+Math.max(a+.02,d), end=sus+rel, v=o.v||.12;
+  const out=c.createGain(); out.connect(MASTER);
+  out.gain.setValueAtTime(.0001,t);
+  out.gain.exponentialRampToValueAtTime(v,t+a);          // 起弓：不是瞬间出声
+  out.gain.setValueAtTime(v,sus);
+  out.gain.exponentialRampToValueAtTime(.0001,end);      // 收弓
+  // 音源：两个微失谐锯齿——单把琴的音高也不是绝对稳的
+  const src=c.createGain(); src.gain.value=.5;
+  const oscs=[];
+  [-(o.detune||5),(o.detune||5)].forEach(dt=>{
+    const s=c.createOscillator(); s.type="sawtooth"; s.frequency.value=f; s.detune.value=dt;
+    s.connect(src); oscs.push(s); });
+  // 揉弦渐入：真实演奏是拉稳了才加揉弦，一上来就抖会很电子
+  const lfo=c.createOscillator(), lg=c.createGain();
+  lfo.frequency.value=o.vibR||5.6;
+  lg.gain.setValueAtTime(.0001,t);
+  lg.gain.exponentialRampToValueAtTime(Math.max(f*(o.vib||.011),.5),t+Math.min(d*.7,.5));
+  lfo.connect(lg); oscs.forEach(s=>lg.connect(s.frequency));
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=o.lpf||6500; lp.Q.value=.5;
+  src.connect(lp);
+  const direct=c.createGain(); direct.gain.value=o.dry||.4; lp.connect(direct); direct.connect(out);
+  // 共振峰：小提琴 ≈ 空气腔 300 / 主体 460 / bridge hill 2600
+  (o.formants||[[300,1.6,.55],[460,2.2,.65],[2600,1.1,.75]]).forEach(fm=>{
+    const bp=c.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=fm[0]; bp.Q.value=fm[1];
+    const gn=c.createGain(); gn.gain.value=fm[2];
+    lp.connect(bp); bp.connect(gn); gn.connect(out); });
+  noise({at,d:.1,bp:o.scratchF||2600,q:.9,v:o.scratch==null?.022:o.scratch}); // 音头那一点弓毛摩擦声
+  oscs.forEach(s=>{s.start(t);s.stop(end+.05);});
+  lfo.start(t); lfo.stop(end+.05);
+}
+function kick(at){tone({f:150,bend:48,bendT:.12,at,d:.16,type:"sine",v:.5,a:.004,decay:.02});}
+function snare(at){noise({at,d:.14,bp:1800,q:.9,v:.3});tone({f:190,at,d:.1,type:"triangle",v:.15,a:.004,decay:.05});}
+function hat(at){noise({at,d:.05,hp:7500,v:.12});}
+function pnote(n,at,v,d){strike(m(n),at,{parts:[[1,1],[2,.35],[3,.15],[4,.08]],d:d||1.2,v:v||.15});}
+/* 每种乐器一小段有辨识度的乐句（约 1.5–2 秒） */
+const PHRASES = {
+  flute(){ [[79,0,.32],[81,.3,.32],[83,.6,.32],[86,.9,.9]].forEach(([n,at,d],i)=>{
+    tone({f:m(n),at,d,type:"sine",v:.22,a:.05,vib:i===3?6:2,vibAt:.25,vibR:5.5});
+    tone({f:m(n)*2,at,d,type:"sine",v:.03,a:.05});});
+    noise({at:0,d:1.7,hp:3000,v:.012,a:.1}); },
+  piccolo(){ [[91,0,.13],[93,.13,.13],[91,.26,.13],[93,.39,.13],[91,.52,.55]].forEach(([n,at,d])=>
+    tone({f:m(n),at,d,type:"sine",v:.16,a:.02,vib:4,vibR:6.5}));
+    noise({at:0,d:1,hp:5000,v:.014}); },
+  oboe(){ tone({f:m(69),at:0,d:1.6,type:"sawtooth",v:.17,a:.06,bpf:950,q:2.2,vib:5,vibAt:.5,vibR:5.2});
+    tone({f:m(69),at:0,d:1.6,type:"square",v:.035,a:.06,lpf:1800}); },
+  clarinet(){ [[52,0,.4],[55,.38,.4],[60,.76,1]].forEach(([n,at,d])=>
+    tone({f:m(n),at,d,type:"square",v:.12,a:.05,lpf:1600,vib:3,vibAt:.4})); },
+  bassoon(){ [[48,0,.26],[43,.3,.26],[48,.6,.26],[52,.9,.7]].forEach(([n,at,d])=>{
+    tone({f:m(n),at,d,type:"sawtooth",v:.2,a:.03,lpf:900,q:1.5});
+    tone({f:m(n),at,d,type:"sine",v:.1,a:.02});}); },
+  saxophone(){ [[67,0,.34],[70,.32,.34],[72,.64,.95]].forEach(([n,at,d],i)=>{const f=m(n);
+    tone({f:f*0.94,bend:f,bendT:.08,at,d,type:"sawtooth",v:.17,a:.02,lpf:2500,q:1.2,vib:i===2?8:3,vibAt:.3,vibR:5.5});
+    tone({f:f*0.94,bend:f,bendT:.08,at,d,type:"square",v:.05,a:.02,bpf:1400,q:1.5});});
+    noise({at:0,d:1.5,bp:1800,q:1,v:.01}); },
+  violin(){ // A4→D5→E5→F#5，最后一个长音带揉弦（小提琴最好认的抒情句）
+    [[69,0,.34],[74,.32,.3],[76,.6,.28],[78,.86,1.15]].forEach((p,i)=>
+      bowed(m(p[0]),p[1],p[2],{v:.12,a:i===3?.1:.06,vib:.012,vibR:5.8,
+        formants:[[300,1.6,.55],[460,2.2,.65],[2600,1.1,.75]]})); },
+  cello(){ // 低八度、共振峰下移、揉弦更慢更宽 —— 同一条弓弦链，换琴体
+    [[45,0,.5],[48,.46,.44],[52,.86,1.25]].forEach((p,i)=>
+      bowed(m(p[0]),p[1],p[2],{v:.15,a:i===2?.12:.08,vib:.009,vibR:4.8,lpf:4200,dry:.45,
+        scratchF:1200,scratch:.03,formants:[[105,2.4,.5],[210,2,.7],[1150,1.2,.7]]})); },
+  guitar(){ const ch=[40,47,52,56,59,64];
+    ch.forEach((n,i)=>pluck(m(n),i*.05,{d:1.2,v:.13,bright:7}));
+    ch.forEach((n,i)=>pluck(m(n),.85+i*.03,{d:1.4,v:.11,bright:6})); },
+  sitar(){ pluck(m(50),0,{d:2,v:.09,type:"square",bright:10,q:6});
+    pluck(m(57),.08,{d:2,v:.07,type:"square",bright:10,q:6});
+    [[62,.2],[64,.5],[66,.8],[64,1.1]].forEach(([n,at])=>pluck(m(n),at,{d:.9,v:.13,type:"square",bright:12,q:8})); },
+  guzheng(){ [62,64,66,69,71,74,76].forEach((n,i)=>pluck(m(n),i*.07,{d:1,v:.13,type:"triangle",bright:9}));
+    [0,.09,.18,.27,.36].forEach(at=>pluck(m(76),.65+at,{d:.5,v:.1,type:"triangle",bright:8})); },
+  harp(){ const up=[48,52,55,60,64,67,72,76,79,84];
+    up.forEach((n,i)=>pluck(m(n),i*.09,{d:1.6,v:.1,type:"triangle",bright:5}));
+    [79,76,72,67].forEach((n,i)=>pluck(m(n),.95+i*.09,{d:1.6,v:.09,type:"triangle",bright:5})); },
+  frenchhorn(){ [[60,0,.5],[67,.48,1.3]].forEach(([n,at,d])=>{
+    tone({f:m(n),at,d,type:"sawtooth",v:.15,a:.09,lpf:800});
+    tone({f:m(n),at,d,type:"sine",v:.12,a:.09});}); },
+  trumpet(){ [[72,0,.16],[72,.2,.16],[72,.4,.16],[79,.62,.95]].forEach(([n,at,d],i)=>
+    tone({f:m(n),at,d,type:"sawtooth",v:.16,a:.015,lpf:3800,q:1.2,vib:i===3?5:0,vibAt:.4,vibR:6})); },
+  trombone(){ const f1=m(53),f2=m(60);
+    tone({f:f1,bend:f2,bendT:.5,at:0,d:.55,type:"sawtooth",v:.17,a:.04,lpf:1500});
+    tone({f:f1,bend:f2,bendT:.5,at:0,d:.55,type:"sine",v:.08,a:.04});
+    tone({f:f2,bend:f1,bendT:.6,at:.62,d:.85,type:"sawtooth",v:.17,a:.03,lpf:1500});
+    tone({f:f2,bend:f1,bendT:.6,at:.62,d:.85,type:"sine",v:.08,a:.03}); },
+  tuba(){ [[36,0,.28],[43,.35,.28],[36,.7,.28],[36,1.05,.55]].forEach(([n,at,d])=>{
+    tone({f:m(n),at,d,type:"sawtooth",v:.2,a:.03,lpf:500,q:1});
+    tone({f:m(n),at,d,type:"sine",v:.22,a:.02});}); },
+  euphonium(){ [[48,0,.45],[52,.42,.45],[55,.84,1.1]].forEach(([n,at,d])=>{
+    tone({f:m(n),at,d,type:"sawtooth",v:.14,a:.07,lpf:900});
+    tone({f:m(n),at,d,type:"sine",v:.13,a:.07,vib:3,vibAt:.4});}); },
+  drums(){ [0,.5,1].forEach(kick); [.25,.75,1.25].forEach(snare);
+    for(let i=0;i<12;i++) hat(i*.125); },
+  piano(){ [[60,0],[64,.16],[67,.32],[72,.48]].forEach(([n,at])=>pnote(n,at,.14,1.1));
+    [60,64,67,72].forEach(n=>pnote(n,.95,.12,1.5)); },
+  keyboard(){ [[57,0],[60,0],[64,0],[65,.5],[69,.5],[72,.5]].forEach(([n,at])=>
+    strike(m(n),at,{parts:[[1,1],[3.53,.12,.4]],d:1.1,v:.13}));
+    [76,77,79,81].forEach((n,i)=>tone({f:m(n),at:1.02+i*.12,d:.12,type:"square",v:.06,a:.01,lpf:3000})); },
+  marimba(){ [48,55,60,64,67].forEach((n,i)=>strike(m(n),i*.16,{parts:[[1,1],[4,.25],[9.2,.06]],d:.9,v:.2})); },
+  xylophone(){ [84,86,88,91,88,84].forEach((n,i)=>strike(m(n),i*.14,{parts:[[1,1],[3,.4],[6.5,.1]],d:.3,v:.17})); },
+  glockenspiel(){ [[96,0],[100,.25],[103,.5],[96,.75],[103,1]].forEach(([n,at])=>
+    strike(m(n),at,{parts:[[1,1],[2.76,.25],[5.4,.1]],d:1.6,v:.1})); },
+  vibraphone(){ [[72,0],[76,.04],[79,.08],[83,.6]].forEach(([n,at])=>
+    [[1,1],[2.76,.2]].forEach(p=>tone({f:m(n)*p[0],at,d:2,v:.11*p[1],a:.005,decay:.02,trem:.55,tremR:5}))); },
+  cymbals(){ noise({at:0,d:1.8,hp:3500,v:.25,a:.004}); noise({at:0,d:.5,bp:9000,q:.5,v:.15});
+    [7.3,9.1,11.7,13.3].forEach(mu=>tone({f:300*mu,at:0,d:1.5,type:"square",v:.012,a:.004,decay:.02}));
+    noise({at:1.1,d:.6,hp:5000,v:.1}); }
+};
+let lastPlay=0;
+function playSound(id){ const now=Date.now(); if(now-lastPlay<350) return; lastPlay=now; ac(); if(PHRASES[id]) PHRASES[id](); }
+function sfxGood(){ [72,76,79].forEach((n,i)=>tone({f:m(n),at:i*.06,d:.16,type:"triangle",v:.12,a:.008})); }
+function sfxBad(){ tone({f:160,bend:118,bendT:.25,at:0,d:.25,type:"triangle",v:.15,a:.01}); }
+function sfxWin(){ [72,76,79,84,79,84].forEach((n,i)=>tone({f:m(n),at:i*.09,d:.18,type:"triangle",v:.13,a:.008})); }
+/* ── 单词发音（浏览器 TTS，优先澳洲口音） ── */
+let VOICE=null;
+function pickVoice(){ try{ const vs=speechSynthesis.getVoices(); if(!vs.length) return;
+  VOICE=vs.find(v=>/en[-_]AU/i.test(v.lang))||vs.find(v=>/en[-_](GB|US)/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null;
+}catch(e){} }
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function say(text){ if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  if(VOICE) u.voice=VOICE; u.lang=VOICE?VOICE.lang:"en-AU"; u.rate=.8; u.pitch=1.05;
+  speechSynthesis.speak(u); }
+</script>
+<script id="game">
+/* ================== 游戏逻辑 ================== */
+const $=s=>document.querySelector(s);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on")); $("#"+id).classList.add("on");
+  document.body.classList.toggle("ingame", id!=="scr-home"); }
+$("#backBtn").addEventListener("click",()=>{ quiz.token++; show("scr-home"); });
+
+/* ── 学习卡 ── */
+let famFilter="all";
+function renderFilters(){
+  const box=$("#famFilters"); let html='<button class="fchip'+(famFilter==="all"?" on":"")+'" data-f="all" style="'+(famFilter==="all"?"background:var(--ink);":"")+'">全部 All</button>';
+  for(const k in FAMILIES){ const f=FAMILIES[k], on=famFilter===k;
+    html+='<button class="fchip'+(on?" on":"")+'" data-f="'+k+'" style="'+(on?"background:"+f.hex+";":"")+'">'+f.en+" "+f.zh+"</button>"; }
+  box.innerHTML=html;
+  box.querySelectorAll(".fchip").forEach(b=>b.addEventListener("click",()=>{ famFilter=b.dataset.f; renderFilters(); renderGrid(); }));
+}
+function renderGrid(){
+  const g=$("#learnGrid");
+  g.innerHTML=INSTRUMENTS.filter(x=>famFilter==="all"||x.fam===famFilter).map(x=>
+    '<button class="gcard" data-id="'+x.id+'"><span class="dot" style="background:'+FAMILIES[x.fam].hex+'"></span>'+x.icon+
+    '<span class="ge">'+x.en+'</span><span class="gz">'+x.zh+"</span></button>").join("");
+  g.querySelectorAll(".gcard").forEach(b=>b.addEventListener("click",()=>openSheet(b.dataset.id)));
+}
+const sheetBg=document.createElement("div"); sheetBg.className="sheet-bg"; $("#app").appendChild(sheetBg);
+function openSheet(id){ const x=BYID[id], f=FAMILIES[x.fam];
+  sheetBg.innerHTML='<div class="sheet">'+x.icon+
+    '<div class="se">'+x.en+'</div><div class="sp">发音参考：'+x.pron+'</div><div class="sz">'+x.zh+"</div>"+
+    '<div class="sf"><span class="fam-pill" style="background:'+f.hex+'">'+f.en+" · "+f.zh+"</span></div>"+
+    '<div class="actions"><button class="abtn say" id="shSay">🔊 读单词</button><button class="abtn hear" id="shHear">🎵 听声音</button></div>'+
+    '<button class="close">关闭 ✕</button></div>';
+  sheetBg.classList.add("on");
+  $("#shSay").addEventListener("click",e=>{ e.stopPropagation(); say(x.say||x.en); });
+  $("#shHear").addEventListener("click",e=>{ e.stopPropagation(); playSound(x.id); });
+  sheetBg.querySelector(".close").addEventListener("click",()=>sheetBg.classList.remove("on"));
+  sheetBg.addEventListener("click",e=>{ if(e.target===sheetBg) sheetBg.classList.remove("on"); });
+}
+
+/* ── 答题引擎（word / sound / listen / family 四模式共用） ── */
+const QCOUNT=8;
+const quiz={mode:null,list:[],i:0,score:0,answered:false,token:0};
+const QTEXT={
+  word:  "这是什么乐器？选出它的<b>英文名</b> 👇",
+  sound: "🎧 听！是谁在演奏？（可以点喇叭再听一次）",
+  listen:"🔊 听英文单词，点出对应的乐器 👇",
+  family:"它属于哪个<b>乐器家族</b>？"
+};
+document.querySelectorAll(".mode-btn").forEach(b=>b.addEventListener("click",()=>{
+  ac(); // 用户手势解锁音频
+  const mo=b.dataset.mode;
+  if(mo==="learn"){ renderFilters(); renderGrid(); show("scr-learn"); return; }
+  startQuiz(mo);
+}));
+function startQuiz(mode){
+  quiz.mode=mode; quiz.list=shuffle(INSTRUMENTS.slice()).slice(0,QCOUNT);
+  quiz.i=0; quiz.score=0; quiz.token++;
+  $("#qTotal").textContent=QCOUNT;
+  show("scr-quiz"); renderQ();
+}
+function distractors(target,n){
+  let same=0;
+  const pool=shuffle(INSTRUMENTS.filter(x=>x.id!==target.id)).filter(x=>{
+    if(quiz.mode==="sound"&&x.fam===target.fam){ if(same>=1) return false; same++; }
+    return true;
+  });
+  return pool.slice(0,n);
+}
+function renderQ(){
+  const x=quiz.list[quiz.i]; quiz.answered=false;
+  $("#qNow").textContent=quiz.i+1; $("#qScore").textContent=quiz.score;
+  $("#pfill").style.width=(quiz.i/QCOUNT*100)+"%";
+  $("#revealBar").classList.remove("on"); $("#nextBtn").classList.remove("on");
+  const p=$("#promptBox"), o=$("#optBox"), tok=quiz.token;
+  if(quiz.mode==="word"||quiz.mode==="family"){
+    p.innerHTML='<div class="q">'+QTEXT[quiz.mode]+'</div><div class="big-icon">'+x.icon+"</div>"+
+      (quiz.mode==="family"?'<div class="big-word" style="font-size:21px">'+x.en+"</div>":"");
+  }else{
+    const ico=quiz.mode==="sound"?"▶":"🔊";
+    p.innerHTML='<div class="q">'+QTEXT[quiz.mode]+'</div><button class="bigplay" id="qPlay">'+ico+'</button><div class="replay-hint">点它播放 / 重听</div>';
+    const play=()=>{ if(quiz.mode==="sound") playSound(x.id); else say(x.say||x.en); };
+    $("#qPlay").addEventListener("click",play);
+    setTimeout(()=>{ if(tok===quiz.token) play(); },350);
+  }
+  if(quiz.mode==="family"){
+    o.className="opts";
+    o.innerHTML=Object.keys(FAMILIES).map(k=>{const f=FAMILIES[k];
+      return '<button class="opt fam-opt" data-k="'+k+'" style="background:'+f.hex+'"><span class="oe">'+f.en+'</span><span class="oz">'+f.zh+"</span></button>";}).join("");
+    o.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>pick(b,b.dataset.k===x.fam,x,()=>{
+      o.querySelectorAll(".opt").forEach(c=>{ if(c.dataset.k===x.fam) c.classList.add("correct"); });
+    })));
+  }else{
+    const opts=shuffle([x].concat(distractors(x,3)));
+    o.className="opts"+(quiz.mode==="word"?" words":"");
+    o.innerHTML=opts.map(op=>{
+      let inner="";
+      if(quiz.mode==="word") inner='<span class="oe">'+op.en+"</span>";
+      else if(quiz.mode==="listen") inner=op.icon;
+      else inner=op.icon+'<span class="oe" style="font-size:12px">'+op.en+"</span>";
+      return '<button class="opt" data-k="'+op.id+'">'+inner+"</button>";}).join("");
+    o.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>pick(b,b.dataset.k===x.id,x,()=>{
+      o.querySelectorAll(".opt").forEach(c=>{ if(c.dataset.k===x.id) c.classList.add("correct"); else if(c!==b) c.classList.add("dim"); });
+    })));
+  }
+}
+function pick(el,ok,x,markCorrect){
+  if(quiz.answered) return; quiz.answered=true;
+  document.querySelectorAll("#optBox .opt").forEach(b=>b.classList.add("locked"));
+  const tok=quiz.token;
+  if(ok){ quiz.score++; sfxGood(); el.classList.add("correct"); revealAnswer(x);
+    setTimeout(()=>{ if(tok===quiz.token) next(); },1300);
+  }else{ sfxBad(); el.classList.add("wrong"); markCorrect(); revealAnswer(x);
+    $("#nextBtn").classList.add("on");
+  }
+  $("#qScore").textContent=quiz.score;
+}
+function revealAnswer(x){
+  const f=FAMILIES[x.fam], rb=$("#revealBar");
+  rb.innerHTML='<span style="width:34px;flex:0 0 auto">'+x.icon+'</span><span class="rw"><span class="re">'+x.en+
+    '</span> <span class="rp">'+x.pron+'</span><br><span class="rz">'+x.zh+" · "+f.en+" "+f.zh+
+    '</span></span><button class="sbtn" id="rbSay">🔊</button><button class="sbtn" id="rbHear" style="background:var(--perc);box-shadow:0 3px 0 #2c7259">🎵</button>';
+  rb.classList.add("on");
+  $("#rbSay").addEventListener("click",()=>say(x.say||x.en));
+  $("#rbHear").addEventListener("click",()=>playSound(x.id));
+}
+$("#nextBtn").addEventListener("click",next);
+function next(){
+  quiz.i++;
+  if(quiz.i>=QCOUNT) return endQuiz();
+  renderQ();
+}
+function endQuiz(){
+  show("scr-end");
+  const s=quiz.score, stars=s>=7?3:(s>=5?2:1);
+  $("#endScore").textContent=s; $("#endTotal").textContent=QCOUNT;
+  $("#endStars").textContent="⭐".repeat(stars)+"☆".repeat(3-stars);
+  $("#endMsg").innerHTML=s>=7?"太棒了！你已经是乐器小达人！🎺<br>Amazing! You know your instruments!":
+    (s>=5?"很不错！再去学习卡里听一听，就能拿三颗星～<br>Well done — nearly there!":
+    "没关系，先去「学习卡」认一认、听一听，再来挑战！💪<br>Keep going — try the flashcards first!");
+  sfxWin(); if(s>=7) confetti();
+}
+$("#againBtn").addEventListener("click",()=>startQuiz(quiz.mode));
+$("#homeBtn").addEventListener("click",()=>show("scr-home"));
+/* URL hash 直达：#learn / #word / #sound / #listen / #family（截图与分享用） */
+const H=(location.hash||"").slice(1);
+if(H==="learn"){ renderFilters(); renderGrid(); show("scr-learn"); }
+else if(["word","sound","listen","family"].includes(H)) startQuiz(H);
+/* ── 彩带 ── */
+function confetti(){
+  const cv=document.createElement("canvas"); cv.className="confetti";
+  const app=$("#app"); cv.width=app.clientWidth; cv.height=app.clientHeight; app.appendChild(cv);
+  const ctx=cv.getContext("2d"), cols=["#e0602f","#f4b740","#3f9e7c","#4a7fb5","#c15b7e"];
+  const ps=Array.from({length:80},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,
+    w:5+Math.random()*5,h:8+Math.random()*6,c:cols[Math.floor(Math.random()*cols.length)],
+    vy:2+Math.random()*3,vx:(Math.random()-.5)*2,r:Math.random()*Math.PI,vr:(Math.random()-.5)*.2}));
+  let n=0;
+  (function tick(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); });
+    if(++n<130) requestAnimationFrame(tick); else cv.remove();
+  })();
+}
+</script>
+</body>
+</html>
