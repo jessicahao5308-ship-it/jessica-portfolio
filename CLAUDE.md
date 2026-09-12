@@ -43,7 +43,7 @@ jessica-portfolio/
    - **真人照处理**：源 HEIC `~/Downloads/8e44…HEIC` → `sips` 转 jpg + 裁切(取景框掉杂物，保留大桥) → Pillow 暖调。riso 版另走 `rembg` 抠图 + 双色调 LUT + 半调。**本机无 AI 文生图**，都是图像处理。
 3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
 4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`。现两行 LIVE：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）。公众号名暂借小红书同名，**待确认**。**GitHub 已全站移除**（仓库里存档 Obsidian 笔记涉隐私，见红线）。
-5. **WORK（03）**：作品清单 `.work-list`，**按品类分组**（每组一个 `.group-head` 小标题，用 `.kicker` 样式）：**数学课件** → **双语研学·阅读** → **工具·其他**；组内新的在前，编号 `.rownum` 全列连续 01–06。每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`。加新作品 = 塞进对应组、组内置顶、全列重编号。
+5. **WORK（03）**：作品清单 `.work-list`，**按品类分组**（每组一个 `.group-head` 小标题，用 `.kicker` 样式）：**课件**（数学 + HSIE 讲解 PPT）→ **双语研学·阅读** → **演示·工具**；组内新的在前，编号 `.rownum` 全列连续 01–07（2026-09-12：01 七大洲五大洋 3 风格 PDF、05 不安的哲学妈妈版网页 PPT；Wings of Fire 已下线并删文件，因中文译名有误）。每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`。加新作品 = 塞进对应组、组内置顶、全列重编号。
 6. **CONTACT（05）· Sac 式横排联系行**：`Let's talk.` + `● 开放合作` + **关键词跑马灯 `.marquee`**（build in public·陪读·AI 实践…）+ **横排 `.contact-bar`**：EMAIL｜小红书（悉尼陪读妈妈 Jessica）｜**微信个人码 `.qr-mini`**（`works/qr-wechat-personal.jpg`，绿码，扫码加我）。
    - **联系区放微信、不放公众号**（Jessica 定，仿 Sac WeChat QR 格）。这是唯一放在站上的二维码（小，融进行里，不突兀）。
    - 其余二维码资产存 Obsidian `04_Resources/品牌资产_二维码/`（微信/公众号/小红书 QR + 各自名片 + 索引卡 `二维码.md`），商品图/私域引流从那取。
@@ -57,6 +57,8 @@ jessica-portfolio/
 - **案例节点**（同一节课的多种形式）：一行 + 一排「形式 chips」(`.forms > a.form`)
   - 质数与合数 = 📖 笔记 · 🖨️ PDF · 🎞️ 课件 · 🎯 游戏
   - 角的类型 = 📖 笔记 · 🖨️ PDF · 🎯 游戏
+  - 七大洲与五大洋 = 🏫 趣味教室 · 🧱 黏土动画 · 📚 绘本故事（NotebookLM 三风格 PDF，源在 Obsidian `03_产品库/已交付产品/20260831 定制课件服务----未上架/Notebooklm PPT  格式选择/`，缩略图 `shots/co-*.jpg` 用 `pdftoppm` 取首页）
+- **不安的哲学妈妈版**：`works/anxiety-philosophy/`（index.html + assets/motion.min.js），源在 `~/Downloads/不安的哲学-Jessica网页PPT/`（vault 里只有 learn. 子域的文字抓取，无 HTML）
 - 行是 `<div>`（**非 `<a>`**，因含多个链接）；标题用 `a.rowtitle-link`，`data-img` 驱动 hover 预览图
 
 ## 🚀 加新课件案例 SOP（触发：「加 Year X 的 XX 单元」）
