@@ -1,55 +1,65 @@
 <!DOCTYPE html>
 <html lang="zh"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NSW 择校考试全年日历 · 网页版</title>
+<title>NSW 择校考试全年日历 2026–2027 · Jessica in Sydney</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Noto+Serif+SC:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--accent:#4a6fa5;--dark:#34507a;--tint:#eef3f9;--line:#cdd9ea;--ink:#1f2937;--grey:#6b7280;--bg:#f4f6fa;--amber-bg:#fff7ed;--amber:#9a5b1e;--red:#b42318}
-body{font-family:"Hiragino Sans GB","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
-header{background:linear-gradient(135deg,var(--dark),var(--accent));color:#fff;padding:24px 28px}
-header h1{font-size:23px;font-weight:800}header p{font-size:12.5px;opacity:.9;margin-top:4px}
-.picker{padding:14px 28px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+:root{--accent:#e0602f;--dark:#1b1813;--tint:#ece4d5;--tint2:#e5dcc9;--line:#d9cfbc;--ink:#1b1813;--grey:#6a6153;--bg:#f2ede3;--amber-bg:#f4d9c6;--amber:#8a3a17;--red:#b42318;--soft:#f4d9c6}
+body{font-family:Inter,"Hiragino Sans GB","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
+.serif{font-family:"Playfair Display","Noto Serif SC",Georgia,serif}
+header{background:var(--bg);color:var(--ink);padding:26px 28px 18px;border-bottom:1px solid var(--line)}
+header .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+header .home{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey);text-decoration:none}
+header .home:hover{color:var(--accent)}
+header .beta{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#fff7f0;background:var(--accent);padding:4px 10px;border-radius:999px}
+header h1{font-family:"Playfair Display","Noto Serif SC",Georgia,serif;font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:800;letter-spacing:-.01em}header h1 .accent{color:var(--accent)}header p{font-size:13px;color:var(--grey);margin-top:6px;max-width:900px}
+.picker{padding:14px 28px;background:rgba(242,237,227,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
 .picker .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
 .picker .row:last-child{margin-bottom:0}
 .lab{font-size:12px;color:var(--grey);font-weight:700;min-width:96px}
-.chip{padding:5px 12px;border:1px solid var(--line);border-radius:20px;background:#fff;cursor:pointer;font-size:12.5px;color:var(--dark)}
+.chip{padding:5px 12px;border:1px solid var(--line);border-radius:20px;background:transparent;cursor:pointer;font-size:12.5px;color:var(--ink)}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
 .chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-.chip.grade.on{background:var(--dark)}
-input[type=search]{padding:6px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;min-width:220px}
+.chip.grade.on{background:var(--dark);border-color:var(--dark)}
+input[type=search]{padding:6px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;min-width:220px;background:#faf7f1;color:var(--ink)}
 main{padding:20px 28px;max-width:1180px;margin:0 auto}
-.hint{background:var(--tint);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--dark);margin-bottom:16px}
+.hint{background:var(--tint);border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--grey);margin-bottom:16px}
 .month{margin-bottom:22px}
-.month h2{font-size:15px;color:#fff;background:var(--accent);display:inline-block;padding:4px 14px;border-radius:7px;margin-bottom:10px}
+.month h2{font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.month h2::before{content:"";width:26px;height:1px;background:var(--accent)}
 .month h2 small{font-weight:400;opacity:.85;margin-left:8px;font-size:12px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
-.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.15s;position:relative}
-.card:hover{border-color:var(--accent);box-shadow:0 4px 12px rgba(74,111,165,.15)}
-.card.hard{border-left:4px solid var(--red)}
-.card .id{font-size:11px;color:var(--grey)}
-.card .nm{font-weight:700;color:var(--dark);font-size:13.5px;margin:2px 0 4px}
+.card{background:#faf7f1;border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.15s;position:relative}
+.card:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(224,96,47,.12);transform:translateY(-1px)}
+.card.hard{border-left:4px solid var(--accent)}
+.card .id{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--grey)}
+.card .nm{font-family:"Playfair Display","Noto Serif SC",Georgia,serif;font-weight:700;color:var(--dark);font-size:15px;margin:2px 0 4px}
+.card:hover .nm{color:var(--accent)}
 .card .win{font-size:12.5px}
 .card .meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
-.b{font-size:11px;padding:2px 7px;border-radius:4px;background:var(--tint);border:1px solid var(--line);color:var(--dark)}
+.b{font-size:11px;padding:2px 7px;border-radius:4px;background:var(--tint);border:1px solid var(--line);color:var(--ink)}
 .b.s{background:#f0fdf4;color:#15803d;border-color:#bfe3cc}.b.y{background:#fffbeb;color:#92400e;border-color:#fde68a}.b.u{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
-.b.h{background:#fef2f2;color:var(--red);border-color:#f3c5c5;font-weight:700}
+.b.h{background:var(--soft);color:var(--accent);border-color:#e9b9a0;font-weight:700}
 .hidden{display:none!important}
-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:12.5px}
-th{background:var(--accent);color:#fff;text-align:left;padding:8px 10px}td{padding:7px 10px;border-top:1px solid var(--line);vertical-align:top}
+table{width:100%;border-collapse:collapse;background:#faf7f1;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:12.5px}
+th{background:var(--dark);color:#f2ede3;text-align:left;padding:8px 10px}td{padding:7px 10px;border-top:1px solid var(--line);vertical-align:top}
 tr:nth-child(even) td{background:var(--tint)}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:18px}
-.modal{background:#fff;border-radius:14px;max-width:720px;width:100%;max-height:88vh;overflow:auto;padding:24px 26px;position:relative}
+.modal{background:#faf7f1;border-radius:14px;max-width:720px;width:100%;max-height:88vh;overflow:auto;padding:24px 26px;position:relative}
 .modal .x{position:absolute;right:14px;top:8px;font-size:24px;cursor:pointer;color:var(--grey)}
-.modal h3{font-size:18px;color:var(--dark);padding-right:30px}
+.modal h3{font-family:"Playfair Display","Noto Serif SC",Georgia,serif;font-size:21px;color:var(--dark);padding-right:30px}
 .modal .sub{font-size:12.5px;color:var(--grey);margin:4px 0 12px}
-.f{margin-bottom:11px}.f b{display:block;font-size:11.5px;color:var(--accent);letter-spacing:.04em;margin-bottom:2px}.f p{font-size:13.5px}
+.f{margin-bottom:11px}.f b{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px}.f p{font-size:13.5px}
 .f.note{background:var(--amber-bg);border-left:4px solid var(--amber);padding:9px 12px;border-radius:0 8px 8px 0;color:var(--amber)}
 .f.note b{color:var(--amber)}
 .f.prep{background:#f0fdf4;border-left:4px solid #15803d;padding:9px 12px;border-radius:0 8px 8px 0;color:#14532d}
 .f.prep b{color:#15803d}
 .modal a{color:var(--accent);font-weight:700;word-break:break-all}
-footer{text-align:center;font-size:11.5px;color:var(--grey);padding:18px}
+footer{text-align:center;font-size:11.5px;color:var(--grey);padding:22px 18px;border-top:1px solid var(--line);margin-top:10px}
 @media(max-width:640px){header,main,.picker{padding-left:12px;padding-right:12px}.lab{min-width:100%}}
 </style></head><body>
-<header><h1>NSW 择校考试全年日历 2026–2027 · 网页版</h1>
+<header><div class="top"><a class="home" href="https://jessicainsydney.com/">← jessicainsydney.com</a><span class="beta">Free · Public Beta · 公测中</span></div><h1>NSW 择校考试全年日历 <span class="accent">2026–2027</span></h1>
 <p>34 个关键节点，逐条来自官方网站核验（核验日期 2026-09-10）。选你家孩子的年级，只看跟你有关的；点节点看材料清单、中文解读和官方出处。🟢 已公布 🟡 惯例推测 🔵 全年机制 ｜ 红色左边=错过等一年的硬截止</p></header>
 <div class="picker">
  <div class="row"><span class="lab">我家娃现在读</span><span class="chip grade on" data-g="all">全部</span><span class="chip grade" data-g="K">K</span><span class="chip grade" data-g="Y1">Y1</span><span class="chip grade" data-g="Y2">Y2</span><span class="chip grade" data-g="Y3">Y3</span><span class="chip grade" data-g="Y4">Y4</span><span class="chip grade" data-g="Y5">Y5</span><span class="chip grade" data-g="Y6">Y6</span><span class="chip grade" data-g="Y7">Y7</span><span class="chip grade" data-g="Y8">Y8</span><span class="chip grade" data-g="Y9">Y9</span><span class="chip grade" data-g="Y10">Y10</span><span class="chip grade" data-g="Y11">Y11</span><span class="chip grade" data-g="Y12">Y12</span><span class="chip grade" data-g="新移民">新移民</span></div>
