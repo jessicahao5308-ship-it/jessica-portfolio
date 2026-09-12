@@ -36,15 +36,15 @@ jessica-portfolio/
 
 ## 网页结构（index.html，单页多 section，每段带 `— 0N` 小标号）
 
-1. **NAV**：`Jessica.` + slogan + About/Signal/Work/Contact + `SYD · 2026` chip + `EN/中` 切换按钮
+1. **NAV**：`Jessica.` + slogan + About/Work/Contact + `SYD · 2026` chip + `EN/中` 切换按钮
 2. **HERO**（`— 2026`）：超大衬线字标 `Jessica.` + 右侧**蓝图肖像板 `.plate`**（竖幅 3/4）+ 水印 `J` + 两个 CTA
    - **当前用**：`works/portrait-real.png` = Jessica 本人真实照片（悉尼海港大桥背景），裁掉海墙杂物 + 轻度暖调调和奶油纸（Pillow：desat 0.9 / 暖白平衡 / 7% cream wash）。四周白色技术标注 FIG.01/SYD·HARBOUR/33.85°S。
    - **备选资产**（riso 插画版，之前那张咖啡馆照做的）：`portrait.png`(v2 网点) / `portrait-v1.png` / `portrait-v3.png`。换真人↔插画只改 hero `<img src>`（插画版记得加回 `mix-blend-mode:multiply`）。
    - **真人照处理**：源 HEIC `~/Downloads/8e44…HEIC` → `sips` 转 jpg + 裁切(取景框掉杂物，保留大桥) → Pillow 暖调。riso 版另走 `rembg` 抠图 + 双色调 LUT + 半调。**本机无 AI 文生图**，都是图像处理。
 3. **ABOUT（01）**：`About me` + 节点闭环图 `.nodes`（学 Learn → 做 Build → 享 Share）
-4. **SIGNAL（02）· 全平台信号台**：`.signal` 社媒行 `.sig-row`。现两行 LIVE：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）。公众号名暂借小红书同名，**待确认**。**GitHub 已全站移除**（仓库里存档 Obsidian 笔记涉隐私，见红线）。
-5. **WORK（03）**：作品清单 `.work-list`，**按品类分组**（每组一个 `.group-head` 小标题，用 `.kicker` 样式）：**课件**（数学 + HSIE 讲解 PPT）→ **双语研学·阅读** → **演示·工具**；组内新的在前，编号 `.rownum` 全列连续 01–07（2026-09-12：01 七大洲五大洋 3 风格 PDF、05 不安的哲学妈妈版网页 PPT；Wings of Fire 已下线并删文件，因中文译名有误）。每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`。加新作品 = 塞进对应组、组内置顶、全列重编号。
-6. **CONTACT（05）· Sac 式横排联系行**：`Let's talk.` + `● 开放合作` + **关键词跑马灯 `.marquee`**（build in public·陪读·AI 实践…）+ **横排 `.contact-bar`**：EMAIL｜小红书（悉尼陪读妈妈 Jessica）｜**微信个人码 `.qr-mini`**（`works/qr-wechat-personal.jpg`，绿码，扫码加我）。
+4. ~~**SIGNAL（02）· 全平台信号台**~~（**2026-09-12 已删**，文末联系行已有小红书/微信，Jessica 定不重复。CSS `.signal/.sig-row` 仍留在样式表里）：`.signal` 社媒行 `.sig-row`。现两行 LIVE：小红书「悉尼陪读妈妈 Jessica」1K+（profile 65dd909b…）/ 公众号（链到最新文章）。公众号名暂借小红书同名，**待确认**。**GitHub 已全站移除**（仓库里存档 Obsidian 笔记涉隐私，见红线）。
+5. **WORK（现编号 03）**：作品清单 `.work-list`，**按品类分组**（每组一个 `.group-head` 小标题，用 `.kicker` 样式）：**课件**（数学 + HSIE 讲解 PPT）→ **双语研学·阅读** → **演示·工具**；组内新的在前，编号 `.rownum` 全列连续 01–07（2026-09-12：01 七大洲五大洋 3 风格 PDF、05 不安的哲学妈妈版网页 PPT；Wings of Fire 已下线并删文件，因中文译名有误）。每行 `.work-row`（编号 + 标题 + 简介 + 形式 chips + 日期/类型）。桌面 hover 浮出 `#hoverPreview`；手机显示 `.row-thumb`。加新作品 = 塞进对应组、组内置顶、全列重编号。
+6. **CONTACT（现编号 04）· Sac 式横排联系行**：`Let's talk.` + `● 开放合作` + **关键词跑马灯 `.marquee`**（build in public·陪读·AI 实践…）+ **横排 `.contact-bar`**：EMAIL｜小红书（悉尼陪读妈妈 Jessica）｜**微信个人码 `.qr-mini`**（`works/qr-wechat-personal.jpg`，绿码，扫码加我）。
    - **联系区放微信、不放公众号**（Jessica 定，仿 Sac WeChat QR 格）。这是唯一放在站上的二维码（小，融进行里，不突兀）。
    - 其余二维码资产存 Obsidian `04_Resources/品牌资产_二维码/`（微信/公众号/小红书 QR + 各自名片 + 索引卡 `二维码.md`），商品图/私域引流从那取。
 7. **双语**：`.len`（英文，默认）/ `.lzh`（中文），`body.lang-zh` 切换；`toggleLang()` 同步 `<title>`
