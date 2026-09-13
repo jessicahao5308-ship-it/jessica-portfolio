@@ -11,16 +11,25 @@
 
 ## 部署
 
+> **2026-09-13 起：托管从 GitHub Pages 迁到 Cloudflare Workers（静态资源）。** 起因：GitHub 平台故障导致 Pages 卡在旧版本几小时推不上线。现由 Cloudflare 直接托管，不再依赖 GitHub 的构建。GitHub 仓库保留作**备份**。
+
 | 项 | 值 |
 |---|---|
-| GitHub | [jessicahao5308-ship-it/jessica-portfolio](https://github.com/jessicahao5308-ship-it/jessica-portfolio) · **必须 public**（否则 Pages 部署失败）|
-| 网址 | **https://jessicainsydney.com**（自定义主域，2026-07 上）· 旧址 jessicahao5308-ship-it.github.io/jessica-portfolio 仍会跳转 |
-| 域名 | 主域 `jessicainsydney.com`，DNS 在 **Cloudflare**。仓库根 `CNAME` 文件 = `jessicainsydney.com`。Cloudflare 两条 **灰云(DNS only)** CNAME：`@` 和 `www` → `jessicahao5308-ship-it.github.io`。`learn.` 子域是 quickshare，别动。|
-| 机制 | push `main` → GitHub Pages 自动构建（1–2 分钟生效）· **HTTPS 已开启并强制**（Let's Encrypt 证书，自动续期）|
+| 托管 | **Cloudflare Workers**（项目名 `jessica-portfolio`，账号 jessicahao5308@gmail.com）。上线动作 = `wrangler deploy`（部署整站，读仓库根 `wrangler.jsonc`）。临时地址 `jessica-portfolio.jessicahao5308.workers.dev` |
+| GitHub | [jessicahao5308-ship-it/jessica-portfolio](https://github.com/jessicahao5308-ship-it/jessica-portfolio) · 现为**备份仓库**（不再触发部署）。仍建议 public |
+| 网址 | **https://jessicainsydney.com** + `www`（两个自定义域名都绑在 Worker 上，Production）|
+| 域名 | 主域 `jessicainsydney.com`，DNS 在 **Cloudflare**。`@` 和 `www` 现为 **橙云(Proxied)** 记录指向 Worker（由 Cloudflare 自动托管，别手动改）。`learn.` 子域是 quickshare（另一个 Worker），别动。仓库根 `CNAME` 文件已不再用于托管（`.assetsignore` 已把它排除，不会被公开），留着无害 |
+| 机制 | 改代码 → `wrangler deploy` 上线（几秒生效）· HTTPS 由 Cloudflare 自动签发续期 |
+| 脱敏 | 仓库根 **`.assetsignore`** 决定哪些文件**不**上线：`.git`、`.wrangler`、`CLAUDE.md`、`README.md`、`CNAME`、`wrangler.jsonc` 等都排除。改目录结构时留意别让敏感文件泄到线上（部署后可 `curl` 抽查 `/.git/config` 应 404）|
 
-> ⚠️ **HTTPS 证书坑（2026-07 踩过）**：若先设自定义域名（push CNAME）、后加 DNS，GitHub 不会自动签证书，`https_certificate.state` 一直 null。解法：**摘掉再装回**——`git rm CNAME` push（等 built）→ 重新 `printf 'jessicainsydney.com' > CNAME` push，证书秒签。之后 `gh api -X PUT repos/…/pages -F https_enforced=true`（注意 `-F` 传布尔，`-f` 会当字符串报 422）。
+**上线命令**（在仓库根）：
+```bash
+export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"
+WRANGLER_SEND_METRICS=false wrangler deploy
+```
+首次换机器需 `wrangler login`（浏览器授权一次）。
 
-**本项目 `commit + push` 是默认动作**（它就是部署链路），不用每次问。
+**`commit + push` 现仅作 GitHub 备份**（不再是部署链路）；上线以 `wrangler deploy` 为准。两个定时任务（mcp-case-weekly-scan / nsw-official-pages-monitor）已改为"`wrangler deploy` 上线 + git 备份"。
 
 ## 文件结构
 
